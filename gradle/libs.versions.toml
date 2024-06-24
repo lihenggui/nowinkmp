@@ -73,7 +73,7 @@ ktor = "2.3.11"
 ktrofit = "1.14.0"
 buildKonfig = "0.15.1"
 lifecycle-viewmodel-compose = "2.8.0"
-navigation-compose = "2.7.0-alpha07"
+navigation-compose = "2.8.0-alpha02"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }

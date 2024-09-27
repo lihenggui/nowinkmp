@@ -1,6 +1,6 @@
-androidx.activity:activity-compose:1.9.0
-androidx.activity:activity-ktx:1.9.0
-androidx.activity:activity:1.9.0
+androidx.activity:activity-compose:1.9.1
+androidx.activity:activity-ktx:1.9.1
+androidx.activity:activity:1.9.1
 androidx.annotation:annotation-experimental:1.4.0
 androidx.annotation:annotation-jvm:1.8.0
 androidx.annotation:annotation:1.8.0
@@ -94,7 +94,7 @@ org.jetbrains.compose.material:material:1.6.11
 org.jetbrains.compose.runtime:runtime:1.6.11
 org.jetbrains.compose.ui:ui-util:1.6.11
 org.jetbrains.compose.ui:ui:1.6.11
-org.jetbrains.kotlin:kotlin-stdlib:2.0.0
+org.jetbrains.kotlin:kotlin-stdlib:2.0.10
 org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1
 org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1
 org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1

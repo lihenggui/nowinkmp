@@ -24,7 +24,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -179,18 +178,15 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
                 darkTheme = darkMode,
                 disableDynamicTheming = !dynamicTheming,
             ) {
-                // Keying is necessary in some cases (e.g. animations)
-                key(androidTheme, darkMode, dynamicTheming) {
-                    val description = generateDescription(
-                        shouldCompareDarkMode,
-                        darkMode,
-                        shouldCompareAndroidTheme,
-                        androidTheme,
-                        shouldCompareDynamicColor,
-                        dynamicTheming,
-                    )
-                    content(description)
-                }
+                val description = generateDescription(
+                    shouldCompareDarkMode,
+                    darkMode,
+                    shouldCompareAndroidTheme,
+                    androidTheme,
+                    shouldCompareDynamicColor,
+                    dynamicTheming,
+                )
+                content(description)
             }
         }
     }

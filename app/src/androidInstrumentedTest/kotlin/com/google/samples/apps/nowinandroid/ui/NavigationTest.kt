@@ -34,6 +34,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
 import com.google.samples.apps.nowinandroid.MainActivity
+import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
@@ -48,9 +49,10 @@ import nowinandroid.feature.settings.generated.resources.feature_settings_dismis
 import nowinandroid.feature.settings.generated.resources.feature_settings_top_app_bar_action_icon_description
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.app_name
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
+import org.koin.core.context.GlobalContext
 import nowinandroid.feature.bookmarks.generated.resources.Res as BookmarksR
 import nowinandroid.feature.foryou.generated.resources.Res as FeatureForyouR
 import nowinandroid.feature.search.generated.resources.Res as FeatureSearchR
@@ -78,10 +80,8 @@ class NavigationTest {
     @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Inject
     lateinit var topicsRepository: TopicsRepository
 
-    @Inject
     lateinit var newsRepository: NewsRepository
 
     // The strings used for matching in these tests
@@ -95,8 +95,12 @@ class NavigationTest {
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
-//    @Before
-//    fun setup() = hiltRule.inject()
+    @Before
+    fun setup() {
+        val koin = GlobalContext.get()
+        topicsRepository = koin.get(clazz = TopicsRepository::class)
+        newsRepository = koin.get(clazz = NewsRepository::class)
+    }
 
     @Test
     fun firstScreen_isForYou() {

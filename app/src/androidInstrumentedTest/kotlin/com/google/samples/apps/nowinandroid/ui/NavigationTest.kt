@@ -100,6 +100,9 @@ class NavigationTest : KoinTest {
     companion object {
         // Timeout for initial sync/data loads in instrumentation tests.
         private const val DATA_LOAD_TIMEOUT_MILLIS = 30_000L
+        // Espresso internal exception name used when root view loses focus on back press.
+        private const val ROOT_VIEW_WITHOUT_FOCUS_EXCEPTION =
+            "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
     }
 
     @Before
@@ -133,10 +136,10 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun isExpectedBackException(exception: Exception): Boolean {
+    private fun isExpectedBackException(exception: Throwable): Boolean {
         val className = exception.javaClass.name
         return exception is NoActivityResumedException ||
-            className == "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
+            className == ROOT_VIEW_WITHOUT_FOCUS_EXCEPTION
     }
 
     @Test
@@ -281,7 +284,7 @@ class NavigationTest : KoinTest {
             waitForIdle()
             val exception = runCatching { Espresso.pressBack() }.exceptionOrNull()
             if (exception != null) {
-                assertTrue(isExpectedBackException(exception as Exception))
+                assertTrue(isExpectedBackException(exception))
                 return@apply
             }
             // THEN the app quits

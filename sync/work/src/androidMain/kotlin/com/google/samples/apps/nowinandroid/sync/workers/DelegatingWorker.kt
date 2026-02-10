@@ -69,9 +69,9 @@ class DelegatingWorker(
 //            as? CoroutineWorker
 //            ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
-    private val delegate: CoroutineWorker by lazy {
-        when (workerClassName) {
-            SyncWorker::class.qualifiedName -> SyncWorker(
+    private val workerFactories = mapOf(
+        requireNotNull(SyncWorker::class.qualifiedName) to {
+            SyncWorker(
                 appContext = appContext,
                 workerParams = workerParams,
                 niaPreferences = get(),
@@ -82,8 +82,13 @@ class DelegatingWorker(
                 analyticsHelper = get(),
                 syncSubscriber = get(),
             )
-            else -> throw IllegalArgumentException("Unable to find appropriate worker for $workerClassName")
-        }
+        },
+    )
+
+    private val delegate: CoroutineWorker by lazy {
+        val factory = workerFactories[workerClassName]
+            ?: throw IllegalArgumentException("Unable to find appropriate worker for $workerClassName")
+        factory()
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo =

@@ -31,8 +31,10 @@ class NewsResourceCardTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
+    // Keep in sync with core_ui_unread_resource_dot_content_description.
     private val expectedUnreadContentDescription = "Unread"
 
+    // Keep formatting in sync with core_ui_card_meta_data_text.
     private fun metaDataText(dateFormatted: String, resourceType: String) =
         "$dateFormatted • $resourceType"
 

@@ -92,7 +92,7 @@ class NavigationTest : KoinTest {
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
     companion object {
-        private const val TEST_DATA_LOAD_TIMEOUT_MILLIS = 10_000L
+        private const val DATA_LOAD_TIMEOUT_MS = 10_000L
     }
 
     @Before
@@ -104,22 +104,20 @@ class NavigationTest : KoinTest {
     }
 
     private fun waitForTopics() = runBlocking {
-        withTimeout(TEST_DATA_LOAD_TIMEOUT_MILLIS) {
+        withTimeout(DATA_LOAD_TIMEOUT_MS) {
             topicsRepository.getTopics().first { it.isNotEmpty() }
         }
     }
 
     private fun waitForNewsResources() = runBlocking {
-        withTimeout(TEST_DATA_LOAD_TIMEOUT_MILLIS) {
+        withTimeout(DATA_LOAD_TIMEOUT_MS) {
             newsRepository.getNewsResources().first { it.isNotEmpty() }
         }
     }
 
     private fun waitForText(text: String) {
-        composeTestRule.waitUntil(timeoutMillis = TEST_DATA_LOAD_TIMEOUT_MILLIS) {
-            runCatching {
-                composeTestRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
-            }.getOrDefault(false)
+        composeTestRule.waitUntil(timeoutMillis = DATA_LOAD_TIMEOUT_MS) {
+            composeTestRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
         }
     }
 

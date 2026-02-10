@@ -133,12 +133,11 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun isExpectedBackException(exception: Exception): Boolean =
-        exception is NoActivityResumedException || run {
-            val message = exception.message.orEmpty()
-            message.contains("RootViewWithoutFocusException") ||
-                message.contains("root of the view hierarchy")
-        }
+    private fun isExpectedBackException(exception: Exception): Boolean {
+        val className = exception.javaClass.name
+        return exception is NoActivityResumedException ||
+            className == "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
+    }
 
     @Test
     fun firstScreen_isForYou() {
@@ -282,7 +281,7 @@ class NavigationTest : KoinTest {
             waitForIdle()
             val exception = runCatching { Espresso.pressBack() }.exceptionOrNull()
             if (exception != null) {
-                assertTrue(exception is Exception && isExpectedBackException(exception))
+                assertTrue(isExpectedBackException(exception as Exception))
                 return@apply
             }
             // THEN the app quits
@@ -372,6 +371,9 @@ class NavigationTest : KoinTest {
     }
 }
 
+/**
+ * Test-only synchronizer that reuses [NiaPreferencesDataSource] to seed repositories.
+ */
 private class TestSynchronizer(
     private val niaPreferencesDataSource: NiaPreferencesDataSource,
 ) : Synchronizer {

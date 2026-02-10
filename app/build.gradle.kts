@@ -151,6 +151,8 @@ dependencies {
     debugImplementation(compose.uiTooling)
     androidTestImplementation(libs.androidx.compose.ui.test.android)
     androidTestImplementation(libs.androidx.compose.ui.testManifest)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
 }
 
 compose.desktop {

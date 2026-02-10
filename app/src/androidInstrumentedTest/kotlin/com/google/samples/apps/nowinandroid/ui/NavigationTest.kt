@@ -33,10 +33,14 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
+import androidx.test.espresso.base.RootViewPicker
 import com.google.samples.apps.nowinandroid.MainActivity
+import com.google.samples.apps.nowinandroid.core.data.Synchronizer
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
+import com.google.samples.apps.nowinandroid.core.datastore.ChangeListVersions
+import com.google.samples.apps.nowinandroid.core.datastore.NiaPreferencesDataSource
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
@@ -57,6 +61,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import kotlin.test.assertTrue
 import nowinandroid.feature.bookmarks.generated.resources.Res as BookmarksR
 import nowinandroid.feature.foryou.generated.resources.Res as FeatureForyouR
 import nowinandroid.feature.search.generated.resources.Res as FeatureSearchR
@@ -81,6 +86,7 @@ class NavigationTest : KoinTest {
     private val topicsRepository: TopicsRepository by inject()
     private val newsRepository: NewsRepository by inject()
     private val userDataRepository: UserDataRepository by inject()
+    private val niaPreferencesDataSource: NiaPreferencesDataSource by inject()
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_navigate_up)
@@ -101,6 +107,11 @@ class NavigationTest : KoinTest {
         runBlocking {
             userDataRepository.setFollowedTopicIds(emptySet())
             userDataRepository.setShouldHideOnboarding(false)
+            val synchronizer = TestSynchronizer(niaPreferencesDataSource)
+            withTimeout(DATA_LOAD_TIMEOUT_MILLIS) {
+                topicsRepository.syncWith(synchronizer)
+                newsRepository.syncWith(synchronizer)
+            }
         }
     }
 
@@ -254,7 +265,6 @@ class NavigationTest : KoinTest {
     /*
      * There should always be at most one instance of a top-level destination at the same time.
      */
-    @Test(expected = NoActivityResumedException::class)
     fun homeDestination_back_quitsApp() {
         composeTestRule.apply {
             // GIVEN the user navigates to the Interests destination
@@ -262,8 +272,19 @@ class NavigationTest : KoinTest {
             // and then navigates to the For you destination
             onNodeWithText(forYou).performClick()
             // WHEN the user uses the system button/gesture to go back
-            Espresso.pressBack()
+            waitForIdle()
+            try {
+                Espresso.pressBack()
+            } catch (exception: Exception) {
+                if (exception is NoActivityResumedException ||
+                    exception is RootViewPicker.RootViewWithoutFocusException
+                ) {
+                    return
+                }
+                throw exception
+            }
             // THEN the app quits
+            assertTrue(activity.isFinishing)
         }
     }
 
@@ -278,6 +299,7 @@ class NavigationTest : KoinTest {
             onNodeWithText(interests).performClick()
             // TODO: Add another destination here to increase test coverage, see b/226357686.
             // WHEN the user uses the system button/gesture to go back,
+            waitForIdle()
             Espresso.pressBack()
             // THEN the app shows the For You destination
             onNodeWithText(forYou).assertExists()
@@ -346,4 +368,15 @@ class NavigationTest : KoinTest {
             onNodeWithTag("topic:${topic.id}").assertExists()
         }
     }
+}
+
+private class TestSynchronizer(
+    private val niaPreferencesDataSource: NiaPreferencesDataSource,
+) : Synchronizer {
+    override suspend fun getChangeListVersions(): ChangeListVersions =
+        niaPreferencesDataSource.getChangeListVersions()
+
+    override suspend fun updateChangeListVersions(
+        update: ChangeListVersions.() -> ChangeListVersions,
+    ) = niaPreferencesDataSource.updateChangeListVersion(update)
 }

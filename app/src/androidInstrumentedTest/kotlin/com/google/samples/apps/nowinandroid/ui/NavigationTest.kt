@@ -138,7 +138,8 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
-        val sampleTopic = waitForTopics().first().name
+        val sampleTopic = waitForTopics().firstOrNull()?.name
+            ?: error("No topics available after waiting for load")
         composeTestRule.apply {
             // GIVEN the user follows a topic
             waitForText(sampleTopic)
@@ -157,7 +158,8 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_reselectTab_keepsState() {
-        val sampleTopic = waitForTopics().first().name
+        val sampleTopic = waitForTopics().firstOrNull()?.name
+            ?: error("No topics available after waiting for load")
         composeTestRule.apply {
             // GIVEN the user follows a topic
             waitForText(sampleTopic)
@@ -283,7 +285,8 @@ class NavigationTest : KoinTest {
 
     @Test
     fun navigationBar_multipleBackStackInterests() {
-        val topic = waitForTopics().sortedBy(Topic::name).last()
+        val topic = waitForTopics().sortedBy(Topic::name).lastOrNull()
+            ?: error("No topics available after waiting for load")
         composeTestRule.apply {
             onNodeWithText(interests).performClick()
 
@@ -307,7 +310,8 @@ class NavigationTest : KoinTest {
     fun navigatingToTopicFromForYou_showsTopicDetails() {
         composeTestRule.apply {
             // Get the first news resource
-            val newsResource = waitForNewsResources().first()
+            val newsResource = waitForNewsResources().firstOrNull()
+                ?: error("No news resources available after waiting for load")
 
             // Get its first topic and follow it
             val topic = newsResource.topics.first()

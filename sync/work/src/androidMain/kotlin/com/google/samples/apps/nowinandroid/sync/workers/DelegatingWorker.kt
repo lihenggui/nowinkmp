@@ -69,7 +69,7 @@ class DelegatingWorker(
 //            as? CoroutineWorker
 //            ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
-    private val delegateWorker: CoroutineWorker by lazy {
+    private val delegate: CoroutineWorker by lazy {
         when (workerClassName) {
             SyncWorker::class.qualifiedName -> SyncWorker(
                 appContext = appContext,
@@ -87,8 +87,8 @@ class DelegatingWorker(
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
-        delegateWorker.getForegroundInfo()
+        delegate.getForegroundInfo()
 
     override suspend fun doWork(): Result =
-        delegateWorker.doWork()
+        delegate.doWork()
 }

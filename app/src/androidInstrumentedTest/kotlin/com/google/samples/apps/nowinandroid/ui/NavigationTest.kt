@@ -80,7 +80,6 @@ class NavigationTest : KoinTest {
     private val topicsRepository: TopicsRepository by inject()
     private val newsRepository: NewsRepository by inject()
     private val userDataRepository: UserDataRepository by inject()
-    private val dataTimeoutMillis = 10_000L
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_navigate_up)
@@ -92,6 +91,10 @@ class NavigationTest : KoinTest {
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
+    private companion object {
+        const val DATA_TIMEOUT_MILLIS = 10_000L
+    }
+
     @Before
     fun setUp() {
         runBlocking {
@@ -101,19 +104,19 @@ class NavigationTest : KoinTest {
     }
 
     private fun awaitTopics() = runBlocking {
-        withTimeout(dataTimeoutMillis) {
+        withTimeout(DATA_TIMEOUT_MILLIS) {
             topicsRepository.getTopics().first { it.isNotEmpty() }
         }
     }
 
     private fun awaitNewsResources() = runBlocking {
-        withTimeout(dataTimeoutMillis) {
+        withTimeout(DATA_TIMEOUT_MILLIS) {
             newsRepository.getNewsResources().first { it.isNotEmpty() }
         }
     }
 
     private fun waitForText(text: String) {
-        composeTestRule.waitUntil(timeoutMillis = dataTimeoutMillis) {
+        composeTestRule.waitUntil(timeoutMillis = DATA_TIMEOUT_MILLIS) {
             runCatching {
                 composeTestRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
             }.getOrDefault(false)

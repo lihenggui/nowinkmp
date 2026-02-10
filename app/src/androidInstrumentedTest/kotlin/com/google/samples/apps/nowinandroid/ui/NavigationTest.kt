@@ -37,6 +37,7 @@ import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
 import kotlinx.coroutines.flow.first
@@ -103,13 +104,13 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun waitForTopics() = runBlocking {
+    private fun waitForTopics(): List<Topic> = runBlocking {
         withTimeout(DATA_LOAD_TIMEOUT_MILLIS) {
             topicsRepository.getTopics().first { it.isNotEmpty() }
         }
     }
 
-    private fun waitForNewsResources() = runBlocking {
+    private fun waitForNewsResources(): List<NewsResource> = runBlocking {
         withTimeout(DATA_LOAD_TIMEOUT_MILLIS) {
             newsRepository.getNewsResources().first { it.isNotEmpty() }
         }

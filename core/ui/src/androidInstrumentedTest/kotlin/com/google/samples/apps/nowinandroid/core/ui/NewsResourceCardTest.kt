@@ -31,7 +31,10 @@ class NewsResourceCardTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    private val unreadContentDescription = "Unread"
+    private val expectedUnreadContentDescription = "Unread"
+
+    private fun metaDataText(dateFormatted: String, resourceType: String) =
+        "$dateFormatted • $resourceType"
 
     @Test
     fun testMetaDataDisplay_withCodelabResource() {
@@ -53,7 +56,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithText(
-                "$dateFormatted • ${newsWithKnownResourceType.type}",
+                metaDataText(dateFormatted, newsWithKnownResourceType.type),
             )
             .assertExists()
     }
@@ -120,7 +123,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                unreadContentDescription,
+                expectedUnreadContentDescription,
             )
             .assertIsDisplayed()
     }
@@ -142,7 +145,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                unreadContentDescription,
+                expectedUnreadContentDescription,
             )
             .assertDoesNotExist()
     }

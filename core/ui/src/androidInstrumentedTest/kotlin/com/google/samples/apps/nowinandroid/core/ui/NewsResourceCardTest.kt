@@ -24,14 +24,19 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.google.samples.apps.nowinandroid.core.testing.data.followableTopicTestData
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
+import kotlinx.coroutines.runBlocking
 import nowinandroid.core.ui.generated.resources.Res
-import nowinandroid.core.ui.generated.resources.core_ui_card_meta_data_text
+import org.jetbrains.compose.resources.StringResource
 import org.junit.Rule
 import org.junit.Test
 
 class NewsResourceCardTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+
+    private fun getString(id: StringResource, vararg args: Any) = runBlocking {
+        org.jetbrains.compose.resources.getString(id, *args)
+    }
 
     @Test
     fun testMetaDataDisplay_withCodelabResource() {
@@ -53,7 +58,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithText(
-                composeTestRule.activity.getString(
+                getString(
                     Res.string.core_ui_card_meta_data_text,
                     dateFormatted,
                     newsWithKnownResourceType.type,
@@ -124,9 +129,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.getString(
-                    R.string.core_ui_unread_resource_dot_content_description,
-                ),
+                getString(Res.string.core_ui_unread_resource_dot_content_description),
             )
             .assertIsDisplayed()
     }
@@ -148,9 +151,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.getString(
-                    R.string.core_ui_unread_resource_dot_content_description,
-                ),
+                getString(Res.string.core_ui_unread_resource_dot_content_description),
             )
             .assertDoesNotExist()
     }

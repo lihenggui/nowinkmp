@@ -21,6 +21,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.reflect.KClass
 
 // /**
@@ -55,7 +57,7 @@ internal fun KClass<out CoroutineWorker>.delegatedData() =
 class DelegatingWorker(
     appContext: Context,
     workerParams: WorkerParameters,
-) : CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
     private val workerClassName =
         workerParams.inputData.getString(WORKER_CLASS_NAME) ?: ""
@@ -67,7 +69,22 @@ class DelegatingWorker(
 //            as? CoroutineWorker
 //            ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
-    private val delegateWorker: DelegatingWorker = TODO()
+    private val delegateWorker: CoroutineWorker by lazy {
+        when (workerClassName) {
+            SyncWorker::class.qualifiedName -> SyncWorker(
+                appContext = appContext,
+                workerParams = workerParams,
+                niaPreferences = get(),
+                topicRepository = get(),
+                newsRepository = get(),
+                searchContentsRepository = get(),
+                ioDispatcher = get(),
+                analyticsHelper = get(),
+                syncSubscriber = get(),
+            )
+            else -> throw IllegalArgumentException("Unable to find appropriate worker for $workerClassName")
+        }
+    }
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
         delegateWorker.getForegroundInfo()

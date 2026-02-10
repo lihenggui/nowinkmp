@@ -36,10 +36,12 @@ import androidx.test.espresso.NoActivityResumedException
 import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_title
 import nowinandroid.feature.foryou.generated.resources.feature_foryou_navigate_up
 import nowinandroid.feature.foryou.generated.resources.feature_foryou_title
@@ -49,6 +51,7 @@ import nowinandroid.feature.settings.generated.resources.feature_settings_dismis
 import nowinandroid.feature.settings.generated.resources.feature_settings_top_app_bar_action_icon_description
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.app_name
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.test.KoinTest
@@ -76,17 +79,46 @@ class NavigationTest : KoinTest {
 
     private val topicsRepository: TopicsRepository by inject()
     private val newsRepository: NewsRepository by inject()
+    private val userDataRepository: UserDataRepository by inject()
+    private val dataTimeoutMillis = 10_000L
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_navigate_up)
     private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_title)
     private val interests by composeTestRule.stringResource(FeatureSearchR.string.feature_search_interests)
-    private val sampleTopic = "Headlines"
     private val appName by composeTestRule.stringResource(Res.string.app_name)
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_title)
     private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_top_app_bar_action_icon_description)
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
+
+    @Before
+    fun setUp() {
+        runBlocking {
+            userDataRepository.setFollowedTopicIds(emptySet())
+            userDataRepository.setShouldHideOnboarding(false)
+        }
+    }
+
+    private fun awaitTopics() = runBlocking {
+        withTimeout(dataTimeoutMillis) {
+            topicsRepository.getTopics().first { it.isNotEmpty() }
+        }
+    }
+
+    private fun awaitNewsResources() = runBlocking {
+        withTimeout(dataTimeoutMillis) {
+            newsRepository.getNewsResources().first { it.isNotEmpty() }
+        }
+    }
+
+    private fun waitForText(text: String) {
+        composeTestRule.waitUntil(timeoutMillis = dataTimeoutMillis) {
+            runCatching {
+                composeTestRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
+            }.getOrDefault(false)
+        }
+    }
 
     @Test
     fun firstScreen_isForYou() {
@@ -105,8 +137,10 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
+        val sampleTopic = awaitTopics().first().name
         composeTestRule.apply {
             // GIVEN the user follows a topic
+            waitForText(sampleTopic)
             onNodeWithText(sampleTopic).performClick()
             // WHEN the user navigates to the Interests destination
             onNodeWithText(interests).performClick()
@@ -122,8 +156,10 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_reselectTab_keepsState() {
+        val sampleTopic = awaitTopics().first().name
         composeTestRule.apply {
             // GIVEN the user follows a topic
+            waitForText(sampleTopic)
             onNodeWithText(sampleTopic).performClick()
             // WHEN the user taps the For You navigation bar item
             onNodeWithText(forYou).performClick()
@@ -246,13 +282,12 @@ class NavigationTest : KoinTest {
 
     @Test
     fun navigationBar_multipleBackStackInterests() {
+        val topic = awaitTopics().sortedBy(Topic::name).last()
         composeTestRule.apply {
             onNodeWithText(interests).performClick()
 
             // Select the last topic
-            val topic = runBlocking {
-                topicsRepository.getTopics().first().sortedBy(Topic::name).last()
-            }
+            waitForText(topic.name)
             onNodeWithTag("interests:topics").performScrollToNode(hasText(topic.name))
             onNodeWithText(topic.name).performClick()
 
@@ -271,12 +306,11 @@ class NavigationTest : KoinTest {
     fun navigatingToTopicFromForYou_showsTopicDetails() {
         composeTestRule.apply {
             // Get the first news resource
-            val newsResource = runBlocking {
-                newsRepository.getNewsResources().first().first()
-            }
+            val newsResource = awaitNewsResources().first()
 
             // Get its first topic and follow it
             val topic = newsResource.topics.first()
+            waitForText(topic.name)
             onNodeWithText(topic.name).performClick()
 
             // Get the news feed and scroll to the news resource

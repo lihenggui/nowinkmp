@@ -32,7 +32,7 @@ import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourc
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.feature.bookmarks.navigation.navigateToBookmarks
-import com.google.samples.apps.nowinandroid.feature.foryou.navigation.ForYouBaseRoute
+import com.google.samples.apps.nowinandroid.feature.foryou.navigation.ForYouRoute
 import com.google.samples.apps.nowinandroid.feature.foryou.navigation.navigateToForYou
 import com.google.samples.apps.nowinandroid.feature.interests.navigation.navigateToInterests
 import com.google.samples.apps.nowinandroid.feature.search.navigation.navigateToSearch
@@ -156,7 +156,7 @@ class NiaAppState(
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
                 // on the back stack as users select items
-                popUpTo<ForYouBaseRoute> {
+                popUpTo<ForYouRoute> {
                     saveState = true
                 }
                 // Avoid multiple copies of the same destination when

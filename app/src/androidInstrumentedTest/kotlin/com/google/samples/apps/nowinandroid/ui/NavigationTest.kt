@@ -101,6 +101,7 @@ class NavigationTest : KoinTest {
         // Timeout for initial sync/data loads in instrumentation tests.
         private const val DATA_LOAD_TIMEOUT_MILLIS = 30_000L
         // Espresso internal exception name used when root view loses focus on back press.
+        // Stored as a string to avoid depending on internal Espresso APIs.
         private const val ROOT_VIEW_WITHOUT_FOCUS_EXCEPTION =
             "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
     }

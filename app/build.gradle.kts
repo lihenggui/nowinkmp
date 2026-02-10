@@ -130,6 +130,7 @@ kotlin {
             implementation(libs.androidx.navigation.testing)
             implementation(project.dependencies.platform(libs.androidx.compose.bom))
             implementation(libs.androidx.compose.ui.test)
+            implementation(libs.androidx.test.core)
             implementation(libs.androidx.test.espresso.core)
             implementation(libs.koin.test)
         }

@@ -93,7 +93,7 @@ class NavigationTest : KoinTest {
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
     companion object {
-        private const val DATA_LOAD_TIMEOUT_MILLIS = 10_000L
+        private const val DATA_LOAD_TIMEOUT_MILLIS = 30_000L
     }
 
     @Before

@@ -24,9 +24,6 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.google.samples.apps.nowinandroid.core.testing.data.followableTopicTestData
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
-import kotlinx.coroutines.runBlocking
-import nowinandroid.core.ui.generated.resources.Res
-import org.jetbrains.compose.resources.StringResource
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,9 +31,7 @@ class NewsResourceCardTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    private fun getString(id: StringResource, vararg args: Any) = runBlocking {
-        org.jetbrains.compose.resources.getString(id, *args)
-    }
+    private val unreadContentDescription = "Unread"
 
     @Test
     fun testMetaDataDisplay_withCodelabResource() {
@@ -58,11 +53,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithText(
-                getString(
-                    Res.string.core_ui_card_meta_data_text,
-                    dateFormatted,
-                    newsWithKnownResourceType.type,
-                ),
+                "$dateFormatted • ${newsWithKnownResourceType.type}",
             )
             .assertExists()
     }
@@ -129,7 +120,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                getString(Res.string.core_ui_unread_resource_dot_content_description),
+                unreadContentDescription,
             )
             .assertIsDisplayed()
     }
@@ -151,7 +142,7 @@ class NewsResourceCardTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                getString(Res.string.core_ui_unread_resource_dot_content_description),
+                unreadContentDescription,
             )
             .assertDoesNotExist()
     }

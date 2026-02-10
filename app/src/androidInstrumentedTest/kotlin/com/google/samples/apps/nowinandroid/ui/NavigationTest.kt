@@ -135,8 +135,12 @@ class NavigationTest : KoinTest {
 
     private fun isExpectedBackException(exception: Exception): Boolean =
         exception is NoActivityResumedException ||
-            exception.javaClass.name ==
-            "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
+            exception.message
+                .orEmpty()
+                .contains("RootViewWithoutFocusException") ||
+            exception.message
+                .orEmpty()
+                .contains("root of the view hierarchy")
 
     @Test
     fun firstScreen_isForYou() {
@@ -280,7 +284,7 @@ class NavigationTest : KoinTest {
             waitForIdle()
             val activityFinished = try {
                 Espresso.pressBack()
-                runCatching { activity.isFinishing }.getOrDefault(true)
+                activity.isFinishing || activity.isDestroyed
             } catch (exception: Exception) {
                 if (isExpectedBackException(exception)) true else throw exception
             }

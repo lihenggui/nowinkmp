@@ -33,7 +33,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
-import androidx.test.espresso.base.RootViewPicker
 import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.core.data.Synchronizer
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
@@ -99,6 +98,7 @@ class NavigationTest : KoinTest {
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
     companion object {
+        // Timeout for initial sync/data loads in instrumentation tests.
         private const val DATA_LOAD_TIMEOUT_MILLIS = 30_000L
     }
 
@@ -273,18 +273,17 @@ class NavigationTest : KoinTest {
             onNodeWithText(forYou).performClick()
             // WHEN the user uses the system button/gesture to go back
             waitForIdle()
-            try {
+            val activityFinished = try {
                 Espresso.pressBack()
+                activity.isFinishing
             } catch (exception: Exception) {
-                if (exception is NoActivityResumedException ||
-                    exception is RootViewPicker.RootViewWithoutFocusException
-                ) {
-                    return
-                }
-                throw exception
+                val isExpected = exception is NoActivityResumedException ||
+                    exception.javaClass.name ==
+                    "androidx.test.espresso.base.RootViewPicker$RootViewWithoutFocusException"
+                if (isExpected) true else throw exception
             }
             // THEN the app quits
-            assertTrue(activity.isFinishing)
+            assertTrue(activityFinished)
         }
     }
 

@@ -91,8 +91,8 @@ class NavigationTest : KoinTest {
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
-    private companion object {
-        const val DATA_TIMEOUT_MILLIS = 10_000L
+    companion object {
+        private const val DATA_TIMEOUT_MILLIS = 10_000L
     }
 
     @Before

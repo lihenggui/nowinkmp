@@ -103,13 +103,13 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun awaitTopics() = runBlocking {
+    private fun waitForTopics() = runBlocking {
         withTimeout(DATA_TIMEOUT_MILLIS) {
             topicsRepository.getTopics().first { it.isNotEmpty() }
         }
     }
 
-    private fun awaitNewsResources() = runBlocking {
+    private fun waitForNewsResources() = runBlocking {
         withTimeout(DATA_TIMEOUT_MILLIS) {
             newsRepository.getNewsResources().first { it.isNotEmpty() }
         }
@@ -140,7 +140,7 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
-        val sampleTopic = awaitTopics().first().name
+        val sampleTopic = waitForTopics().first().name
         composeTestRule.apply {
             // GIVEN the user follows a topic
             waitForText(sampleTopic)
@@ -159,7 +159,7 @@ class NavigationTest : KoinTest {
      */
     @Test
     fun navigationBar_reselectTab_keepsState() {
-        val sampleTopic = awaitTopics().first().name
+        val sampleTopic = waitForTopics().first().name
         composeTestRule.apply {
             // GIVEN the user follows a topic
             waitForText(sampleTopic)
@@ -285,7 +285,7 @@ class NavigationTest : KoinTest {
 
     @Test
     fun navigationBar_multipleBackStackInterests() {
-        val topic = awaitTopics().sortedBy(Topic::name).last()
+        val topic = waitForTopics().sortedBy(Topic::name).last()
         composeTestRule.apply {
             onNodeWithText(interests).performClick()
 
@@ -309,7 +309,7 @@ class NavigationTest : KoinTest {
     fun navigatingToTopicFromForYou_showsTopicDetails() {
         composeTestRule.apply {
             // Get the first news resource
-            val newsResource = awaitNewsResources().first()
+            val newsResource = waitForNewsResources().first()
 
             // Get its first topic and follow it
             val topic = newsResource.topics.first()

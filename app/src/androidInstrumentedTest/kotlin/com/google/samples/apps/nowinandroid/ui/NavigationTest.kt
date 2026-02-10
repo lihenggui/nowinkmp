@@ -134,13 +134,11 @@ class NavigationTest : KoinTest {
     }
 
     private fun isExpectedBackException(exception: Exception): Boolean =
-        exception is NoActivityResumedException ||
-            exception.message
-                .orEmpty()
-                .contains("RootViewWithoutFocusException") ||
-            exception.message
-                .orEmpty()
-                .contains("root of the view hierarchy")
+        exception is NoActivityResumedException || run {
+            val message = exception.message.orEmpty()
+            message.contains("RootViewWithoutFocusException") ||
+                message.contains("root of the view hierarchy")
+        }
 
     @Test
     fun firstScreen_isForYou() {
@@ -282,14 +280,13 @@ class NavigationTest : KoinTest {
             onNodeWithText(forYou).performClick()
             // WHEN the user uses the system button/gesture to go back
             waitForIdle()
-            val activityFinished = try {
-                Espresso.pressBack()
-                activity.isFinishing || activity.isDestroyed
-            } catch (exception: Exception) {
-                if (isExpectedBackException(exception)) true else throw exception
+            val exception = runCatching { Espresso.pressBack() }.exceptionOrNull()
+            if (exception != null) {
+                assertTrue(exception is Exception && isExpectedBackException(exception))
+                return@apply
             }
             // THEN the app quits
-            assertTrue(activityFinished)
+            assertTrue(activity.isFinishing || activity.isDestroyed)
         }
     }
 

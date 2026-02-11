@@ -30,6 +30,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.espresso.Espresso
 import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
@@ -254,15 +255,12 @@ class NavigationTest : KoinTest {
             onNodeWithText(interests).performClick()
             // TODO: Add another destination here to increase test coverage, see b/226357686.
             // WHEN the user uses the system button/gesture to go back,
-            var activityFinishing = false
-            activityRule.scenario.onActivity { activity ->
-                activity.onBackPressedDispatcher.onBackPressed()
-                activityFinishing = activity.isFinishing
-            }
-            // THEN the app returns to the For You destination, unless the app exited
-            if (!activityFinishing) {
-                onNodeWithText(forYou).assertExists()
-            }
+            // Use Espresso.pressBack() here because the activity stays alive (navigation
+            // handles back by returning to ForYou). Using scenario.onActivity with
+            // onBackPressedDispatcher causes ActivityScenario lifecycle issues on API 26.
+            Espresso.pressBack()
+            // THEN the app returns to the For You destination
+            onNodeWithText(forYou).assertExists()
         }
     }
 

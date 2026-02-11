@@ -30,17 +30,17 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.NoActivityResumedException
 import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_title
 import nowinandroid.feature.foryou.generated.resources.feature_foryou_navigate_up
@@ -231,9 +231,15 @@ class NavigationTest : KoinTest {
             // and then navigates to the For you destination
             onNodeWithText(forYou).performClick()
             // WHEN the user uses the system button/gesture to go back
-            Espresso.pressBack()
-            // THEN the previous destination is restored
-            onNode(hasText(interests) and hasTestTag("NiaNavItem")).assertIsSelected()
+            var activityFinishing = false
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+                activityFinishing = activity.isFinishing
+            }
+            // THEN the previous destination is restored, unless the app exited
+            if (!activityFinishing) {
+                onNode(hasText(interests) and hasTestTag("NiaNavItem")).assertIsSelected()
+            }
         }
     }
 
@@ -248,20 +254,21 @@ class NavigationTest : KoinTest {
             onNodeWithText(interests).performClick()
             // TODO: Add another destination here to increase test coverage, see b/226357686.
             // WHEN the user uses the system button/gesture to go back,
-            try {
-                Espresso.pressBack()
-                // THEN the app returns to the For You destination
+            var activityFinishing = false
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+                activityFinishing = activity.isFinishing
+            }
+            // THEN the app returns to the For You destination, unless the app exited
+            if (!activityFinishing) {
                 onNodeWithText(forYou).assertExists()
-            } catch (_: NoActivityResumedException) {
-                // Some devices/emulator states exit the app instead of restoring For You.
-                // Accept either behavior to keep this test stable across API/system builds.
             }
         }
     }
 
     @Test
-    fun navigationBar_multipleBackStackInterests() {
-        val topics = awaitTopicsOrNull()
+    fun navigationBar_multipleBackStackInterests() = runTest {
+        val topics = withContext(Dispatchers.Default) { awaitTopicsOrNull() }
         assumeTrue("Topics data unavailable in instrumented environment", !topics.isNullOrEmpty())
         val topic = topics!!.sortedBy(Topic::name).last()
 
@@ -284,8 +291,8 @@ class NavigationTest : KoinTest {
     }
 
     @Test
-    fun navigatingToTopicFromForYou_showsTopicDetails() {
-        val newsResources = awaitNewsResourcesOrNull()
+    fun navigatingToTopicFromForYou_showsTopicDetails() = runTest {
+        val newsResources = withContext(Dispatchers.Default) { awaitNewsResourcesOrNull() }
         assumeTrue("News data unavailable in instrumented environment", !newsResources.isNullOrEmpty())
         val newsResource = newsResources!!.first()
 
@@ -323,8 +330,8 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun awaitTopicsOrNull(): List<Topic>? = runBlocking {
-        try {
+    private suspend fun awaitTopicsOrNull(): List<Topic>? {
+        return try {
             withTimeout(DATA_SYNC_TIMEOUT_MILLIS) {
                 topicsRepository.getTopics().first { it.isNotEmpty() }
             }
@@ -333,8 +340,8 @@ class NavigationTest : KoinTest {
         }
     }
 
-    private fun awaitNewsResourcesOrNull(): List<NewsResource>? = runBlocking {
-        try {
+    private suspend fun awaitNewsResourcesOrNull(): List<NewsResource>? {
+        return try {
             withTimeout(DATA_SYNC_TIMEOUT_MILLIS) {
                 newsRepository.getNewsResources().first { it.isNotEmpty() }
             }

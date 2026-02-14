@@ -244,7 +244,7 @@ jobs:
           disable-animations: true
           disk-size: 6000M
           heap-size: 600M
-          script: ./gradlew connectedDebugAndroidTest --daemon
+          script: ./gradlew connectedDebugAndroidTest --daemon --stacktrace
 
       - name: Run local tests (including Roborazzi) for the combined coverage report (only API 30)
         if: matrix.api-level == 30
@@ -346,7 +346,10 @@ jobs:
 
       - name: Fast-forward to latest remote before pushing
         if: steps.screenshotsrecord_jvm.outcome == 'success'
-        run: git pull --rebase origin ${{ github.head_ref }}
+        run: |
+          git stash push -u -m "temp: jvm screenshots"
+          git pull --rebase origin ${{ github.head_ref }}
+          git stash pop
 
       - name: Push new JVM Desktop screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v5

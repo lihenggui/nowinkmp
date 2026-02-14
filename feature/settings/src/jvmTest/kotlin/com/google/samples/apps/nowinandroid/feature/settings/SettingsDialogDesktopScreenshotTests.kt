@@ -16,99 +16,59 @@
 
 package com.google.samples.apps.nowinandroid.feature.settings
 
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand
+import com.google.samples.apps.nowinandroid.core.testing.util.DefaultDesktopTestSizes
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import io.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Test
 
 /**
  * JVM Desktop screenshot tests for the [SettingsDialog].
+ *
+ * SettingsDialog uses AlertDialog which creates multiple root nodes in the compose tree.
+ * Therefore we capture the dialog root node directly instead of using [captureMultiSize].
  */
 class SettingsDialogDesktopScreenshotTests {
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun settingsDialog_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                SettingsDialog(
-                    settingsUiState = SettingsUiState.Success(
-                        settings = UserEditableSettings(
-                            brand = ThemeBrand.DEFAULT,
-                            useDynamicColor = false,
-                            darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-                        ),
-                    ),
-                    supportDynamicColor = false,
-                    onDismiss = {},
-                    onChangeThemeBrand = {},
-                    onChangeDynamicColorPreference = {},
-                    onChangeDarkThemeConfig = {},
+    fun settingsDialog() {
+        DefaultDesktopTestSizes.entries.forEach { size ->
+            runDesktopComposeUiTest(width = size.width, height = size.height) {
+                mainClock.autoAdvance = false
+                setContent {
+                    CompositionLocalProvider(LocalInspectionMode provides true) {
+                        NiaTheme {
+                            SettingsDialog(
+                                settingsUiState = SettingsUiState.Success(
+                                    settings = UserEditableSettings(
+                                        brand = ThemeBrand.DEFAULT,
+                                        useDynamicColor = false,
+                                        darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
+                                    ),
+                                ),
+                                supportDynamicColor = false,
+                                onDismiss = {},
+                                onChangeThemeBrand = {},
+                                onChangeDynamicColorPreference = {},
+                                onChangeDarkThemeConfig = {},
+                            )
+                        }
+                    }
+                }
+                // AlertDialog creates 2 root nodes; capture the dialog root (index 1)
+                onAllNodes(isRoot())[1].captureRoboImage(
+                    filePath = "src/jvmTest/screenshots/SettingsDialog_${size.description}.png",
+                    roborazziOptions = DefaultRoborazziOptions,
                 )
             }
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SettingsDialog_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun settingsDialog_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                SettingsDialog(
-                    settingsUiState = SettingsUiState.Success(
-                        settings = UserEditableSettings(
-                            brand = ThemeBrand.DEFAULT,
-                            useDynamicColor = false,
-                            darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-                        ),
-                    ),
-                    supportDynamicColor = false,
-                    onDismiss = {},
-                    onChangeThemeBrand = {},
-                    onChangeDynamicColorPreference = {},
-                    onChangeDarkThemeConfig = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SettingsDialog_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun settingsDialog_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                SettingsDialog(
-                    settingsUiState = SettingsUiState.Success(
-                        settings = UserEditableSettings(
-                            brand = ThemeBrand.DEFAULT,
-                            useDynamicColor = false,
-                            darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-                        ),
-                    ),
-                    supportDynamicColor = false,
-                    onDismiss = {},
-                    onChangeThemeBrand = {},
-                    onChangeDynamicColorPreference = {},
-                    onChangeDarkThemeConfig = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SettingsDialog_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

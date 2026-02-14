@@ -16,12 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.feature.bookmarks
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiSize
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import org.junit.Test
@@ -33,63 +29,16 @@ class BookmarksScreenDesktopScreenshotTests {
 
     private val userNewsResources = UserNewsResourcePreviewParameterProvider().values.first()
 
-    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun bookmarksScreen_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                BookmarksScreen(
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onShowSnackbar = { _, _ -> false },
-                    removeFromBookmarks = {},
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                )
-            }
+    fun bookmarksScreen() = captureMultiSize("BookmarksScreen") {
+        NiaTheme {
+            BookmarksScreen(
+                feedState = NewsFeedUiState.Success(feed = userNewsResources),
+                onShowSnackbar = { _, _ -> false },
+                removeFromBookmarks = {},
+                onNewsResourceViewed = {},
+                onTopicClick = {},
+            )
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/BookmarksScreen_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun bookmarksScreen_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                BookmarksScreen(
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onShowSnackbar = { _, _ -> false },
-                    removeFromBookmarks = {},
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/BookmarksScreen_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun bookmarksScreen_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                BookmarksScreen(
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onShowSnackbar = { _, _ -> false },
-                    removeFromBookmarks = {},
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/BookmarksScreen_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

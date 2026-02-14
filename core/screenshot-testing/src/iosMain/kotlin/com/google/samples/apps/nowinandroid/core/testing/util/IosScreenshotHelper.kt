@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
+import io.github.takahirom.roborazzi.captureRoboImage
 
 @OptIn(ExperimentalTestApi::class)
 fun captureIosScreenshot(

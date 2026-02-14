@@ -16,12 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.feature.foryou
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiSize
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import org.junit.Test
@@ -33,78 +29,21 @@ class ForYouScreenDesktopScreenshotTests {
 
     private val userNewsResources = UserNewsResourcePreviewParameterProvider().values.first()
 
-    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun forYouScreen_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                ForYouScreen(
-                    isSyncing = false,
-                    onboardingUiState = OnboardingUiState.NotShown,
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onTopicCheckedChanged = { _, _ -> },
-                    saveFollowedTopics = {},
-                    onNewsResourcesCheckedChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                    deepLinkedUserNewsResource = null,
-                    onDeepLinkOpened = {},
-                )
-            }
+    fun forYouScreen() = captureMultiSize("ForYouScreen") {
+        NiaTheme {
+            ForYouScreen(
+                isSyncing = false,
+                onboardingUiState = OnboardingUiState.NotShown,
+                feedState = NewsFeedUiState.Success(feed = userNewsResources),
+                onTopicCheckedChanged = { _, _ -> },
+                saveFollowedTopics = {},
+                onNewsResourcesCheckedChanged = { _, _ -> },
+                onNewsResourceViewed = {},
+                onTopicClick = {},
+                deepLinkedUserNewsResource = null,
+                onDeepLinkOpened = {},
+            )
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/ForYouScreen_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun forYouScreen_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                ForYouScreen(
-                    isSyncing = false,
-                    onboardingUiState = OnboardingUiState.NotShown,
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onTopicCheckedChanged = { _, _ -> },
-                    saveFollowedTopics = {},
-                    onNewsResourcesCheckedChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                    deepLinkedUserNewsResource = null,
-                    onDeepLinkOpened = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/ForYouScreen_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun forYouScreen_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                ForYouScreen(
-                    isSyncing = false,
-                    onboardingUiState = OnboardingUiState.NotShown,
-                    feedState = NewsFeedUiState.Success(feed = userNewsResources),
-                    onTopicCheckedChanged = { _, _ -> },
-                    saveFollowedTopics = {},
-                    onNewsResourcesCheckedChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                    onTopicClick = {},
-                    deepLinkedUserNewsResource = null,
-                    onDeepLinkOpened = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/ForYouScreen_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

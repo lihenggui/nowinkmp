@@ -16,12 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.feature.search
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiSize
 import com.google.samples.apps.nowinandroid.core.ui.FollowableTopicPreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import org.junit.Test
@@ -34,66 +30,17 @@ class SearchScreenDesktopScreenshotTests {
     private val userNewsResources = UserNewsResourcePreviewParameterProvider().values.first()
     private val topics = FollowableTopicPreviewParameterProvider().values.first()
 
-    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun searchScreen_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                SearchScreen(
-                    searchQuery = "android",
-                    searchResultUiState = SearchResultUiState.Success(
-                        topics = topics,
-                        newsResources = userNewsResources,
-                    ),
-                    recentSearchesUiState = RecentSearchQueriesUiState.Success(),
-                )
-            }
+    fun searchScreen() = captureMultiSize("SearchScreen") {
+        NiaTheme {
+            SearchScreen(
+                searchQuery = "android",
+                searchResultUiState = SearchResultUiState.Success(
+                    topics = topics,
+                    newsResources = userNewsResources,
+                ),
+                recentSearchesUiState = RecentSearchQueriesUiState.Success(),
+            )
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SearchScreen_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun searchScreen_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                SearchScreen(
-                    searchQuery = "android",
-                    searchResultUiState = SearchResultUiState.Success(
-                        topics = topics,
-                        newsResources = userNewsResources,
-                    ),
-                    recentSearchesUiState = RecentSearchQueriesUiState.Success(),
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SearchScreen_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun searchScreen_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                SearchScreen(
-                    searchQuery = "android",
-                    searchResultUiState = SearchResultUiState.Success(
-                        topics = topics,
-                        newsResources = userNewsResources,
-                    ),
-                    recentSearchesUiState = RecentSearchQueriesUiState.Success(),
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/SearchScreen_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

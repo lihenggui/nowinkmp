@@ -16,12 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.feature.topic
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiSize
 import com.google.samples.apps.nowinandroid.core.ui.FollowableTopicPreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import org.junit.Test
@@ -34,72 +30,19 @@ class TopicScreenDesktopScreenshotTests {
     private val followableTopic = FollowableTopicPreviewParameterProvider().values.first().first()
     private val userNewsResources = UserNewsResourcePreviewParameterProvider().values.first()
 
-    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun topicScreen_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                TopicScreen(
-                    topicUiState = TopicUiState.Success(followableTopic = followableTopic),
-                    newsUiState = NewsUiState.Success(news = userNewsResources),
-                    showBackButton = true,
-                    onBackClick = {},
-                    onFollowClick = {},
-                    onTopicClick = {},
-                    onBookmarkChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                )
-            }
+    fun topicScreen() = captureMultiSize("TopicScreen") {
+        NiaTheme {
+            TopicScreen(
+                topicUiState = TopicUiState.Success(followableTopic = followableTopic),
+                newsUiState = NewsUiState.Success(news = userNewsResources),
+                showBackButton = true,
+                onBackClick = {},
+                onFollowClick = {},
+                onTopicClick = {},
+                onBookmarkChanged = { _, _ -> },
+                onNewsResourceViewed = {},
+            )
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/TopicScreen_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun topicScreen_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                TopicScreen(
-                    topicUiState = TopicUiState.Success(followableTopic = followableTopic),
-                    newsUiState = NewsUiState.Success(news = userNewsResources),
-                    showBackButton = true,
-                    onBackClick = {},
-                    onFollowClick = {},
-                    onTopicClick = {},
-                    onBookmarkChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/TopicScreen_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun topicScreen_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                TopicScreen(
-                    topicUiState = TopicUiState.Success(followableTopic = followableTopic),
-                    newsUiState = NewsUiState.Success(news = userNewsResources),
-                    showBackButton = true,
-                    onBackClick = {},
-                    onFollowClick = {},
-                    onTopicClick = {},
-                    onBookmarkChanged = { _, _ -> },
-                    onNewsResourceViewed = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/TopicScreen_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

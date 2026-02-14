@@ -16,12 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.feature.interests
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiSize
 import com.google.samples.apps.nowinandroid.core.ui.FollowableTopicPreviewParameterProvider
 import org.junit.Test
 
@@ -32,66 +28,17 @@ class InterestsScreenDesktopScreenshotTests {
 
     private val topics = FollowableTopicPreviewParameterProvider().values.first()
 
-    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun interestsScreen_compact() = runDesktopComposeUiTest(width = 400, height = 800) {
-        setContent {
-            NiaTheme {
-                InterestsScreen(
-                    uiState = InterestsUiState.Interests(
-                        selectedTopicId = null,
-                        topics = topics,
-                    ),
-                    followTopic = { _, _ -> },
-                    onTopicClick = {},
-                )
-            }
+    fun interestsScreen() = captureMultiSize("InterestsScreen") {
+        NiaTheme {
+            InterestsScreen(
+                uiState = InterestsUiState.Interests(
+                    selectedTopicId = null,
+                    topics = topics,
+                ),
+                followTopic = { _, _ -> },
+                onTopicClick = {},
+            )
         }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/InterestsScreen_compact.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun interestsScreen_medium() = runDesktopComposeUiTest(width = 700, height = 900) {
-        setContent {
-            NiaTheme {
-                InterestsScreen(
-                    uiState = InterestsUiState.Interests(
-                        selectedTopicId = null,
-                        topics = topics,
-                    ),
-                    followTopic = { _, _ -> },
-                    onTopicClick = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/InterestsScreen_medium.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun interestsScreen_expanded() = runDesktopComposeUiTest(width = 1200, height = 800) {
-        setContent {
-            NiaTheme {
-                InterestsScreen(
-                    uiState = InterestsUiState.Interests(
-                        selectedTopicId = null,
-                        topics = topics,
-                    ),
-                    followTopic = { _, _ -> },
-                    onTopicClick = {},
-                )
-            }
-        }
-        onRoot().captureRoboImage(
-            filePath = "src/jvmTest/screenshots/InterestsScreen_expanded.png",
-            roborazziOptions = DefaultRoborazziOptions,
-        )
     }
 }

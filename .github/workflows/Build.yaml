@@ -110,15 +110,10 @@ jobs:
         continue-on-error: true
         run: ./gradlew verifyRoborazziDebug
 
-      - name: Run JVM Desktop screenshot tests (Roborazzi)
-        id: screenshotsverify_jvm
-        continue-on-error: true
-        run: ./gradlew verifyRoborazziJvm
-
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
         continue-on-error: false
-        if: (steps.screenshotsverify.outcome == 'failure' || steps.screenshotsverify_jvm.outcome == 'failure') && github.event.pull_request.head.repo.full_name != github.repository
+        if: steps.screenshotsverify.outcome == 'failure' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
           echo "::error::Screenshot tests failed, please create a PR in your fork first."
           echo "Your fork's CI will take screenshots for your fork."
@@ -131,17 +126,11 @@ jobs:
         run: |
           ./gradlew recordRoborazziDebug
 
-      - name: Generate new JVM Desktop screenshots if verification failed and it's a PR
-        id: screenshotsrecord_jvm
-        if: steps.screenshotsverify_jvm.outcome == 'failure' && github.event_name == 'pull_request'
-        run: |
-          ./gradlew recordRoborazziJvm
-
-      - name: Push new screenshots if available
+      - name: Push new Android screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v5
-        if: steps.screenshotsrecord.outcome == 'success' || steps.screenshotsrecord_jvm.outcome == 'success'
+        if: steps.screenshotsrecord.outcome == 'success'
         with:
-          file_pattern: '**/src/test/screenshots/**/*.png **/src/jvmTest/screenshots/**/*.png'
+          file_pattern: '**/src/test/screenshots/**/*.png'
           disable_globbing: true
           commit_message: "🤖 Updates screenshots"
 
@@ -301,13 +290,18 @@ jobs:
           path: '**/build/reports/jacoco/'
 
   multiplatform:
-    name: "Multiplatform checks (iOS, macOS)"
+    name: "Multiplatform checks (iOS, macOS, JVM Desktop)"
     runs-on: macos-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
@@ -334,6 +328,34 @@ jobs:
       # Compile macOS targets across all modules (validates macOS source sets)
       - name: Compile macOS targets
         run: ./gradlew compileKotlinMacosArm64
+
+      # JVM Desktop screenshot tests (requires Skiko native libs, only works on macOS/real OS)
+      - name: Run JVM Desktop screenshot tests (Roborazzi)
+        id: screenshotsverify_jvm
+        continue-on-error: true
+        run: ./gradlew verifyRoborazziJvm
+
+      - name: Prevent pushing new screenshots if this is a fork
+        id: checkfork_screenshots_jvm
+        continue-on-error: false
+        if: steps.screenshotsverify_jvm.outcome == 'failure' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::error::JVM Desktop screenshot tests failed, please create a PR in your fork first."
+          exit 1
+
+      - name: Generate new JVM Desktop screenshots if verification failed and it's a PR
+        id: screenshotsrecord_jvm
+        if: steps.screenshotsverify_jvm.outcome == 'failure' && github.event_name == 'pull_request'
+        run: |
+          ./gradlew recordRoborazziJvm
+
+      - name: Push new JVM Desktop screenshots if available
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: steps.screenshotsrecord_jvm.outcome == 'success'
+        with:
+          file_pattern: '**/src/jvmTest/screenshots/**/*.png'
+          disable_globbing: true
+          commit_message: "🤖 Updates screenshots"
 
       - name: Upload test results
         if: ${{ !cancelled() }}

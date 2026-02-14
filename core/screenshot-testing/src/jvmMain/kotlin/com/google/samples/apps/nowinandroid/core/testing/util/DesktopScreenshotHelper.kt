@@ -17,13 +17,15 @@
 package com.google.samples.apps.nowinandroid.core.testing.util
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions
 import com.github.takahirom.roborazzi.RoborazziOptions.RecordOptions
-import com.github.takahirom.roborazzi.captureRoboImage
+import io.github.takahirom.roborazzi.captureRoboImage
 
 val DefaultRoborazziOptions =
     RoborazziOptions(
@@ -47,7 +49,15 @@ fun captureDesktopScreenshot(
     roborazziOptions: RoborazziOptions = DefaultRoborazziOptions,
     content: @Composable () -> Unit,
 ) = runDesktopComposeUiTest(width = width, height = height) {
-    setContent { content() }
+    // Disable auto-advance before setContent so that setContent's internal
+    // waitForIdle() doesn't hang on infinite animations (e.g. CircularProgressIndicator).
+    // When autoAdvance is false, waitForIdle() returns as soon as pending layout completes.
+    mainClock.autoAdvance = false
+    setContent {
+        CompositionLocalProvider(LocalInspectionMode provides true) {
+            content()
+        }
+    }
     onRoot().captureRoboImage(
         filePath = "src/jvmTest/screenshots/$screenshotName.png",
         roborazziOptions = roborazziOptions,
@@ -62,7 +72,14 @@ fun captureMultiSize(
 ) {
     DefaultDesktopTestSizes.entries.forEach { size ->
         runDesktopComposeUiTest(width = size.width, height = size.height) {
-            setContent { content() }
+            // Disable auto-advance before setContent so that setContent's internal
+            // waitForIdle() doesn't hang on infinite animations.
+            mainClock.autoAdvance = false
+            setContent {
+                CompositionLocalProvider(LocalInspectionMode provides true) {
+                    content()
+                }
+            }
             onRoot().captureRoboImage(
                 filePath = "src/jvmTest/screenshots/${screenshotName}_${size.description}.png",
                 roborazziOptions = roborazziOptions,

@@ -16,305 +16,365 @@
 
 package com.google.samples.apps.nowinandroid
 
+import com.android.utils.associateWithNotNull
+import com.google.samples.apps.nowinandroid.PluginType.Unknown
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
-import java.io.File
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity.NONE
+import org.gradle.api.tasks.TaskAction
+import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
+import kotlin.text.RegexOption.DOT_MATCHES_ALL
 
 /**
- * Module types for the KMP fork of Now in Android.
- * Maps to convention plugin IDs.
+ * Generates module dependency graphs with `graphDump` task, and update the corresponding
+ * `README.md` file with `graphUpdate`.
+ *
+ * This is not an optimal implementation and could be improved if needed:
+ * - [Graph.invoke] is **recursively** searching through dependent projects
+ *   (although in practice it will never reach a stack overflow).
+ * - [Graph.invoke] is entirely re-executed for all projects, without re-using intermediate values.
+ * - [Graph.invoke] is always executed during Gradle's Configuration phase
+ *   (but takes in general less than 1 ms for a project).
+ *
+ * The resulting graphs can be configured with `graph.ignoredProjects` and
+ * `graph.supportedConfigurations` properties.
  */
-enum class PluginType(
-    val id: String,
-    val displayName: String,
-    val color: String,
+private class Graph(
+    private val root: Project,
+    private val dependencies: MutableMap<Project, Set<Pair<Configuration, Project>>> =
+        mutableMapOf(),
+    private val plugins: MutableMap<Project, PluginType> = mutableMapOf(),
+    private val seen: MutableSet<String> = mutableSetOf(),
 ) {
+
+    private val ignoredProjects = root.providers.gradleProperty("graph.ignoredProjects")
+        .map { it.split(",").toSet() }
+        .orElse(emptySet())
+    private val supportedConfigurations =
+        root.providers.gradleProperty("graph.supportedConfigurations")
+            .map { it.split(",").toSet() }
+            .orElse(
+                setOf(
+                    "commonMainApi",
+                    "commonMainImplementation",
+                    "api",
+                    "implementation",
+                    "baselineProfile",
+                    "testedApks",
+                ),
+            )
+
+    operator fun invoke(project: Project = root): Graph {
+        if (project.path in seen) return this
+        seen += project.path
+        plugins.putIfAbsent(
+            project,
+            PluginType.entries.firstOrNull { project.pluginManager.hasPlugin(it.id) } ?: Unknown,
+        )
+        dependencies.compute(project) { _, u -> u.orEmpty() }
+        project.configurations
+            .matching { it.name in supportedConfigurations.get() }
+            .associateWithNotNull { it.dependencies.withType<ProjectDependency>().ifEmpty { null } }
+            .flatMap { (c, value) -> value.map { dep -> c to project.project(dep.path) } }
+            .filter { (_, p) -> p.path !in ignoredProjects.get() }
+            .forEach { (configuration: Configuration, projectDependency: Project) ->
+                dependencies.compute(project) { _, u ->
+                    u.orEmpty() + (configuration to projectDependency)
+                }
+                invoke(projectDependency)
+            }
+        return this
+    }
+
+    fun dependencies(): Map<String, Set<Pair<String, String>>> = dependencies
+        .mapKeys { it.key.path }
+        .mapValues { it.value.mapTo(mutableSetOf()) { (c, p) -> c.name to p.path } }
+
+    fun plugins() = plugins.mapKeys { it.key.path }
+}
+
+/**
+ * Declaration order is important, as only the first match will be retained.
+ */
+internal enum class PluginType(val id: String, val ref: String, val style: String) {
     CmpApplication(
         id = "nowinandroid.cmp.application",
-        displayName = "cmp-application",
-        color = "#CAFFBF",
+        ref = "cmp-application",
+        style = "fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000",
     ),
     CmpFeature(
         id = "nowinandroid.cmp.feature",
-        displayName = "cmp-feature",
-        color = "#FFD6A5",
+        ref = "cmp-feature",
+        style = "fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000",
     ),
     KmpLibrary(
         id = "nowinandroid.kmp.library",
-        displayName = "kmp-library",
-        color = "#9BF6FF",
+        ref = "kmp-library",
+        style = "fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000",
     ),
     JvmLibrary(
         id = "nowinandroid.jvm.library",
-        displayName = "jvm-library",
-        color = "#BDB2FF",
+        ref = "jvm-library",
+        style = "fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000",
     ),
     AndroidTest(
         id = "nowinandroid.android.test",
-        displayName = "android-test",
-        color = "#A0C4FF",
+        ref = "android-test",
+        style = "fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000",
+    ),
+    Unknown(
+        id = "?",
+        ref = "unknown",
+        style = "fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000",
     ),
 }
 
-/**
- * Edge types representing different dependency configurations.
- */
-enum class EdgeType(val mermaidStyle: String) {
-    Api("-->"),
-    Implementation("-.->"),
-}
-
-data class GraphEdge(
-    val from: String,
-    val to: String,
-    val type: EdgeType,
-    val label: String? = null,
-)
-
-private val supportedConfigurations = listOf(
-    "commonMainApi" to EdgeType.Api,
-    "commonMainImplementation" to EdgeType.Implementation,
-    "api" to EdgeType.Api,
-    "implementation" to EdgeType.Implementation,
-    "baselineProfile" to EdgeType.Implementation,
-    "testedApks" to EdgeType.Implementation,
-)
-
-private val labeledConfigurations = setOf("baselineProfile", "testedApks")
-
-/**
- * Detects the plugin type of a project based on which convention plugins are applied.
- */
-fun Project.pluginType(): PluginType? {
-    return PluginType.entries.firstOrNull { pluginManager.hasPlugin(it.id) }
-}
-
-/**
- * Collects all project dependency edges for the given project.
- */
-fun Project.collectEdges(): List<GraphEdge> {
-    val edges = mutableListOf<GraphEdge>()
-    for ((configName, edgeType) in supportedConfigurations) {
-        val config = configurations.findByName(configName) ?: continue
-        config.dependencies.filterIsInstance<ProjectDependency>().forEach { dep ->
-            val label = if (configName in labeledConfigurations) configName else null
-            val depPath = dep.path
-            edges.add(GraphEdge(path, depPath, edgeType, label))
-        }
+internal fun Project.configureGraphTasks() {
+    if (!buildFile.exists()) return // Ignore root modules without build file
+    val dumpTask = tasks.register<GraphDumpTask>("graphDump") {
+        val graph = Graph(this@configureGraphTasks).invoke()
+        projectPath = this@configureGraphTasks.path
+        dependencies = graph.dependencies()
+        plugins = graph.plugins()
+        output = this@configureGraphTasks.layout.buildDirectory.file("mermaid/graph.txt")
+        legend = this@configureGraphTasks.layout.buildDirectory.file("mermaid/legend.txt")
     }
-    return edges
+    tasks.register<GraphUpdateTask>("graphUpdate") {
+        projectPath = this@configureGraphTasks.path
+        input = dumpTask.flatMap { it.output }
+        legend = dumpTask.flatMap { it.legend }
+        output = this@configureGraphTasks.layout.projectDirectory.file("README.md")
+    }
 }
 
-/**
- * Generates the Mermaid graph text for a given root project, showing all
- * modules that are reachable from the specified project.
- */
-fun generateMermaidGraph(
-    rootProjectPath: String,
-    allEdges: Map<String, List<GraphEdge>>,
-    allPluginTypes: Map<String, PluginType?>,
-    ignoredProjects: Set<String> = emptySet(),
-): String {
-    // Find all reachable modules from the root
-    val reachable = mutableSetOf(rootProjectPath)
-    val queue = ArrayDeque<String>()
-    queue.add(rootProjectPath)
-    while (queue.isNotEmpty()) {
-        val current = queue.removeFirst()
-        allEdges[current]?.forEach { edge ->
-            if (edge.to !in reachable && edge.to !in ignoredProjects) {
-                reachable.add(edge.to)
-                queue.add(edge.to)
+@CacheableTask
+private abstract class GraphDumpTask : DefaultTask() {
+
+    @get:Input
+    abstract val projectPath: Property<String>
+
+    @get:Input
+    abstract val dependencies: MapProperty<String, Set<Pair<String, String>>>
+
+    @get:Input
+    abstract val plugins: MapProperty<String, PluginType>
+
+    @get:OutputFile
+    abstract val output: RegularFileProperty
+
+    @get:OutputFile
+    abstract val legend: RegularFileProperty
+
+    override fun getDescription() = "Dumps project dependencies to a mermaid file."
+
+    @TaskAction
+    operator fun invoke() {
+        output.get().asFile.writeText(mermaid())
+        legend.get().asFile.writeText(legend())
+        logger.lifecycle(output.get().asFile.toPath().toUri().toString())
+    }
+
+    private fun mermaid() = buildString {
+        val dependencies: Set<Dependency> = dependencies.get()
+            .flatMapTo(mutableSetOf()) { (project, entries) ->
+                entries.map { it.toDependency(project) }
+            }
+        // FrontMatter configuration (not supported yet on GitHub.com)
+        appendLine(
+            // language=YAML
+            """
+            ---
+            config:
+              layout: elk
+              elk:
+                nodePlacementStrategy: SIMPLE
+            ---
+            """.trimIndent(),
+        )
+        // Graph declaration
+        appendLine("graph TB")
+        // Nodes and subgraphs
+        val (rootProjects, nestedProjects) = dependencies
+            .map { listOf(it.project, it.dependency) }.flatten().toSet()
+            .plus(projectPath.get()) // Special case when this specific module has no other dependency
+            .groupBy { it.substringBeforeLast(":") }
+            .entries.partition { it.key.isEmpty() }
+
+        val orderedGroups = nestedProjects.groupBy {
+            if (it.key.count { char -> char == ':' } > 1) {
+                it.key.substringBeforeLast(":")
+            } else {
+                ""
             }
         }
-    }
 
-    val relevantEdges = allEdges.values.flatten()
-        .filter { it.from in reachable && it.to in reachable }
-        .filter { it.from !in ignoredProjects && it.to !in ignoredProjects }
-        .sortedWith(compareBy({ it.from }, { it.to }))
-
-    val modules = reachable.filter { it !in ignoredProjects }.sorted()
-
-    // Group modules by top-level parent for subgraph generation
-    val grouped = modules.groupBy { path ->
-        val parts = path.removePrefix(":").split(":")
-        if (parts.size > 1) ":${parts.first()}" else null
-    }
-
-    val sb = StringBuilder()
-    sb.appendLine("```mermaid")
-    sb.appendLine("---")
-    sb.appendLine("config:")
-    sb.appendLine("  layout: elk")
-    sb.appendLine("  elk:")
-    sb.appendLine("    nodePlacementStrategy: SIMPLE")
-    sb.appendLine("---")
-    sb.appendLine("graph TB")
-
-    // Render subgraphs for grouped modules
-    for ((group, members) in grouped.toSortedMap(nullsLast(compareBy { it }))) {
-        if (group != null && members.size > 1) {
-            sb.appendLine("  subgraph $group")
-            sb.appendLine("    direction TB")
-            for (member in members.sorted()) {
-                val shortName = member.split(":").last()
-                val pluginType = allPluginTypes[member]
-                val classDef = pluginType?.displayName ?: "unknown"
-                sb.appendLine("    $member[$shortName]:::$classDef")
+        orderedGroups.forEach { (outerGroup, innerGroups) ->
+            if (outerGroup.isNotEmpty()) {
+                appendLine("  subgraph $outerGroup")
+                appendLine("    direction TB")
             }
-            sb.appendLine("  end")
-        }
-    }
-
-    // Render ungrouped modules (top-level modules)
-    for ((group, members) in grouped.toSortedMap(nullsLast(compareBy { it }))) {
-        if (group == null || members.size == 1) {
-            for (member in members.sorted()) {
-                val shortName = member.split(":").last()
-                val pluginType = allPluginTypes[member]
-                val classDef = pluginType?.displayName ?: "unknown"
-                sb.appendLine("  $member[$shortName]:::$classDef")
+            innerGroups.sortedWith(
+                compareBy(
+                    { (group, _) ->
+                        dependencies.filter { dep ->
+                            val toGroup = dep.dependency.substringBeforeLast(":")
+                            toGroup == group && dep.project.substringBeforeLast(":") != group
+                        }.count()
+                    },
+                    { -it.value.size },
+                ),
+            ).forEach { (group, projects) ->
+                val indent = if (outerGroup.isNotEmpty()) 4 else 2
+                appendLine(" ".repeat(indent) + "subgraph $group")
+                appendLine(" ".repeat(indent) + "  direction TB")
+                projects.sorted().forEach {
+                    appendLine(it.alias(indent = indent + 2, plugins.get().getValue(it)))
+                }
+                appendLine(" ".repeat(indent) + "end")
+            }
+            if (outerGroup.isNotEmpty()) {
+                appendLine("  end")
             }
         }
-    }
 
-    sb.appendLine()
-
-    // Render edges
-    for (edge in relevantEdges) {
-        val labelPart = if (edge.label != null) "|${edge.label}| " else ""
-        sb.appendLine("  ${edge.from} ${edge.type.mermaidStyle}$labelPart ${edge.to}")
-    }
-
-    sb.appendLine()
-
-    // Render classDef styles
-    val usedTypes = modules.mapNotNull { allPluginTypes[it] }.toSet()
-    for (type in PluginType.entries) {
-        sb.appendLine("classDef ${type.displayName} fill:${type.color},stroke:#000,stroke-width:2px,color:#000;")
-    }
-    sb.appendLine("classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;")
-
-    sb.appendLine("```")
-    return sb.toString()
-}
-
-/**
- * Generates the legend section for the graph.
- */
-fun generateLegend(): String {
-    val sb = StringBuilder()
-    sb.appendLine("<details><summary>Graph legend</summary>")
-    sb.appendLine()
-    sb.appendLine("```mermaid")
-    sb.appendLine("graph TB")
-
-    for (type in PluginType.entries) {
-        sb.appendLine("  ${type.displayName}[${type.displayName}]:::${type.displayName}")
-    }
-
-    sb.appendLine()
-    sb.appendLine("  cmp-application -.-> cmp-feature")
-    sb.appendLine("  kmp-library --> jvm-library")
-    sb.appendLine()
-
-    for (type in PluginType.entries) {
-        sb.appendLine("classDef ${type.displayName} fill:${type.color},stroke:#000,stroke-width:2px,color:#000;")
-    }
-    sb.appendLine("classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;")
-    sb.appendLine("```")
-    sb.appendLine()
-    sb.appendLine("</details>")
-    return sb.toString()
-}
-
-/**
- * Updates a README.md file, replacing content between graph region markers.
- */
-fun updateReadmeGraph(readmeFile: File, graphContent: String) {
-    if (!readmeFile.exists()) return
-    val content = readmeFile.readText()
-    val startMarker = "<!--region graph-->"
-    val endMarker = "<!--endregion-->"
-
-    val startIdx = content.indexOf(startMarker)
-    val endIdx = content.indexOf(endMarker)
-
-    if (startIdx == -1 || endIdx == -1) return
-
-    val newContent = buildString {
-        append(content.substring(0, startIdx + startMarker.length))
+        rootProjects.flatMap { it.value }.sortedDescending().forEach {
+            appendLine(it.alias(indent = 2, plugins.get().getValue(it)))
+        }
+        // Links
+        if (dependencies.isNotEmpty()) appendLine()
+        dependencies
+            .sortedWith(compareBy({ it.project }, { it.dependency }, { it.configuration }))
+            .forEach { appendLine(it.link(indent = 2)) }
+        // Classes
         appendLine()
-        append(graphContent)
-        appendLine(generateLegend())
-        append(content.substring(endIdx))
+        PluginType.entries.forEach { appendLine(it.classDef()) }
     }
 
-    readmeFile.writeText(newContent)
+    private fun legend() = buildString {
+        appendLine("graph TB")
+        listOf(
+            "application" to PluginType.CmpApplication,
+            "feature" to PluginType.CmpFeature,
+            "library" to PluginType.KmpLibrary,
+            "jvm" to PluginType.JvmLibrary,
+        ).forEach { (name, type) ->
+            appendLine(name.alias(indent = 2, type))
+        }
+        appendLine()
+        listOf(
+            Dependency("application", "implementation", "feature"),
+            Dependency("library", "api", "jvm"),
+        ).forEach {
+            appendLine(it.link(indent = 2))
+        }
+        appendLine()
+        PluginType.entries.forEach { appendLine(it.classDef()) }
+    }
+
+    private class Dependency(
+        val project: String,
+        val configuration: String,
+        val dependency: String,
+    )
+
+    private fun Pair<String, String>.toDependency(project: String) =
+        Dependency(project, configuration = first, dependency = second)
+
+    private fun String.alias(indent: Int, pluginType: PluginType): String = buildString {
+        append(" ".repeat(indent))
+        append(this@alias)
+        append("[").append(substringAfterLast(":")).append("]:::")
+        append(pluginType.ref)
+    }
+
+    private fun Dependency.link(indent: Int) = buildString {
+        append(" ".repeat(indent))
+        append(project).append(" ")
+        append(
+            when (configuration) {
+                "api", "commonMainApi" -> "-->"
+                "implementation", "commonMainImplementation" -> "-.->"
+                else -> "-.->|$configuration|"
+            },
+        )
+        append(" ").append(dependency)
+    }
+
+    private fun PluginType.classDef() = "classDef $ref $style;"
 }
 
-/**
- * Registers the `graphDump` and `graphUpdate` tasks on the root project.
- */
-fun Project.configureGraphTasks() {
-    val ignoredProjects = providers.gradleProperty("graph.ignoredProjects")
-        .orElse("")
-        .map { it.split(",").map(String::trim).filter(String::isNotEmpty).toSet() }
+@CacheableTask
+private abstract class GraphUpdateTask : DefaultTask() {
 
-    tasks.register("graphDump") {
-        group = "documentation"
-        description = "Dumps the module dependency graph as Mermaid text"
-        doLast {
-            val allEdges = mutableMapOf<String, List<GraphEdge>>()
-            val allPluginTypes = mutableMapOf<String, PluginType?>()
+    @get:Input
+    abstract val projectPath: Property<String>
 
-            subprojects.forEach { sub ->
-                allEdges[sub.path] = sub.collectEdges()
-                allPluginTypes[sub.path] = sub.pluginType()
-            }
+    @get:InputFile
+    @get:PathSensitive(NONE)
+    abstract val input: RegularFileProperty
 
-            subprojects.forEach { sub ->
-                val readmeFile = sub.file("README.md")
-                if (readmeFile.exists() && readmeFile.readText().contains("<!--region graph-->")) {
-                    val graph = generateMermaidGraph(
-                        rootProjectPath = sub.path,
-                        allEdges = allEdges,
-                        allPluginTypes = allPluginTypes,
-                        ignoredProjects = ignoredProjects.get(),
-                    )
-                    println("=== ${sub.path} ===")
-                    println(graph)
-                }
-            }
+    @get:InputFile
+    @get:PathSensitive(NONE)
+    abstract val legend: RegularFileProperty
+
+    @get:OutputFile
+    abstract val output: RegularFileProperty
+
+    override fun getDescription() =
+        "Updates Markdown file with the corresponding dependency graph."
+
+    @TaskAction
+    operator fun invoke() = with(output.get().asFile) {
+        if (!exists()) {
+            createNewFile()
+            writeText(
+                """
+                # `${projectPath.get()}`
+
+                ## Module dependency graph
+
+                <!--region graph--> <!--endregion-->
+
+                """.trimIndent(),
+            )
         }
+        val mermaid = input.get().asFile.readText().trimTrailingNewLines()
+        val legend = legend.get().asFile.readText().trimTrailingNewLines()
+        val regex = """(<!--region graph-->)(.*?)(<!--endregion-->)""".toRegex(DOT_MATCHES_ALL)
+        val text = readText().replace(regex) { match ->
+            val (start, _, end) = match.destructured
+            """
+            |$start
+            |```mermaid
+            |$mermaid
+            |```
+            |
+            |<details><summary>Graph legend</summary>
+            |
+            |```mermaid
+            |$legend
+            |```
+            |
+            |</details>
+            |$end
+            """.trimMargin()
+        }
+        writeText(text)
     }
 
-    tasks.register("graphUpdate") {
-        group = "documentation"
-        description = "Updates README.md files with module dependency graphs"
-        doLast {
-            val allEdges = mutableMapOf<String, List<GraphEdge>>()
-            val allPluginTypes = mutableMapOf<String, PluginType?>()
-
-            subprojects.forEach { sub ->
-                allEdges[sub.path] = sub.collectEdges()
-                allPluginTypes[sub.path] = sub.pluginType()
-            }
-
-            subprojects.forEach { sub ->
-                val readmeFile = sub.file("README.md")
-                if (readmeFile.exists() && readmeFile.readText().contains("<!--region graph-->")) {
-                    val graph = generateMermaidGraph(
-                        rootProjectPath = sub.path,
-                        allEdges = allEdges,
-                        allPluginTypes = allPluginTypes,
-                        ignoredProjects = ignoredProjects.get(),
-                    )
-                    updateReadmeGraph(readmeFile, graph)
-                    println("Updated: ${readmeFile.relativeTo(rootDir)}")
-                }
-            }
-        }
-    }
+    private fun String.trimTrailingNewLines() = lines()
+        .dropLastWhile(String::isBlank)
+        .joinToString(System.lineSeparator())
 }

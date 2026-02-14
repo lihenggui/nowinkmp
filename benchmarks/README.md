@@ -11,51 +11,41 @@ config:
     nodePlacementStrategy: SIMPLE
 ---
 graph TB
-  subgraph :core
+  subgraph :sync
     direction TB
-    :core:analytics[analytics]:::android-library
-    :core:common[common]:::jvm-library
-    :core:data[data]:::android-library
-    :core:database[database]:::android-library
-    :core:datastore[datastore]:::android-library
-    :core:datastore-proto[datastore-proto]:::android-library
-    :core:designsystem[designsystem]:::android-library
-    :core:domain[domain]:::android-library
-    :core:model[model]:::jvm-library
-    :core:network[network]:::android-library
-    :core:notifications[notifications]:::android-library
-    :core:ui[ui]:::android-library
+    :sync:work[work]:::kmp-library
   end
   subgraph :feature
     direction TB
-    :feature:bookmarks[bookmarks]:::android-feature
-    :feature:foryou[foryou]:::android-feature
-    :feature:interests[interests]:::android-feature
-    :feature:search[search]:::android-feature
-    :feature:settings[settings]:::android-feature
-    :feature:topic[topic]:::android-feature
+    :feature:bookmarks[bookmarks]:::cmp-feature
+    :feature:foryou[foryou]:::cmp-feature
+    :feature:interests[interests]:::cmp-feature
+    :feature:search[search]:::cmp-feature
+    :feature:settings[settings]:::cmp-feature
+    :feature:topic[topic]:::cmp-feature
   end
-  subgraph :sync
+  subgraph :core
     direction TB
-    :sync:work[work]:::android-library
+    :core:analytics[analytics]:::kmp-library
+    :core:common[common]:::kmp-library
+    :core:data[data]:::kmp-library
+    :core:database[database]:::kmp-library
+    :core:datastore[datastore]:::kmp-library
+    :core:datastore-proto[datastore-proto]:::kmp-library
+    :core:designsystem[designsystem]:::kmp-library
+    :core:domain[domain]:::kmp-library
+    :core:model[model]:::kmp-library
+    :core:network[network]:::kmp-library
+    :core:notifications[notifications]:::kmp-library
+    :core:ui[ui]:::kmp-library
   end
+  :shared[shared]:::cmp-feature
   :benchmarks[benchmarks]:::android-test
-  :app[app]:::android-application
+  :app[app]:::cmp-application
 
-  :app -.->|baselineProfile| :benchmarks
-  :app -.-> :core:analytics
-  :app -.-> :core:common
-  :app -.-> :core:data
   :app -.-> :core:designsystem
-  :app -.-> :core:model
   :app -.-> :core:ui
-  :app -.-> :feature:bookmarks
-  :app -.-> :feature:foryou
-  :app -.-> :feature:interests
-  :app -.-> :feature:search
-  :app -.-> :feature:settings
-  :app -.-> :feature:topic
-  :app -.-> :sync:work
+  :app -.-> :shared
   :benchmarks -.->|testedApks| :app
   :core:data -.-> :core:analytics
   :core:data --> :core:common
@@ -63,10 +53,11 @@ graph TB
   :core:data --> :core:datastore
   :core:data --> :core:network
   :core:data -.-> :core:notifications
+  :core:database -.-> :core:common
   :core:database --> :core:model
   :core:datastore -.-> :core:common
-  :core:datastore --> :core:datastore-proto
-  :core:datastore --> :core:model
+  :core:datastore -.-> :core:datastore-proto
+  :core:datastore -.-> :core:model
   :core:domain --> :core:data
   :core:domain --> :core:model
   :core:network --> :core:common
@@ -98,35 +89,52 @@ graph TB
   :feature:topic -.-> :core:data
   :feature:topic -.-> :core:designsystem
   :feature:topic -.-> :core:ui
+  :shared --> :core:analytics
+  :shared --> :core:common
+  :shared --> :core:data
+  :shared --> :core:designsystem
+  :shared -.-> :core:designsystem
+  :shared --> :core:domain
+  :shared --> :core:model
+  :shared --> :core:notifications
+  :shared --> :core:ui
+  :shared -.-> :core:ui
+  :shared --> :feature:bookmarks
+  :shared --> :feature:foryou
+  :shared --> :feature:interests
+  :shared --> :feature:search
+  :shared --> :feature:settings
+  :shared --> :feature:topic
+  :shared --> :sync:work
   :sync:work -.-> :core:analytics
   :sync:work -.-> :core:data
   :sync:work -.-> :core:notifications
 
-classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 
-<details><summary>📋 Graph legend</summary>
+<details><summary>Graph legend</summary>
 
 ```mermaid
 graph TB
-  application[application]:::android-application
-  feature[feature]:::android-feature
-  library[library]:::android-library
+  application[application]:::cmp-application
+  feature[feature]:::cmp-feature
+  library[library]:::kmp-library
   jvm[jvm]:::jvm-library
 
   application -.-> feature
   library --> jvm
 
-classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 

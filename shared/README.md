@@ -1,4 +1,4 @@
-# `:app`
+# `:shared`
 
 ## Module dependency graph
 
@@ -40,11 +40,7 @@ graph TB
     :core:ui[ui]:::kmp-library
   end
   :shared[shared]:::cmp-feature
-  :app[app]:::cmp-application
 
-  :app -.-> :core:designsystem
-  :app -.-> :core:ui
-  :app -.-> :shared
   :core:data -.-> :core:analytics
   :core:data --> :core:common
   :core:data --> :core:database

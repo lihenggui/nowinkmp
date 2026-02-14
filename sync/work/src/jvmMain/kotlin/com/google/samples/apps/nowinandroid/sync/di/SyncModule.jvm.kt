@@ -16,14 +16,13 @@
 
 package com.google.samples.apps.nowinandroid.sync.di
 
-import com.google.samples.apps.nowinandroid.sync.status.StubSyncSubscriber
-import com.google.samples.apps.nowinandroid.sync.status.SyncSubscriber
+import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
+import com.google.samples.apps.nowinandroid.sync.workers.CoroutineSyncManager
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal expect val platformSyncModule: Module
-
-val syncModule = module {
-    single<SyncSubscriber> { StubSyncSubscriber() }
-    includes(platformSyncModule)
+internal actual val platformSyncModule: Module = module {
+    singleOf(::CoroutineSyncManager) bind SyncManager::class
 }

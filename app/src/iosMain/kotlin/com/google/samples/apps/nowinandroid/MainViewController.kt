@@ -18,12 +18,14 @@ package com.google.samples.apps.nowinandroid
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.ComposeUIViewController
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
+import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
 import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.ui.LocalTimeZone
@@ -49,9 +51,14 @@ fun App() {
         val timeZoneMonitor: TimeZoneMonitor = koinInject()
         val analyticsHelper: AnalyticsHelper = koinInject()
         val userNewsResourceRepository: UserNewsResourceRepository = koinInject()
+        val syncManager: SyncManager = koinInject()
         val viewModel: MainScreenViewModel = koinInject()
         val uiState: MainScreenUiState by viewModel.uiState.collectAsStateWithLifecycle()
         val darkTheme = shouldUseDarkTheme(uiState)
+
+        LaunchedEffect(Unit) {
+            syncManager.requestSync()
+        }
 
         val appState = rememberNiaAppState(
             networkMonitor = networkMonitor,

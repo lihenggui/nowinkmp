@@ -22,7 +22,11 @@ android {
     namespace = "com.google.samples.apps.nowinandroid.core.sync.test"
 }
 
-dependencies {
-    implementation(projects.core.data)
-    implementation(projects.sync.work)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.core.data)
+            implementation(projects.sync.work)
+        }
+    }
 }

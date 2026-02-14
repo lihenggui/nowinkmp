@@ -23,6 +23,12 @@ android {
     namespace = "com.google.samples.apps.nowinandroid.core.screenshottesting"
 }
 
+androidComponents {
+    beforeVariants {
+        it.androidTest.enable = false
+    }
+}
+
 kotlin {
     sourceSets {
         androidMain.dependencies {
@@ -32,6 +38,16 @@ kotlin {
             implementation(libs.androidx.compose.ui.test)
             implementation(libs.androidx.activity.compose)
             implementation(libs.robolectric)
+            implementation(projects.core.designsystem)
+        }
+        jvmMain.dependencies {
+            api(libs.roborazzi.compose.desktop)
+            api(libs.jetbrains.compose.ui.test.junit4)
+            api(compose.desktop.currentOs)
+            implementation(projects.core.designsystem)
+        }
+        iosMain.dependencies {
+            api(libs.roborazzi.compose.ios)
             implementation(projects.core.designsystem)
         }
     }

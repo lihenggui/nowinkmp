@@ -13,20 +13,23 @@ config:
 graph TB
   subgraph :core
     direction TB
-    :core:analytics[analytics]:::kmp-library
-    :core:common[common]:::kmp-library
-    :core:data[data]:::kmp-library
-    :core:database[database]:::kmp-library
-    :core:datastore[datastore]:::kmp-library
-    :core:datastore-proto[datastore-proto]:::kmp-library
-    :core:designsystem[designsystem]:::kmp-library
-    :core:domain[domain]:::kmp-library
-    :core:model[model]:::kmp-library
-    :core:network[network]:::kmp-library
-    :core:notifications[notifications]:::kmp-library
-    :core:ui[ui]:::kmp-library
+    :core:analytics[analytics]:::android-library
+    :core:common[common]:::jvm-library
+    :core:data[data]:::android-library
+    :core:database[database]:::android-library
+    :core:datastore[datastore]:::android-library
+    :core:datastore-proto[datastore-proto]:::android-library
+    :core:designsystem[designsystem]:::android-library
+    :core:domain[domain]:::android-library
+    :core:model[model]:::jvm-library
+    :core:network[network]:::android-library
+    :core:notifications[notifications]:::android-library
+    :core:ui[ui]:::android-library
   end
-  :feature:interests[interests]:::cmp-feature
+  subgraph :feature
+    direction TB
+    :feature:interests[interests]:::android-feature
+  end
 
   :core:data -.-> :core:analytics
   :core:data --> :core:common
@@ -34,11 +37,10 @@ graph TB
   :core:data --> :core:datastore
   :core:data --> :core:network
   :core:data -.-> :core:notifications
-  :core:database -.-> :core:common
   :core:database --> :core:model
   :core:datastore -.-> :core:common
-  :core:datastore -.-> :core:datastore-proto
-  :core:datastore -.-> :core:model
+  :core:datastore --> :core:datastore-proto
+  :core:datastore --> :core:model
   :core:domain --> :core:data
   :core:domain --> :core:model
   :core:network --> :core:common
@@ -52,36 +54,34 @@ graph TB
   :feature:interests -.-> :core:designsystem
   :feature:interests -.-> :core:domain
   :feature:interests -.-> :core:ui
-  :feature:interests -.-> :core:ui
 
-classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
-<details><summary>Graph legend</summary>
+
+<details><summary>📋 Graph legend</summary>
 
 ```mermaid
 graph TB
-  cmp-application[cmp-application]:::cmp-application
-  cmp-feature[cmp-feature]:::cmp-feature
-  kmp-library[kmp-library]:::kmp-library
-  jvm-library[jvm-library]:::jvm-library
-  android-test[android-test]:::android-test
+  application[application]:::android-application
+  feature[feature]:::android-feature
+  library[library]:::android-library
+  jvm[jvm]:::jvm-library
 
-  cmp-application -.-> cmp-feature
-  kmp-library --> jvm-library
+  application -.-> feature
+  library --> jvm
 
-classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 
 </details>
-
 <!--endregion-->

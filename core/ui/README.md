@@ -13,44 +13,43 @@ config:
 graph TB
   subgraph :core
     direction TB
-    :core:analytics[analytics]:::kmp-library
-    :core:designsystem[designsystem]:::kmp-library
-    :core:model[model]:::kmp-library
-    :core:ui[ui]:::kmp-library
+    :core:analytics[analytics]:::android-library
+    :core:designsystem[designsystem]:::android-library
+    :core:model[model]:::jvm-library
+    :core:ui[ui]:::android-library
   end
 
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
 
-classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
-<details><summary>Graph legend</summary>
+
+<details><summary>📋 Graph legend</summary>
 
 ```mermaid
 graph TB
-  cmp-application[cmp-application]:::cmp-application
-  cmp-feature[cmp-feature]:::cmp-feature
-  kmp-library[kmp-library]:::kmp-library
-  jvm-library[jvm-library]:::jvm-library
-  android-test[android-test]:::android-test
+  application[application]:::android-application
+  feature[feature]:::android-feature
+  library[library]:::android-library
+  jvm[jvm]:::jvm-library
 
-  cmp-application -.-> cmp-feature
-  kmp-library --> jvm-library
+  application -.-> feature
+  library --> jvm
 
-classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 
 </details>
-
 <!--endregion-->

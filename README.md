@@ -41,33 +41,33 @@ As Firebase Analytics does not yet support Kotlin Multiplatform, the implementat
 
 | Module                    | Progress    | Desktop supported | Android supported | iOS supported | Web supported |
 |---------------------------|-------------|-------------------|-------------------|---------------|---------------|
-| app                       | In progress | ✅                | ✅                | ✅            | ❌            |
+| app                       | In progress | ✅                | ✅                | ✅            | ✅            |
 | app-nia-catalog           | Done        | ✅                | ✅                | ✅            | ✅            |
-| :core:analytics           | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:common              | Done        | ✅                 | ✅                 | ✅             | ❌            |
-| :core:data                | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:data-test           | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :core:database            | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:datastore           | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:datastore-proto     | Done        | ✅                 | ✅️                 | ✅             | ❌            |
+| :core:analytics           | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:common              | Done        | ✅                 | ✅                 | ✅             | ✅            |
+| :core:data                | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:data-test           | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :core:database            | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:datastore           | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:datastore-proto     | Done        | ✅                 | ✅️                 | ✅             | ✅            |
 | :core:datastore-test      | Removed     | ❌                | ❌                | ❌            | ❌            |
 | :core:designsystem        | Done        | ✅                | ✅                | ✅            | ✅            |
-| :core:domain              | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:model               | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:network             | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:notification        | Done        | No implmentaion   | ✅️                 |No implmentaion| ❌           |
+| :core:domain              | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:model               | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:network             | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:notification        | Done        | No implmentaion   | ✅️                 |No implmentaion| No implementation |
 | :core:screenshot-testing  | Done        | ✅                | ✅️                | ✅             | ❌            |
-| :core:testing             | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :core:ui                  | Done        | ✅                 | ✅️                 | ✅             | ❌            |
-| :feature:bookmarks        | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :feature:foryou           | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :feature:interests        | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :feature:search           | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :feature:settings         | Done        | ✅                | ✅️                | ✅            | ❌            |
-| :feature:topic            | Done        | ✅                | ✅️                | ✅            | ❌            |
+| :core:testing             | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :core:ui                  | Done        | ✅                 | ✅️                 | ✅             | ✅            |
+| :feature:bookmarks        | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :feature:foryou           | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :feature:interests        | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :feature:search           | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :feature:settings         | Done        | ✅                | ✅️                | ✅            | ✅            |
+| :feature:topic            | Done        | ✅                | ✅️                | ✅            | ✅            |
 | lint                      | Not started | ❌                | ❌                | ❌            | ❌            |
-| :sync:sync-test           | Done        | ✅                | ✅                | ✅            | ❌            |
-| :sync:work                | Not started | No implmentaion   | ✅️                | No implmentaion| ❌            |
+| :sync:sync-test           | Done        | ✅                | ✅                | ✅            | ✅            |
+| :sync:work                | Not started | No implmentaion   | ✅️                | No implmentaion| No implementation |
 | ui-test-manifest          | Removed     | ❌                | ❌                | ❌            | ❌            |
 
 
@@ -80,7 +80,7 @@ As Firebase Analytics does not yet support Kotlin Multiplatform, the implementat
 
 # Running the Project
 
-This project currently supports running the `app-nia-catalog` module in Compose Multiplatform. The `app` module is still working in progress.
+This project supports running on Android, iOS, Desktop (JVM), macOS, and Web (WASM). Both the `app` and `app-nia-catalog` modules support all platforms.
 
 ## Running on Android
 
@@ -100,6 +100,20 @@ To run the desktop application, follow these steps:
    ```
 4. Choose the Gradle project: `nowinandroid:app-nia-catalog`.
 5. Click "OK" to save the configuration.
+
+## Running on Web (WASM)
+
+To run the application in a web browser using WebAssembly:
+
+```
+./gradlew :app:wasmJsBrowserDevelopmentRun
+```
+
+For the design system catalog:
+
+```
+./gradlew :app-nia-catalog:wasmJsBrowserDevelopmentRun
+```
 
 ## Running on iOS
 

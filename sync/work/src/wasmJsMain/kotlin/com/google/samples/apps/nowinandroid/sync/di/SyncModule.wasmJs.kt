@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.di
+package com.google.samples.apps.nowinandroid.sync.di
 
-import kotlinx.coroutines.Dispatchers
-import me.tatarka.inject.annotations.Component
-import me.tatarka.inject.annotations.Provides
+import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
+import com.google.samples.apps.nowinandroid.sync.workers.CoroutineSyncManager
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
-@Component
-actual abstract class DispatchersComponent {
-
-    // TODO Provides an actual IODispatcher
-    @Provides
-    actual fun providesIODispatcher(): IODispatcher = Dispatchers.Default
-
-    @Provides
-    actual fun providesDefaultDispatcher(): DefaultDispatcher = Dispatchers.Default
+internal actual val platformSyncModule: Module = module {
+    singleOf(::CoroutineSyncManager) bind SyncManager::class
 }

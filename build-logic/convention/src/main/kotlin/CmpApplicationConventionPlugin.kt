@@ -30,8 +30,10 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 // Convention plugin for the Compose Multiplatform feature module
 class CmpApplicationConventionPlugin : Plugin<Project> {
@@ -66,6 +68,7 @@ class CmpApplicationConventionPlugin : Plugin<Project> {
                 "commonMainImplementation"(libs.findLibrary("koin.compose").get())
                 "commonMainImplementation"(libs.findLibrary("koin.compose.viewmodel").get())
                 "commonMainImplementation"(libs.findLibrary("koin.compose.viewmodel.navigation").get())
+                "commonMainImplementation"(libs.findLibrary("jetbrains.compose.lifecycle.runtime").get())
 
                 "androidMainImplementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
                 "androidMainImplementation"(libs.findLibrary("androidx.tracing.ktx").get())
@@ -75,6 +78,8 @@ class CmpApplicationConventionPlugin : Plugin<Project> {
 }
 
 private fun Project.configureComposeMultiplatformApp() {
+    val projectDirPath = projectDir.path
+    val projectName = name
     extensions.configure<KotlinMultiplatformExtension> {
         // Enable native group by default
         // https://kotlinlang.org/docs/whatsnew1820.html#new-approach-to-source-set-hierarchy
@@ -110,6 +115,20 @@ private fun Project.configureComposeMultiplatformApp() {
         // Other targets
         macosX64()
         macosArm64()
+
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            outputModuleName.set(projectName)
+            browser {
+                commonWebpackConfig {
+                    outputFileName = "$projectName.js"
+                    devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                        static(projectDirPath)
+                    }
+                }
+            }
+            binaries.executable()
+        }
 
         // Suppress 'expect'/'actual' classes are in Beta.
         targets.configureEach {

@@ -47,13 +47,12 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.sqldelight.sqlite.driver)
         }
-        // https://github.com/cashapp/sqldelight/pull/4965/files
-//        wasmJsMain.dependencies {
-//            implementation(libs.sqldelight.webworker.driver)
-//            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.0.1"))
-//            implementation(npm("sql.js", "1.8.0"))
-//            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
-//        }
+        wasmJsMain.dependencies {
+            implementation(libs.sqldelight.webworker.driver)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+            implementation(npm("sql.js", "1.8.0"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+        }
     }
 }
 
@@ -62,7 +61,7 @@ sqldelight {
         create("NiaDatabase") {
             packageName.set("com.google.samples.apps.nowinandroid.core.database")
             generateAsync.set(true)
-            dialect("app.cash.sqldelight:sqlite-3-38-dialect:2.0.2")
+            dialect("app.cash.sqldelight:sqlite-3-38-dialect:2.1.0")
         }
     }
 }

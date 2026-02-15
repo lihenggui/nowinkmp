@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
 plugins {
     alias(libs.plugins.nowinandroid.kmp.library)
     alias(libs.plugins.jetbrains.compose)
@@ -34,20 +31,6 @@ android {
 }
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        outputModuleName.set("composeApp")
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    // Serve sources to debug inside browser
-                    static(project.projectDir.path)
-                }
-            }
-        }
-        binaries.executable()
-    }
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)

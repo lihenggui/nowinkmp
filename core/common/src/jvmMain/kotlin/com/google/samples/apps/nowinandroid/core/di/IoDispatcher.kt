@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.database
+package com.google.samples.apps.nowinandroid.core.di
 
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.worker.createDefaultWebWorkerDriver
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
-actual suspend fun createDriver(): SqlDriver {
-    return createDefaultWebWorkerDriver().also {
-        NiaDatabase.Schema.create(it).await()
-    }
-}
+internal actual val ioDispatcher: CoroutineDispatcher = Dispatchers.IO

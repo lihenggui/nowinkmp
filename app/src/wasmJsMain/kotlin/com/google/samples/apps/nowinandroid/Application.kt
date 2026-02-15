@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.database
+package com.google.samples.apps.nowinandroid
 
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.worker.createDefaultWebWorkerDriver
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.window.ComposeViewport
+import kotlinx.browser.document
 
-actual suspend fun createDriver(): SqlDriver {
-    return createDefaultWebWorkerDriver().also {
-        NiaDatabase.Schema.create(it).await()
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() {
+    ComposeViewport(document.body!!) {
+        App()
     }
 }

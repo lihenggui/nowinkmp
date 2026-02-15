@@ -75,9 +75,9 @@ kotlin {
         appleMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-//        wasmJsMain.dependencies {
-//            implementation(libs.ktor.client.js)
-//        }
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
+        }
         jvmMain.dependencies {
             implementation(libs.ktor.client.java)
         }

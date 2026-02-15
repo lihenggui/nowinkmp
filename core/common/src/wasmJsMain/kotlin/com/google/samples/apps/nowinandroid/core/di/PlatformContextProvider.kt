@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.database
+package com.google.samples.apps.nowinandroid.core.di
 
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.worker.createDefaultWebWorkerDriver
+import coil3.PlatformContext
+import org.koin.core.annotation.Single
 
-actual suspend fun createDriver(): SqlDriver {
-    return createDefaultWebWorkerDriver().also {
-        NiaDatabase.Schema.create(it).await()
-    }
+@Single
+actual class PlatformContextProvider {
+    actual fun getPlatformContext(): PlatformContext = PlatformContext.INSTANCE
 }

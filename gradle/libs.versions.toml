@@ -52,7 +52,7 @@ compose-ui-tooling = "1.8.1"
 compose-plugin = "1.10.0"
 compose-jb = "1.10.0"
 compose-jb-material3 = "1.10.0-alpha05"
-sqldelight = "2.0.2"
+sqldelight = "2.1.0"
 kotlinInject = "0.8.0"
 multiplatform-settings = "1.3.0"
 kermit = "2.0.5"
@@ -180,6 +180,7 @@ ktorfit-converters-call = { group = "de.jensklingenberg.ktorfit", name = "ktorfi
 ktorfit-converters-response = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-response", version.ref = "ktrofit" }
 buildkonfig-gradlePlugin = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 jetbrains-compose-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+jetbrains-compose-lifecycle-runtime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-viewmodel-compose" }
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
 jetbrains-compose-material3-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "material3adaptive" }
 jetbrains-compose-material3-adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-layout", version.ref = "material3adaptive" }

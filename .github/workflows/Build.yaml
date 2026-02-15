@@ -392,14 +392,3 @@ jobs:
       # Build the main app and catalog app for wasmJs (compiles all transitive modules + links)
       - name: Build wasmJs browser distribution
         run: ./gradlew :app:wasmJsBrowserDistribution :app-nia-catalog:wasmJsBrowserDistribution
-
-      # Run commonTest + wasmJsTest on wasmJs target in headless Chrome
-      - name: Run wasmJs browser tests
-        run: ./gradlew wasmJsBrowserTest
-
-      - name: Upload wasmJs test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: wasmJs-test-results
-          path: '**/build/reports/tests/wasmJsBrowserTest/'

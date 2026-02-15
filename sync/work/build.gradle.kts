@@ -52,6 +52,3 @@ kotlin {
         }
     }
 }
-
-//    prodImplementation(libs.firebase.cloud.messaging)
-//    prodImplementation(platform(libs.firebase.bom))

@@ -20,8 +20,6 @@ import org.gradle.api.Project
 
 class RootConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with(target) {
-            configureGraphTasks()
-        }
+        target.subprojects { configureGraphTasks() }
     }
 }

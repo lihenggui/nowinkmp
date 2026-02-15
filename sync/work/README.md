@@ -11,21 +11,21 @@ config:
     nodePlacementStrategy: SIMPLE
 ---
 graph TB
-  subgraph :core
-    direction TB
-    :core:analytics[analytics]:::android-library
-    :core:common[common]:::jvm-library
-    :core:data[data]:::android-library
-    :core:database[database]:::android-library
-    :core:datastore[datastore]:::android-library
-    :core:datastore-proto[datastore-proto]:::android-library
-    :core:model[model]:::jvm-library
-    :core:network[network]:::android-library
-    :core:notifications[notifications]:::android-library
-  end
   subgraph :sync
     direction TB
-    :sync:work[work]:::android-library
+    :sync:work[work]:::kmp-library
+  end
+  subgraph :core
+    direction TB
+    :core:analytics[analytics]:::kmp-library
+    :core:common[common]:::kmp-library
+    :core:data[data]:::kmp-library
+    :core:database[database]:::kmp-library
+    :core:datastore[datastore]:::kmp-library
+    :core:datastore-proto[datastore-proto]:::kmp-library
+    :core:model[model]:::kmp-library
+    :core:network[network]:::kmp-library
+    :core:notifications[notifications]:::kmp-library
   end
 
   :core:data -.-> :core:analytics
@@ -34,10 +34,11 @@ graph TB
   :core:data --> :core:datastore
   :core:data --> :core:network
   :core:data -.-> :core:notifications
+  :core:database -.-> :core:common
   :core:database --> :core:model
   :core:datastore -.-> :core:common
-  :core:datastore --> :core:datastore-proto
-  :core:datastore --> :core:model
+  :core:datastore -.-> :core:datastore-proto
+  :core:datastore -.-> :core:model
   :core:network --> :core:common
   :core:network --> :core:model
   :core:notifications -.-> :core:common
@@ -46,31 +47,31 @@ graph TB
   :sync:work -.-> :core:data
   :sync:work -.-> :core:notifications
 
-classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 
-<details><summary>📋 Graph legend</summary>
+<details><summary>Graph legend</summary>
 
 ```mermaid
 graph TB
-  application[application]:::android-application
-  feature[feature]:::android-feature
-  library[library]:::android-library
+  application[application]:::cmp-application
+  feature[feature]:::cmp-feature
+  library[library]:::kmp-library
   jvm[jvm]:::jvm-library
 
   application -.-> feature
   library --> jvm
 
-classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
-classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
-classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
+classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
+classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 ```
 

@@ -389,17 +389,6 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
-      # Compile wasmJs targets across all modules (validates commonMain + wasmJsMain)
-      - name: Compile wasmJs targets
-        run: ./gradlew compileKotlinWasmJs
-
-      # Build the main app and catalog app for wasmJs (validates full linking)
+      # Build the main app and catalog app for wasmJs (compiles all transitive modules + links)
       - name: Build wasmJs browser distribution
         run: ./gradlew :app:wasmJsBrowserDistribution :app-nia-catalog:wasmJsBrowserDistribution
-
-      - name: Upload wasmJs test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: wasmJs-test-results
-          path: '**/build/test-results/**/TEST-*.xml'

@@ -20,6 +20,7 @@ import app.cash.sqldelight.db.QueryResult.AsyncValue
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.worker.createDefaultWebWorkerDriver
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,10 +29,14 @@ import org.koin.dsl.module
 internal actual val driverModule = module {
     single<SqlDriver> {
         val schema: SqlSchema<AsyncValue<Unit>> = get()
-        createDefaultWebWorkerDriver().also { driver ->
-            CoroutineScope(Dispatchers.Default).launch {
-                schema.create(driver).await()
-            }
+        val rawDriver = createDefaultWebWorkerDriver()
+        val schemaReady = CompletableDeferred<Unit>()
+
+        CoroutineScope(Dispatchers.Default).launch {
+            schema.create(rawDriver).await()
+            schemaReady.complete(Unit)
         }
+
+        SchemaAwaitingDriver(rawDriver, schemaReady)
     }
 }

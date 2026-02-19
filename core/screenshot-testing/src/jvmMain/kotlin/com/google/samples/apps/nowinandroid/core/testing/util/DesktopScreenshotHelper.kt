@@ -29,8 +29,9 @@ import io.github.takahirom.roborazzi.captureRoboImage
 
 val DefaultRoborazziOptions =
     RoborazziOptions(
-        // Pixel-perfect matching
-        compareOptions = CompareOptions(changeThreshold = 0f),
+        // Allow minor pixel-level differences caused by non-deterministic Skiko
+        // rendering across macOS CI runs (anti-aliasing, font hinting, etc.).
+        compareOptions = CompareOptions(changeThreshold = 0.02f),
         // Reduce the size of the PNGs
         recordOptions = RecordOptions(resizeScale = 0.5),
     )

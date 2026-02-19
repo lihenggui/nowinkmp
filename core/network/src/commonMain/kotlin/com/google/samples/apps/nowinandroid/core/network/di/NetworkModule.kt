@@ -18,7 +18,7 @@ package com.google.samples.apps.nowinandroid.core.network.di
 
 import com.google.samples.apps.nowinandroid.core.network.BuildKonfig
 import com.google.samples.apps.nowinandroid.core.network.NiaNetworkDataSource
-import com.google.samples.apps.nowinandroid.core.network.retrofit.RetrofitNiaNetwork
+import com.google.samples.apps.nowinandroid.core.network.demo.DemoNiaNetworkDataSource
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.CallConverterFactory
 import de.jensklingenberg.ktorfit.converter.FlowConverterFactory
@@ -61,5 +61,5 @@ internal val ktorfitModule = module {
 
 val networkModule: Module = module {
     includes(jsonModule, ktorfitModule)
-    singleOf(::RetrofitNiaNetwork) bind NiaNetworkDataSource::class
+    singleOf(::DemoNiaNetworkDataSource) bind NiaNetworkDataSource::class
 }

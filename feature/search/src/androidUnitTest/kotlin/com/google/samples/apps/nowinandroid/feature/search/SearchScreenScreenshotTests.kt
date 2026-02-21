@@ -18,6 +18,8 @@ package com.google.samples.apps.nowinandroid.feature.search
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
+import com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultTestDevices
 import com.google.samples.apps.nowinandroid.core.testing.util.captureForDevice
@@ -54,9 +56,19 @@ class SearchScreenScreenshotTests {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
+    /**
+     * Suppress [SpeakableTextPresentCheck] for decorative image containers (header images on
+     * news cards) which intentionally carry no accessible label.
+     */
+    private val imageSuppressions =
+        AccessibilityCheckResultUtils.matchesCheck(SpeakableTextPresentCheck::class.java)
+
     @Test
     fun searchScreenWithResults() {
-        composeTestRule.captureMultiDevice("SearchScreenWithResults") {
+        composeTestRule.captureMultiDevice(
+            "SearchScreenWithResults",
+            accessibilitySuppressions = imageSuppressions,
+        ) {
             NiaTheme {
                 SearchScreen(
                     searchQuery = "android",
@@ -102,6 +114,7 @@ class SearchScreenScreenshotTests {
             deviceSpec = DefaultTestDevices.PHONE.spec,
             screenshotName = "SearchScreenWithResults",
             darkMode = true,
+            accessibilitySuppressions = imageSuppressions,
         ) {
             NiaTheme {
                 SearchScreen(

@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesElements
+import com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck
 import com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck
 import com.google.android.apps.common.testing.accessibility.framework.matcher.ElementMatchers.withText
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaBackground
@@ -68,9 +69,19 @@ class ForYouScreenScreenshotTests {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
+    /**
+     * Suppress [SpeakableTextPresentCheck] for decorative image containers (header images on
+     * news cards) which intentionally carry no accessible label.
+     */
+    private val imageSuppressions =
+        AccessibilityCheckResultUtils.matchesCheck(SpeakableTextPresentCheck::class.java)
+
     @Test
     fun forYouScreenPopulatedFeed() {
-        composeTestRule.captureMultiDevice("ForYouScreenPopulatedFeed") {
+        composeTestRule.captureMultiDevice(
+            "ForYouScreenPopulatedFeed",
+            accessibilitySuppressions = imageSuppressions,
+        ) {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = false,
@@ -114,15 +125,18 @@ class ForYouScreenScreenshotTests {
     fun forYouScreenTopicSelection() {
         composeTestRule.captureMultiDevice(
             "ForYouScreenTopicSelection",
-            accessibilitySuppressions = Matchers.allOf(
-                AccessibilityCheckResultUtils.matchesCheck(TextContrastCheck::class.java),
-                Matchers.anyOf(
-                    // Disabled Button
-                    matchesElements(withText("Done")),
+            accessibilitySuppressions = Matchers.anyOf(
+                imageSuppressions,
+                Matchers.allOf(
+                    AccessibilityCheckResultUtils.matchesCheck(TextContrastCheck::class.java),
+                    Matchers.anyOf(
+                        // Disabled Button
+                        matchesElements(withText("Done")),
 
-                    // TODO investigate, seems a false positive
-                    matchesElements(withText("What are you interested in?")),
-                    matchesElements(withText("UI")),
+                        // TODO investigate, seems a false positive
+                        matchesElements(withText("What are you interested in?")),
+                        matchesElements(withText("UI")),
+                    ),
                 ),
             ),
         ) {
@@ -137,6 +151,7 @@ class ForYouScreenScreenshotTests {
             deviceSpec = DefaultTestDevices.PHONE.spec,
             screenshotName = "ForYouScreenTopicSelection",
             darkMode = true,
+            accessibilitySuppressions = imageSuppressions,
         ) {
             ForYouScreenTopicSelection()
         }
@@ -144,7 +159,10 @@ class ForYouScreenScreenshotTests {
 
     @Test
     fun forYouScreenPopulatedAndLoading() {
-        composeTestRule.captureMultiDevice("ForYouScreenPopulatedAndLoading") {
+        composeTestRule.captureMultiDevice(
+            "ForYouScreenPopulatedAndLoading",
+            accessibilitySuppressions = imageSuppressions,
+        ) {
             ForYouScreenPopulatedAndLoading()
         }
     }
@@ -156,6 +174,7 @@ class ForYouScreenScreenshotTests {
             deviceSpec = DefaultTestDevices.PHONE.spec,
             screenshotName = "ForYouScreenPopulatedAndLoading",
             darkMode = true,
+            accessibilitySuppressions = imageSuppressions,
         ) {
             ForYouScreenPopulatedAndLoading()
         }

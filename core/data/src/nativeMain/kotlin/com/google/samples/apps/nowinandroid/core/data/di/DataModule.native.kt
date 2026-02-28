@@ -36,7 +36,7 @@ internal actual val timeZoneMonitorModule = module {
     single<TimeZoneMonitor> {
         object : TimeZoneMonitor {
             override val currentTimeZone: Flow<TimeZone>
-                get() = flowOf(TimeZone.UTC)
+                get() = flowOf(TimeZone.currentSystemDefault())
         }
     }
 }

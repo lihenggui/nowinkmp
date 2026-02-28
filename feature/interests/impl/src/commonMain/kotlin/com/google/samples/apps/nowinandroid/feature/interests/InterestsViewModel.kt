@@ -24,7 +24,7 @@ import com.google.samples.apps.nowinandroid.core.data.repository.UserDataReposit
 import com.google.samples.apps.nowinandroid.core.domain.GetFollowableTopicsUseCase
 import com.google.samples.apps.nowinandroid.core.domain.TopicSortField
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
-import com.google.samples.apps.nowinandroid.feature.interests.navigation.InterestsRoute
+import com.google.samples.apps.nowinandroid.feature.interests.api.navigation.InterestsRoute
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

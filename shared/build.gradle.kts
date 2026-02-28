@@ -25,12 +25,17 @@ android {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.feature.interests)
-            api(projects.feature.foryou)
-            api(projects.feature.bookmarks)
-            api(projects.feature.topic)
-            api(projects.feature.search)
-            api(projects.feature.settings)
+            api(projects.feature.interests.impl)
+            api(projects.feature.interests.api)
+            api(projects.feature.foryou.impl)
+            api(projects.feature.foryou.api)
+            api(projects.feature.bookmarks.impl)
+            api(projects.feature.bookmarks.api)
+            api(projects.feature.topic.impl)
+            api(projects.feature.topic.api)
+            api(projects.feature.search.impl)
+            api(projects.feature.search.api)
+            api(projects.feature.settings.impl)
             api(projects.core.common)
             api(projects.core.ui)
             api(projects.core.designsystem)

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.google.samples.apps.nowinandroid.configureGradleManagedDevices
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
@@ -39,6 +40,14 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
                 // The resource prefix is derived from the module name,
                 // so resources inside ":core:module1" must be prefixed with "core_module1_"
                 resourcePrefix = path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_").lowercase() + "_"
+            }
+            extensions.configure<LibraryAndroidComponentsExtension> {
+                beforeVariants {
+                    // Disable androidTest for modules without instrumented test sources
+                    // to reduce CI memory usage and build time.
+                    it.androidTest.enable = it.androidTest.enable &&
+                        projectDir.resolve("src/androidInstrumentedTest").exists()
+                }
             }
             dependencies {
                 "commonTestImplementation"(libs.findLibrary("kotlin.test").get())

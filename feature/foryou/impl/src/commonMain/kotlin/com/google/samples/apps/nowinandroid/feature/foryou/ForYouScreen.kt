@@ -59,11 +59,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -85,6 +87,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.ui.DevicePreviews
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
+import com.google.samples.apps.nowinandroid.core.ui.TrackScrollJank
 import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
@@ -460,19 +463,14 @@ private fun DeepLinkEffect(
     userNewsResource: UserNewsResource?,
     onDeepLinkOpened: (String) -> Unit,
 ) {
-//    val context = LocalContext.current
-//    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
-//
-//    LaunchedEffect(userNewsResource) {
-//        if (userNewsResource == null) return@LaunchedEffect
-//        if (!userNewsResource.hasBeenViewed) onDeepLinkOpened(userNewsResource.id)
-//
-//        launchCustomChromeTab(
-//            context = context,
-//            uri = Uri.parse(userNewsResource.url),
-//            toolbarColor = backgroundColor,
-//        )
-//    }
+    val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(userNewsResource) {
+        if (userNewsResource == null) return@LaunchedEffect
+        if (!userNewsResource.hasBeenViewed) onDeepLinkOpened(userNewsResource.id)
+
+        uriHandler.openUri(userNewsResource.url)
+    }
 }
 
 private fun feedItemsSize(

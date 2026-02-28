@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalUriHandler
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
@@ -51,6 +52,7 @@ fun LazyStaggeredGridScope.newsFeed(
                 contentType = { "newsFeedItem" },
             ) { userNewsResource ->
                 val analyticsHelper = LocalAnalyticsHelper.current
+                val uriHandler = LocalUriHandler.current
                 NewsResourceCardExpanded(
                     userNewsResource = userNewsResource,
                     isBookmarked = userNewsResource.isSaved,
@@ -59,7 +61,7 @@ fun LazyStaggeredGridScope.newsFeed(
                         analyticsHelper.logNewsResourceOpened(
                             newsResourceId = userNewsResource.id,
                         )
-                        launchCustomChromeTab(userNewsResource.url)
+                        uriHandler.openUri(userNewsResource.url)
 
                         onNewsResourceViewed(userNewsResource.id)
                     },
@@ -78,10 +80,6 @@ fun LazyStaggeredGridScope.newsFeed(
             }
         }
     }
-}
-
-fun launchCustomChromeTab(uri: String) {
-    // Empty implementation
 }
 
 /**

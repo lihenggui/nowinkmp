@@ -16,22 +16,14 @@
 
 package com.google.samples.apps.nowinandroid.feature.foryou.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
 import com.google.samples.apps.nowinandroid.core.notifications.DEEP_LINK_URI_PATTERN
 import com.google.samples.apps.nowinandroid.feature.foryou.ForYouScreen
-import kotlinx.serialization.Serializable
-
-@Serializable data object ForYouRoute // route to ForYou screen
-
-@Serializable data object ForYouBaseRoute // route to base navigation graph
-
-fun NavController.navigateToForYou(navOptions: NavOptions) =
-    navigate(route = ForYouRoute, navOptions)
+import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouBaseRoute
+import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouRoute
 
 /**
  *  The ForYou section of the app. It can also display information about topics.

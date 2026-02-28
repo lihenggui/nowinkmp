@@ -1,0 +1,73 @@
+/*
+ * Copyright 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    alias(libs.plugins.nowinandroid.cmp.feature)
+    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+    namespace = "com.google.samples.apps.nowinandroid.feature.foryou"
+    testOptions.unitTests.isIncludeAndroidResources = true
+}
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.feature.foryou.api)
+            implementation(projects.core.data)
+            implementation(projects.core.domain)
+            implementation(projects.core.notifications)
+            implementation(libs.jetbrains.compose.material3)
+            implementation(libs.jetbrains.compose.foundation)
+            implementation(libs.jetbrains.compose.ui)
+            implementation(libs.jetbrains.compose.components.resources)
+            implementation(libs.jetbrains.compose.uiToolingPreview)
+            implementation(libs.coil)
+            implementation(libs.coil.compose)
+            implementation(libs.kotlinx.serialization.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.accompanist.permissions)
+        }
+        commonTest.dependencies {
+            implementation(projects.core.testing)
+        }
+        androidUnitTest.dependencies {
+            implementation(libs.androidx.compose.ui.test)
+            implementation(libs.androidx.compose.ui.testManifest)
+            implementation(libs.robolectric)
+            implementation(libs.roborazzi)
+            implementation(projects.core.screenshotTesting)
+        }
+        jvmTest.dependencies {
+            implementation(libs.roborazzi.compose.desktop)
+            implementation(libs.jetbrains.compose.ui.test.junit4)
+            implementation(projects.core.screenshotTesting)
+        }
+        androidInstrumentedTest.dependencies {
+            implementation(projects.core.testing)
+            implementation(libs.bundles.androidx.compose.ui.test)
+        }
+    }
+}
+
+compose.resources {
+    publicResClass = true
+    generateResClass = always
+}

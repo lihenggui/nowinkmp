@@ -91,21 +91,21 @@ import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import nowinandroid.core.ui.generated.resources.core_ui_back
-import nowinandroid.feature.search.generated.resources.feature_search_clear_recent_searches_content_desc
-import nowinandroid.feature.search.generated.resources.feature_search_clear_search_text_content_desc
-import nowinandroid.feature.search.generated.resources.feature_search_interests
-import nowinandroid.feature.search.generated.resources.feature_search_not_ready
-import nowinandroid.feature.search.generated.resources.feature_search_recent_searches
-import nowinandroid.feature.search.generated.resources.feature_search_result_not_found
-import nowinandroid.feature.search.generated.resources.feature_search_title
-import nowinandroid.feature.search.generated.resources.feature_search_to_browse_topics
-import nowinandroid.feature.search.generated.resources.feature_search_topics
-import nowinandroid.feature.search.generated.resources.feature_search_try_another_search
-import nowinandroid.feature.search.generated.resources.feature_search_updates
+import nowinandroid.feature.search.impl.generated.resources.feature_search_clear_recent_searches_content_desc
+import nowinandroid.feature.search.impl.generated.resources.feature_search_clear_search_text_content_desc
+import nowinandroid.feature.search.impl.generated.resources.feature_search_interests
+import nowinandroid.feature.search.impl.generated.resources.feature_search_not_ready
+import nowinandroid.feature.search.impl.generated.resources.feature_search_recent_searches
+import nowinandroid.feature.search.impl.generated.resources.feature_search_result_not_found
+import nowinandroid.feature.search.impl.generated.resources.feature_search_title
+import nowinandroid.feature.search.impl.generated.resources.feature_search_to_browse_topics
+import nowinandroid.feature.search.impl.generated.resources.feature_search_topics
+import nowinandroid.feature.search.impl.generated.resources.feature_search_try_another_search
+import nowinandroid.feature.search.impl.generated.resources.feature_search_updates
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import nowinandroid.core.ui.generated.resources.Res as uiR
-import nowinandroid.feature.search.generated.resources.Res as searchR
+import nowinandroid.feature.search.impl.generated.resources.Res as searchR
 
 @Composable
 internal fun SearchRoute(

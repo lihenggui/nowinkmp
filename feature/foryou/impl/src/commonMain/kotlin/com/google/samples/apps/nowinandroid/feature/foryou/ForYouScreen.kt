@@ -89,11 +89,11 @@ import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
-import nowinandroid.feature.foryou.generated.resources.Res
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_done
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_loading
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_onboarding_guidance_subtitle
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_onboarding_guidance_title
+import nowinandroid.feature.foryou.impl.generated.resources.Res
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_done
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_loading
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_subtitle
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

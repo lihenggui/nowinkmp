@@ -31,9 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
-import nowinandroid.feature.topic.generated.resources.Res
-import nowinandroid.feature.topic.generated.resources.feature_topic_ic_topic_placeholder
-import nowinandroid.feature.topic.generated.resources.feature_topic_select_an_interest
+import nowinandroid.feature.topic.impl.generated.resources.Res
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_ic_topic_placeholder
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_select_an_interest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

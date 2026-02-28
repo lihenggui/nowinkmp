@@ -30,14 +30,14 @@ import com.google.samples.apps.nowinandroid.feature.interests.InterestsUiState
 import kotlinx.coroutines.runBlocking
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_follow_button_content_desc
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_unfollow_button_content_desc
-import nowinandroid.feature.interests.generated.resources.feature_interests_empty_header
-import nowinandroid.feature.interests.generated.resources.feature_interests_loading
+import nowinandroid.feature.interests.impl.generated.resources.feature_interests_empty_header
+import nowinandroid.feature.interests.impl.generated.resources.feature_interests_loading
 import org.jetbrains.compose.resources.getString
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import nowinandroid.core.ui.generated.resources.Res as CoreUiR
-import nowinandroid.feature.interests.generated.resources.Res as InterestsR
+import nowinandroid.feature.interests.impl.generated.resources.Res as InterestsR
 
 /**
  * UI test for checking the correct behaviour of the Interests screen;

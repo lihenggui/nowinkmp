@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.interests.impl
+package com.google.samples.apps.nowinandroid.feature.interests
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box

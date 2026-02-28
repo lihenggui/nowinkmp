@@ -27,8 +27,8 @@ import androidx.compose.ui.test.performScrollToNode
 import com.google.samples.apps.nowinandroid.core.testing.data.followableTopicTestData
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
 import kotlinx.coroutines.runBlocking
-import nowinandroid.feature.topic.generated.resources.Res
-import nowinandroid.feature.topic.generated.resources.feature_topic_loading
+import nowinandroid.feature.topic.impl.generated.resources.Res
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_loading
 import org.jetbrains.compose.resources.getString
 import org.junit.Before
 import org.junit.Rule

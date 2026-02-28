@@ -34,9 +34,9 @@ import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesT
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import nowinandroid.feature.foryou.generated.resources.Res
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_done
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_loading
+import nowinandroid.feature.foryou.impl.generated.resources.Res
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_done
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_loading
 import org.jetbrains.compose.resources.getString
 import org.junit.Rule
 import org.junit.Test

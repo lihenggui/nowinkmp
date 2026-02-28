@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.foryou.impl
+package com.google.samples.apps.nowinandroid.feature.foryou
 
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 

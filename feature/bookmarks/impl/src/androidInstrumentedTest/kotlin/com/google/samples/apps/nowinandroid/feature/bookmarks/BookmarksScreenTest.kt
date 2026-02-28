@@ -38,10 +38,10 @@ import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesT
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import kotlinx.coroutines.test.runTest
 import nowinandroid.core.ui.generated.resources.core_ui_unbookmark
-import nowinandroid.feature.bookmarks.generated.resources.Res
-import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_empty_description
-import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_empty_error
-import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_loading
+import nowinandroid.feature.bookmarks.impl.generated.resources.Res
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_empty_description
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_empty_error
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_loading
 import org.jetbrains.compose.resources.getString
 import org.junit.Rule
 import org.junit.Test

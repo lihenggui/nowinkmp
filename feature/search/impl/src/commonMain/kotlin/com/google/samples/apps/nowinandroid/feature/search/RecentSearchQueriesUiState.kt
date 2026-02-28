@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.search.impl
+package com.google.samples.apps.nowinandroid.feature.search
 
 import com.google.samples.apps.nowinandroid.core.data.model.RecentSearchQuery
 

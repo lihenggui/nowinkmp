@@ -68,8 +68,8 @@ import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParam
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.userNewsResourceCardItems
 import nowinandroid.core.ui.generated.resources.core_ui_back
-import nowinandroid.feature.topic.generated.resources.Res
-import nowinandroid.feature.topic.generated.resources.feature_topic_loading
+import nowinandroid.feature.topic.impl.generated.resources.Res
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_loading
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

@@ -31,9 +31,9 @@ import com.google.samples.apps.nowinandroid.core.ui.DevicePreviews
 import com.google.samples.apps.nowinandroid.core.ui.FollowableTopicPreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
-import nowinandroid.feature.interests.generated.resources.Res
-import nowinandroid.feature.interests.generated.resources.feature_interests_empty_header
-import nowinandroid.feature.interests.generated.resources.feature_interests_loading
+import nowinandroid.feature.interests.impl.generated.resources.Res
+import nowinandroid.feature.interests.impl.generated.resources.feature_interests_empty_header
+import nowinandroid.feature.interests.impl.generated.resources.feature_interests_loading
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

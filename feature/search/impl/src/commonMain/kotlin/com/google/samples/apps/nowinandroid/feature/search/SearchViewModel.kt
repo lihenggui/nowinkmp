@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.search.impl
+package com.google.samples.apps.nowinandroid.feature.search
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

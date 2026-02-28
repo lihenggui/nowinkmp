@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.search.impl
+package com.google.samples.apps.nowinandroid.feature.search
 
 import androidx.lifecycle.SavedStateHandle
 import com.google.samples.apps.nowinandroid.core.analytics.NoOpAnalyticsHelper
@@ -27,10 +27,10 @@ import com.google.samples.apps.nowinandroid.core.testing.repository.TestSearchCo
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.emptyUserData
 import com.google.samples.apps.nowinandroid.core.testing.util.MainDispatcherRule
-import com.google.samples.apps.nowinandroid.feature.search.impl.RecentSearchQueriesUiState.Success
-import com.google.samples.apps.nowinandroid.feature.search.impl.SearchResultUiState.EmptyQuery
-import com.google.samples.apps.nowinandroid.feature.search.impl.SearchResultUiState.Loading
-import com.google.samples.apps.nowinandroid.feature.search.impl.SearchResultUiState.SearchNotReady
+import com.google.samples.apps.nowinandroid.feature.search.RecentSearchQueriesUiState.Success
+import com.google.samples.apps.nowinandroid.feature.search.SearchResultUiState.EmptyQuery
+import com.google.samples.apps.nowinandroid.feature.search.SearchResultUiState.Loading
+import com.google.samples.apps.nowinandroid.feature.search.SearchResultUiState.SearchNotReady
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.interests.navigation
+package com.google.samples.apps.nowinandroid.feature.interests.api.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-@Serializable data class InterestsRoute(
+@Serializable
+data class InterestsNavKey(
     // The ID of the topic which will be initially selected at this destination
     val initialTopicId: String? = null,
-)
-
-fun NavController.navigateToInterests(
-    initialTopicId: String? = null,
-    navOptions: NavOptions? = null,
-) {
-    navigate(route = InterestsRoute(initialTopicId), navOptions)
-}
+) : NavKey

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.topic
+package com.google.samples.apps.nowinandroid.feature.topic.impl
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.testing.invoke

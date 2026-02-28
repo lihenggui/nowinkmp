@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.interests
+package com.google.samples.apps.nowinandroid.feature.interests.impl
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
@@ -59,7 +59,7 @@ fun TopicsTabContent(
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
-                .testTag("interests:topics"),
+                .testTag(LIST_PANE_TEST_TAG),
             contentPadding = PaddingValues(vertical = 16.dp),
             state = scrollableState,
         ) {
@@ -103,3 +103,5 @@ fun TopicsTabContent(
         )
     }
 }
+
+val LIST_PANE_TEST_TAG = "interests:topics"

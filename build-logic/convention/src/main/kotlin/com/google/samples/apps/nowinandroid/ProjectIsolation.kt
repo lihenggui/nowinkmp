@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.search.impl
+package com.google.samples.apps.nowinandroid
 
-import com.google.samples.apps.nowinandroid.core.data.model.RecentSearchQuery
+import org.gradle.api.configuration.BuildFeatures
 
-sealed interface RecentSearchQueriesUiState {
-    data object Loading : RecentSearchQueriesUiState
-
-    data class Success(
-        val recentQueries: List<RecentSearchQuery> = emptyList(),
-    ) : RecentSearchQueriesUiState
+fun BuildFeatures.isIsolatedProjectsEnabled(): Boolean {
+    return isolatedProjects.active.orElse(false).get()
 }

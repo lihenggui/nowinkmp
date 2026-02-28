@@ -16,7 +16,7 @@
 
 @file:Suppress("ktlint:standard:max-line-length")
 
-package com.google.samples.apps.nowinandroid.feature.search
+package com.google.samples.apps.nowinandroid.feature.search.impl
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic

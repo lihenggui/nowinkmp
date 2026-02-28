@@ -437,7 +437,6 @@ fun TopicIcon(
     )
 }
 
-
 @Composable
 private fun DeepLinkEffect(
     userNewsResource: UserNewsResource?,

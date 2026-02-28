@@ -19,6 +19,7 @@ package com.google.samples.apps.nowinandroid.core.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -186,16 +188,6 @@ fun NewsResourceCardExpanded(
 fun NewsResourceHeaderImage(
     headerImageUrl: String?,
 ) {
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-    val imagePainter = rememberAsyncImagePainter(
-        model = headerImageUrl,
-        onState = { state ->
-            isLoading = state is AsyncImagePainter.State.Loading
-            isError = state is AsyncImagePainter.State.Error
-        },
-        imageLoader = ImageLoader(LocalPlatformContext.current),
-    )
     val isLocalInspection = LocalInspectionMode.current
     Box(
         modifier = Modifier
@@ -203,31 +195,45 @@ fun NewsResourceHeaderImage(
             .height(180.dp),
         contentAlignment = Alignment.Center,
     ) {
-        if (isLoading) {
-            // Display a progress bar while loading
-            CircularProgressIndicator(
+        if (isLocalInspection) {
+            // Deterministic placeholder for screenshot/preview — avoids async image loading
+            // which causes non-deterministic rendering in Roborazzi/Skiko test environments.
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(80.dp),
-                color = MaterialTheme.colorScheme.tertiary,
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clearAndSetSemantics {},
+            )
+        } else {
+            var isLoading by remember { mutableStateOf(true) }
+            val imagePainter = rememberAsyncImagePainter(
+                model = headerImageUrl,
+                onState = { state ->
+                    isLoading = state is AsyncImagePainter.State.Loading
+                },
+                imageLoader = ImageLoader(LocalPlatformContext.current),
+            )
+            if (isLoading) {
+                // Display a progress bar while loading
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(80.dp),
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp),
+                contentScale = ContentScale.Crop,
+                painter = imagePainter,
+                // TODO b/226661685: Investigate using alt text of image to populate content description
+                // decorative image,
+                contentDescription = null,
             )
         }
-
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp),
-            contentScale = ContentScale.Crop,
-            painter = imagePainter,
-//            if (isError.not() && !isLocalInspection) {
-//                imagePainter,
-//            } else {
-//                painterResource(drawable.core_designsystem_ic_placeholder_default)
-//            },
-            // TODO b/226661685: Investigate using alt text of  image to populate content description
-            // decorative image,
-            contentDescription = null,
-        )
     }
 }
 

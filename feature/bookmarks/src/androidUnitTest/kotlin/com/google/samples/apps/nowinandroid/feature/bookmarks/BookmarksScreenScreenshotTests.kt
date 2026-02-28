@@ -18,12 +18,18 @@ package com.google.samples.apps.nowinandroid.feature.bookmarks
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesElements
+import com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck
+import com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck
+import com.google.android.apps.common.testing.accessibility.framework.matcher.ElementMatchers.withText
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultTestDevices
 import com.google.samples.apps.nowinandroid.core.testing.util.captureForDevice
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiDevice
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,9 +59,29 @@ class BookmarksScreenScreenshotTests {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
+    /**
+     * Suppress [TextContrastCheck] for uppercase topic tags on news cards (false positives
+     * with Material 3 styling) and [SpeakableTextPresentCheck] for decorative image
+     * containers which have no meaningful label for screen readers.
+     */
+    private val topicTagSuppressions = Matchers.anyOf(
+        Matchers.allOf(
+            AccessibilityCheckResultUtils.matchesCheck(TextContrastCheck::class.java),
+            Matchers.anyOf(
+                matchesElements(withText("HEADLINES")),
+                matchesElements(withText("UI")),
+                matchesElements(withText("TESTING")),
+            ),
+        ),
+        AccessibilityCheckResultUtils.matchesCheck(SpeakableTextPresentCheck::class.java),
+    )
+
     @Test
     fun bookmarksScreenPopulatedFeed() {
-        composeTestRule.captureMultiDevice("BookmarksScreenPopulatedFeed") {
+        composeTestRule.captureMultiDevice(
+            "BookmarksScreenPopulatedFeed",
+            accessibilitySuppressions = topicTagSuppressions,
+        ) {
             NiaTheme {
                 BookmarksScreen(
                     feedState = NewsFeedUiState.Success(feed = userNewsResources),
@@ -90,6 +116,7 @@ class BookmarksScreenScreenshotTests {
             deviceSpec = DefaultTestDevices.PHONE.spec,
             screenshotName = "BookmarksScreenPopulatedFeed",
             darkMode = true,
+            accessibilitySuppressions = topicTagSuppressions,
         ) {
             NiaTheme {
                 BookmarksScreen(

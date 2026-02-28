@@ -22,9 +22,11 @@ import com.google.samples.apps.nowinandroid.core.database.NiaDatabase
 import com.google.samples.apps.nowinandroid.core.database.model.NewsResourceEntity
 import com.google.samples.apps.nowinandroid.core.database.model.NewsResourceTopicCrossRef
 import com.google.samples.apps.nowinandroid.core.database.model.PopulatedNewsResource
+import com.google.samples.apps.nowinandroid.core.database.model.TopicEntity
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlin.time.Instant
 
 /**
@@ -43,28 +45,50 @@ class NewsResourceDao(db: NiaDatabase, private val dispatcher: CoroutineDispatch
         useFilterNewsIds: Boolean,
         filterNewsIds: Set<String>,
     ): Flow<List<PopulatedNewsResource>> {
-        return query.getNewsResources(
+        val newsFlow = query.getNewsResources(
             useFilterTopicIds = useFilterTopicIds,
             filterTopicIds = filterTopicIds,
             useFilterNewsIds = useFilterNewsIds,
             filterNewsIds = filterNewsIds,
         ) { id, title, content, url, headerImageUrl, publishDate, type ->
-            PopulatedNewsResource(
-                entity = NewsResourceEntity(
-                    id = id,
-                    title = title,
-                    content = content,
-                    url = url,
-                    headerImageUrl = headerImageUrl,
-                    publishDate = Instant.fromEpochMilliseconds(publishDate),
-                    type = type,
-                ),
-                // TODO Dealing with NewsResources <-> Topics relationship
-                topics = emptyList(),
+            NewsResourceEntity(
+                id = id,
+                title = title,
+                content = content,
+                url = url,
+                headerImageUrl = headerImageUrl,
+                publishDate = Instant.fromEpochMilliseconds(publishDate),
+                type = type,
             )
         }
             .asFlow()
             .mapToList(dispatcher)
+
+        val topicsFlow = query.getTopicsForNewsResources { newsResourceId, id, name, shortDesc, longDesc, topicUrl, imageUrl ->
+            newsResourceId to TopicEntity(
+                id = id,
+                name = name,
+                shortDescription = shortDesc,
+                longDescription = longDesc,
+                url = topicUrl,
+                imageUrl = imageUrl,
+            )
+        }
+            .asFlow()
+            .mapToList(dispatcher)
+
+        return combine(newsFlow, topicsFlow) { entities, topicPairs ->
+            val topicsByNewsId = topicPairs.groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second },
+            )
+            entities.map { entity ->
+                PopulatedNewsResource(
+                    entity = entity,
+                    topics = topicsByNewsId[entity.id] ?: emptyList(),
+                )
+            }
+        }
     }
 
     /**

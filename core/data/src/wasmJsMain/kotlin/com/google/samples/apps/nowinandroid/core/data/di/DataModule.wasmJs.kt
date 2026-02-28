@@ -18,18 +18,16 @@ package com.google.samples.apps.nowinandroid.core.data.di
 
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
+import com.google.samples.apps.nowinandroid.core.data.util.WebNetworkMonitor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.TimeZone
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val networkMonitorModule = module {
-    single<NetworkMonitor> {
-        object : NetworkMonitor {
-            override val isOnline: Flow<Boolean>
-                get() = flowOf(true)
-        }
-    }
+    singleOf(::WebNetworkMonitor) bind NetworkMonitor::class
 }
 
 internal actual val timeZoneMonitorModule = module {

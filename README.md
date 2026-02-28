@@ -55,7 +55,7 @@ As Firebase Analytics does not yet support Kotlin Multiplatform, the implementat
 | :core:domain              | Done        | ✅                 | ✅️                 | ✅             | ✅            |
 | :core:model               | Done        | ✅                 | ✅️                 | ✅             | ✅            |
 | :core:network             | Done        | ✅                 | ✅️                 | ✅             | ✅            |
-| :core:notification        | Done        | No implmentaion   | ✅️                 |No implmentaion| No implementation |
+| :core:notification        | Done        | ✅                | ✅️                | ✅            | ✅            |
 | :core:screenshot-testing  | Done        | ✅                | ✅️                | ✅             | ❌            |
 | :core:testing             | Done        | ✅                 | ✅️                 | ✅             | ✅            |
 | :core:ui                  | Done        | ✅                 | ✅️                 | ✅             | ✅            |
@@ -65,9 +65,9 @@ As Firebase Analytics does not yet support Kotlin Multiplatform, the implementat
 | :feature:search           | Done        | ✅                | ✅️                | ✅            | ✅            |
 | :feature:settings         | Done        | ✅                | ✅️                | ✅            | ✅            |
 | :feature:topic            | Done        | ✅                | ✅️                | ✅            | ✅            |
-| lint                      | Not started | ❌                | ❌                | ❌            | ❌            |
+| lint                      | Done        | N/A               | ✅                | N/A           | N/A           |
 | :sync:sync-test           | Done        | ✅                | ✅                | ✅            | ✅            |
-| :sync:work                | Not started | No implmentaion   | ✅️                | No implmentaion| No implementation |
+| :sync:work                | Done        | ✅                | ✅️                | ✅            | ✅            |
 | ui-test-manifest          | Removed     | ❌                | ❌                | ❌            | ❌            |
 
 

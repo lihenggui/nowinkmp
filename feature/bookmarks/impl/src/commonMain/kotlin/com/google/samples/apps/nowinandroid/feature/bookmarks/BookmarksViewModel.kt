@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.feature.bookmarks.impl
+package com.google.samples.apps.nowinandroid.feature.bookmarks
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

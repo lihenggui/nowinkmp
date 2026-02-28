@@ -16,11 +16,13 @@
 
 package com.google.samples.apps.nowinandroid.core.notifications.di
 
+import com.google.samples.apps.nowinandroid.core.notifications.DesktopNotifier
+import com.google.samples.apps.nowinandroid.core.notifications.Notifier
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal expect val platformNotificationModule: Module
-
-val notificationModule = module {
-    includes(platformNotificationModule)
+internal actual val platformNotificationModule: Module = module {
+    singleOf(::DesktopNotifier) bind Notifier::class
 }

@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.notifications
 
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import java.awt.SystemTray
+import java.awt.Toolkit
 import java.awt.TrayIcon
 
 private const val MAX_NUM_NOTIFICATIONS = 5
@@ -30,7 +31,7 @@ internal class DesktopNotifier : Notifier {
     private val trayIcon: TrayIcon? by lazy {
         if (!SystemTray.isSupported()) return@lazy null
         val icon = TrayIcon(
-            java.awt.Toolkit.getDefaultToolkit().createImage(ByteArray(0)),
+            Toolkit.getDefaultToolkit().createImage(ByteArray(0)),
             "Now in Android",
         )
         icon.isImageAutoSize = true

@@ -64,6 +64,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.ui.DevicePreviews
 import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
+import com.google.samples.apps.nowinandroid.core.ui.TrackScrollJank
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.userNewsResourceCardItems
@@ -112,7 +113,7 @@ internal fun TopicScreen(
     modifier: Modifier = Modifier,
 ) {
     val state = rememberLazyListState()
-//    TrackScrollJank(scrollableState = state, stateName = "topic:screen")
+    TrackScrollJank(scrollableState = state, stateName = "topic:screen")
     Box(
         modifier = modifier,
     ) {

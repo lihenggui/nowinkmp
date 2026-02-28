@@ -32,6 +32,7 @@ androidComponents {
 kotlin {
     sourceSets {
         androidMain.dependencies {
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
             api(libs.bundles.androidx.compose.ui.test)
             api(libs.roborazzi)
             api(libs.roborazzi.accessibility.check)

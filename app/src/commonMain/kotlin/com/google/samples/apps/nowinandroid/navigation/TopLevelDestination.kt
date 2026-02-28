@@ -18,20 +18,20 @@ package com.google.samples.apps.nowinandroid.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
-import com.google.samples.apps.nowinandroid.feature.bookmarks.navigation.BookmarksRoute
-import com.google.samples.apps.nowinandroid.feature.foryou.navigation.ForYouBaseRoute
-import com.google.samples.apps.nowinandroid.feature.foryou.navigation.ForYouRoute
-import com.google.samples.apps.nowinandroid.feature.interests.navigation.InterestsRoute
-import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_title
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_title
-import nowinandroid.feature.search.generated.resources.feature_search_interests
+import com.google.samples.apps.nowinandroid.feature.bookmarks.api.navigation.BookmarksRoute
+import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouBaseRoute
+import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouRoute
+import com.google.samples.apps.nowinandroid.feature.interests.api.navigation.InterestsRoute
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_title
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_title
+import nowinandroid.feature.search.impl.generated.resources.feature_search_interests
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.app_name
 import org.jetbrains.compose.resources.StringResource
 import kotlin.reflect.KClass
-import nowinandroid.feature.bookmarks.generated.resources.Res as bookmarksR
-import nowinandroid.feature.foryou.generated.resources.Res as forYouR
-import nowinandroid.feature.search.generated.resources.Res as searchR
+import nowinandroid.feature.bookmarks.impl.generated.resources.Res as bookmarksR
+import nowinandroid.feature.foryou.impl.generated.resources.Res as forYouR
+import nowinandroid.feature.search.impl.generated.resources.Res as searchR
 
 /**
  * Type for the top level destinations in the application. Contains metadata about the destination

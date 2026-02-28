@@ -15,15 +15,6 @@ graph TB
     direction TB
     :sync:work[work]:::kmp-library
   end
-  subgraph :feature
-    direction TB
-    :feature:bookmarks[bookmarks]:::cmp-feature
-    :feature:foryou[foryou]:::cmp-feature
-    :feature:interests[interests]:::cmp-feature
-    :feature:search[search]:::cmp-feature
-    :feature:settings[settings]:::cmp-feature
-    :feature:topic[topic]:::cmp-feature
-  end
   subgraph :core
     direction TB
     :core:analytics[analytics]:::kmp-library
@@ -38,6 +29,38 @@ graph TB
     :core:network[network]:::kmp-library
     :core:notifications[notifications]:::kmp-library
     :core:ui[ui]:::kmp-library
+  end
+  subgraph :feature
+    direction TB
+    subgraph :feature:settings
+      direction TB
+      :feature:settings:impl[impl]:::cmp-feature
+    end
+    subgraph :feature:interests
+      direction TB
+      :feature:interests:api[api]:::kmp-library
+      :feature:interests:impl[impl]:::cmp-feature
+    end
+    subgraph :feature:foryou
+      direction TB
+      :feature:foryou:api[api]:::kmp-library
+      :feature:foryou:impl[impl]:::cmp-feature
+    end
+    subgraph :feature:bookmarks
+      direction TB
+      :feature:bookmarks:api[api]:::kmp-library
+      :feature:bookmarks:impl[impl]:::cmp-feature
+    end
+    subgraph :feature:topic
+      direction TB
+      :feature:topic:api[api]:::kmp-library
+      :feature:topic:impl[impl]:::cmp-feature
+    end
+    subgraph :feature:search
+      direction TB
+      :feature:search:api[api]:::kmp-library
+      :feature:search:impl[impl]:::cmp-feature
+    end
   end
   :shared[shared]:::cmp-feature
   :benchmarks[benchmarks]:::android-test
@@ -67,28 +90,33 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
-  :feature:bookmarks -.-> :core:data
-  :feature:bookmarks -.-> :core:designsystem
-  :feature:bookmarks -.-> :core:ui
-  :feature:foryou -.-> :core:data
-  :feature:foryou -.-> :core:designsystem
-  :feature:foryou -.-> :core:domain
-  :feature:foryou -.-> :core:notifications
-  :feature:foryou -.-> :core:ui
-  :feature:interests -.-> :core:data
-  :feature:interests -.-> :core:designsystem
-  :feature:interests -.-> :core:domain
-  :feature:interests -.-> :core:ui
-  :feature:search -.-> :core:data
-  :feature:search -.-> :core:designsystem
-  :feature:search -.-> :core:domain
-  :feature:search -.-> :core:ui
-  :feature:settings -.-> :core:data
-  :feature:settings -.-> :core:designsystem
-  :feature:settings -.-> :core:ui
-  :feature:topic -.-> :core:data
-  :feature:topic -.-> :core:designsystem
-  :feature:topic -.-> :core:ui
+  :feature:bookmarks:impl -.-> :core:data
+  :feature:bookmarks:impl -.-> :core:designsystem
+  :feature:bookmarks:impl -.-> :core:ui
+  :feature:bookmarks:impl -.-> :feature:bookmarks:api
+  :feature:foryou:impl -.-> :core:data
+  :feature:foryou:impl -.-> :core:designsystem
+  :feature:foryou:impl -.-> :core:domain
+  :feature:foryou:impl -.-> :core:notifications
+  :feature:foryou:impl -.-> :core:ui
+  :feature:foryou:impl -.-> :feature:foryou:api
+  :feature:interests:impl -.-> :core:data
+  :feature:interests:impl -.-> :core:designsystem
+  :feature:interests:impl -.-> :core:domain
+  :feature:interests:impl -.-> :core:ui
+  :feature:interests:impl -.-> :feature:interests:api
+  :feature:search:impl -.-> :core:data
+  :feature:search:impl -.-> :core:designsystem
+  :feature:search:impl -.-> :core:domain
+  :feature:search:impl -.-> :core:ui
+  :feature:search:impl -.-> :feature:search:api
+  :feature:settings:impl -.-> :core:data
+  :feature:settings:impl -.-> :core:designsystem
+  :feature:settings:impl -.-> :core:ui
+  :feature:topic:impl -.-> :core:data
+  :feature:topic:impl -.-> :core:designsystem
+  :feature:topic:impl -.-> :core:ui
+  :feature:topic:impl -.-> :feature:topic:api
   :shared --> :core:analytics
   :shared --> :core:common
   :shared --> :core:data
@@ -99,12 +127,17 @@ graph TB
   :shared --> :core:notifications
   :shared --> :core:ui
   :shared -.-> :core:ui
-  :shared --> :feature:bookmarks
-  :shared --> :feature:foryou
-  :shared --> :feature:interests
-  :shared --> :feature:search
-  :shared --> :feature:settings
-  :shared --> :feature:topic
+  :shared --> :feature:bookmarks:api
+  :shared --> :feature:bookmarks:impl
+  :shared --> :feature:foryou:api
+  :shared --> :feature:foryou:impl
+  :shared --> :feature:interests:api
+  :shared --> :feature:interests:impl
+  :shared --> :feature:search:api
+  :shared --> :feature:search:impl
+  :shared --> :feature:settings:impl
+  :shared --> :feature:topic:api
+  :shared --> :feature:topic:impl
   :shared --> :sync:work
   :sync:work -.-> :core:analytics
   :sync:work -.-> :core:data

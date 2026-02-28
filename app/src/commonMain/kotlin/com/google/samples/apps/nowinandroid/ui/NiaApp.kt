@@ -70,13 +70,13 @@ import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsDialog
 import com.google.samples.apps.nowinandroid.navigation.NiaNavHost
 import com.google.samples.apps.nowinandroid.navigation.TopLevelDestination
-import nowinandroid.feature.settings.generated.resources.feature_settings_top_app_bar_action_icon_description
-import nowinandroid.feature.settings.generated.resources.feature_settings_top_app_bar_navigation_icon_description
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_top_app_bar_action_icon_description
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_top_app_bar_navigation_icon_description
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.not_connected
 import org.jetbrains.compose.resources.stringResource
 import kotlin.reflect.KClass
-import nowinandroid.feature.settings.generated.resources.Res as settingsR
+import nowinandroid.feature.settings.impl.generated.resources.Res as settingsR
 
 @Composable
 fun NiaApp(

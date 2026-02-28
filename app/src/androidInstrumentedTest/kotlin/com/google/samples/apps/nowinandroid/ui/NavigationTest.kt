@@ -44,13 +44,13 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import nowinandroid.feature.bookmarks.generated.resources.feature_bookmarks_title
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_navigate_up
-import nowinandroid.feature.foryou.generated.resources.feature_foryou_title
-import nowinandroid.feature.search.generated.resources.feature_search_interests
-import nowinandroid.feature.settings.generated.resources.feature_settings_brand_android
-import nowinandroid.feature.settings.generated.resources.feature_settings_dismiss_dialog_button_text
-import nowinandroid.feature.settings.generated.resources.feature_settings_top_app_bar_action_icon_description
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_title
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_navigate_up
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_title
+import nowinandroid.feature.search.impl.generated.resources.feature_search_interests
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_brand_android
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_dismiss_dialog_button_text
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_top_app_bar_action_icon_description
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.app_name
 import org.junit.Assume.assumeTrue
@@ -58,10 +58,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import nowinandroid.feature.bookmarks.generated.resources.Res as BookmarksR
-import nowinandroid.feature.foryou.generated.resources.Res as FeatureForyouR
-import nowinandroid.feature.search.generated.resources.Res as FeatureSearchR
-import nowinandroid.feature.settings.generated.resources.Res as SettingsR
+import nowinandroid.feature.bookmarks.impl.generated.resources.Res as BookmarksR
+import nowinandroid.feature.foryou.impl.generated.resources.Res as FeatureForyouR
+import nowinandroid.feature.search.impl.generated.resources.Res as FeatureSearchR
+import nowinandroid.feature.settings.impl.generated.resources.Res as SettingsR
 /**
  * Tests all the navigation flows that are handled by the navigation library.
  */

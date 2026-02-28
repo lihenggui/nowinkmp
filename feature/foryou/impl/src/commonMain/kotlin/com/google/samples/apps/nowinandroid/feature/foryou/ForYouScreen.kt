@@ -235,7 +235,7 @@ internal fun ForYouScreen(
         )
     }
     TrackScreenViewEvent(screenName = "ForYou")
-//    NotificationPermissionEffect()
+    NotificationPermissionEffect()
     DeepLinkEffect(
         deepLinkedUserNewsResource,
         onDeepLinkOpened,
@@ -436,24 +436,6 @@ fun TopicIcon(
         imageLoader = ImageLoader(LocalPlatformContext.current),
     )
 }
-
-// @Composable
-// @OptIn(ExperimentalPermissionsApi::class)
-// private fun NotificationPermissionEffect() {
-//    // Permission requests should only be made from an Activity Context, which is not present
-//    // in previews
-//    if (LocalInspectionMode.current) return
-//    if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
-//    val notificationsPermissionState = rememberPermissionState(
-//        android.Manifest.permission.POST_NOTIFICATIONS,
-//    )
-//    LaunchedEffect(notificationsPermissionState) {
-//        val status = notificationsPermissionState.status
-//        if (status is Denied && !status.shouldShowRationale) {
-//            notificationsPermissionState.launchPermissionRequest()
-//        }
-//    }
-// }
 
 @Composable
 private fun DeepLinkEffect(

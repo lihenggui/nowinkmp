@@ -56,7 +56,7 @@ fun rememberNiaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): NiaAppState {
-//    NavigationTrackingSideEffect(navController)
+    NavigationTrackingSideEffect(navController)
     return remember(
         navController,
         coroutineScope,
@@ -176,21 +176,3 @@ class NiaAppState(
 
     fun navigateToSearch() = navController.navigateToSearch()
 }
-
-/**
- * Stores information about navigation events to be used with JankStats
- */
-// @Composable
-// private fun NavigationTrackingSideEffect(navController: NavHostController) {
-//    TrackDisposableJank(navController) { metricsHolder ->
-//        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-//            metricsHolder.state?.putState("Navigation", destination.route.toString())
-//        }
-//
-//        navController.addOnDestinationChangedListener(listener)
-//
-//        onDispose {
-//            navController.removeOnDestinationChangedListener(listener)
-//        }
-//    }
-// }

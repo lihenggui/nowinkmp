@@ -21,12 +21,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.topic"
-    testOptions.unitTests.isIncludeAndroidResources = true
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.feature.topic"
+    }
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.topic.api)
@@ -44,7 +42,7 @@ kotlin {
         commonTest.dependencies {
             implementation(projects.core.testing)
         }
-        androidUnitTest.dependencies {
+        getByName("androidHostTest").dependencies {
             implementation(libs.androidx.compose.ui.test)
             implementation(libs.androidx.compose.ui.testManifest)
             implementation(libs.robolectric)
@@ -57,7 +55,7 @@ kotlin {
             implementation(libs.jetbrains.compose.ui.test.junit4)
             implementation(projects.core.screenshotTesting)
         }
-        androidInstrumentedTest.dependencies {
+        getByName("androidDeviceTest").dependencies {
             implementation(projects.core.testing)
             implementation(libs.bundles.androidx.compose.ui.test)
         }

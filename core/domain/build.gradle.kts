@@ -19,11 +19,10 @@ plugins {
     alias(libs.plugins.nowinandroid.android.library.jacoco)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.domain"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.domain"
+    }
     sourceSets {
         commonMain.dependencies {
             api(projects.core.data)

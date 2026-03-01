@@ -59,10 +59,9 @@ class KoinConventionPlugin : Plugin<Project> {
             }
             // KSP2 uses KspAATask which isn't a KotlinCompilationTask but still
             // needs to depend on kspCommonMainKotlinMetadata for the shared source set.
+            // Match both old-style (kspDebugKotlin) and new-style (kspAndroidMain) task names.
             project.tasks.configureEach {
-                if (name.startsWith("ksp") && name != "kspCommonMainKotlinMetadata" &&
-                    name.contains("Kotlin")
-                ) {
+                if (name.startsWith("ksp") && name != "kspCommonMainKotlinMetadata") {
                     dependsOn("kspCommonMainKotlinMetadata")
                 }
             }

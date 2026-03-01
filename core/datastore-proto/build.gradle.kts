@@ -19,11 +19,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.datastore.proto"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.datastore.proto"
+    }
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.serialization.core)

@@ -18,11 +18,10 @@ plugins {
     alias(libs.plugins.nowinandroid.cmp.feature)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.shared"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.shared"
+    }
     sourceSets {
         commonMain.dependencies {
             api(projects.feature.interests.impl)

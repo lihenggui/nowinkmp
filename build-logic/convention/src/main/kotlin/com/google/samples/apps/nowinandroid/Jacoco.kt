@@ -126,6 +126,22 @@ internal fun Project.configureJacoco(
             )
     }
 
+    configureJacocoTestTasks()
+}
+
+/**
+ * Simplified Jacoco configuration for modules using com.android.kotlin.multiplatform.library.
+ * The KMP Android library plugin has no build variants, so variant-based coverage reports
+ * are not available. This configures basic Jacoco instrumentation on test tasks.
+ */
+internal fun Project.configureJacocoKmp() {
+    configure<JacocoPluginExtension> {
+        toolVersion = libs.findVersion("jacoco").get().toString()
+    }
+    configureJacocoTestTasks()
+}
+
+private fun Project.configureJacocoTestTasks() {
     tasks.withType<Test>().configureEach {
         configure<JacocoTaskExtension> {
             // Required for JaCoCo + Robolectric

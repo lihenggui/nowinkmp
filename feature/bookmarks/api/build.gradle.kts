@@ -18,11 +18,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.bookmarks.api"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.feature.bookmarks.api"
+    }
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.serialization.core)

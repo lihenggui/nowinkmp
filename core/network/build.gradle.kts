@@ -20,7 +20,6 @@ plugins {
     alias(libs.plugins.nowinandroid.kmp.library)
     alias(libs.plugins.nowinandroid.android.library.jacoco)
     alias(libs.plugins.nowinandroid.di.koin)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.ktrofit)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.kotlin.serialization)
@@ -29,15 +28,6 @@ plugins {
 
 ktorfit {
     compilerPluginVersion.set("2.3.3")
-}
-
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.network"
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
 }
 
 secrets {
@@ -52,6 +42,12 @@ buildkonfig {
 }
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.network"
+        withHostTest {
+            isIncludeAndroidResources = true
+        }
+    }
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)
@@ -80,9 +76,6 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.java)
-        }
-        mingwMain.dependencies {
-            implementation(libs.ktor.client.winhttp)
         }
     }
 }

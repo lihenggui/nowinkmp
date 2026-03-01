@@ -131,7 +131,7 @@ jobs:
 
       # Run local tests after screenshot tests to avoid wrong UP-TO-DATE. TODO: Ignore screenshots.
       - name: Run local tests
-        run: ./gradlew testDebugUnitTest :lint:test
+        run: ./gradlew testDebugUnitTest testAndroidHostTest :lint:test
 
       - name: Build all build type and flavor permutations
         run: ./gradlew :app:assemble -PminifyWithR8=false
@@ -147,7 +147,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: local-test-results
-          path: '**/build/test-results/test*UnitTest/**.xml'
+          path: |
+            **/build/test-results/test*UnitTest/**.xml
+            **/build/test-results/testAndroidHostTest/**.xml
 
       - name: Upload screenshot results (PNG)
         if: ${{ !cancelled() }}
@@ -249,7 +251,7 @@ jobs:
       - name: Run local tests (including Roborazzi) for the combined coverage report (only API 30)
         if: matrix.api-level == 30
         # There is no need to verify Roborazzi tests to generate coverage.
-        run: ./gradlew testDebugUnitTest -Proborazzi.test.verify=false
+        run: ./gradlew testDebugUnitTest testAndroidHostTest -Proborazzi.test.verify=false
 
       - name: Generate coverage reports for Debug variants (only API 30)
         if: matrix.api-level == 30

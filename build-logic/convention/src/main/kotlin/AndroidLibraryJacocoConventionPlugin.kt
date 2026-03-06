@@ -17,6 +17,7 @@
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.google.samples.apps.nowinandroid.configureJacoco
+import com.google.samples.apps.nowinandroid.configureJacocoKmp
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -27,10 +28,15 @@ class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply<JacocoPlugin>()
-            configureJacoco(
-                commonExtension = extensions.getByType<LibraryExtension>(),
-                androidComponentsExtension = extensions.getByType<LibraryAndroidComponentsExtension>(),
-            )
+            if (pluginManager.hasPlugin("com.android.library")) {
+                configureJacoco(
+                    commonExtension = extensions.getByType<LibraryExtension>(),
+                    androidComponentsExtension = extensions.getByType<LibraryAndroidComponentsExtension>(),
+                )
+            } else {
+                // com.android.kotlin.multiplatform.library — no variants or build types
+                configureJacocoKmp()
+            }
         }
     }
 }

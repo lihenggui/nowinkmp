@@ -19,17 +19,10 @@ plugins {
     alias(libs.plugins.compose)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.screenshottesting"
-}
-
-androidComponents {
-    beforeVariants {
-        it.androidTest.enable = false
-    }
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.screenshottesting"
+    }
     sourceSets {
         androidMain.dependencies {
             implementation(project.dependencies.platform(libs.androidx.compose.bom))

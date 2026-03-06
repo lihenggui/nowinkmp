@@ -20,11 +20,10 @@ plugins {
     alias(libs.plugins.compose)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.analytics"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.analytics"
+    }
     sourceSets {
         commonMain.dependencies {
             implementation(libs.logging)

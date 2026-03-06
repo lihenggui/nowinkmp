@@ -18,11 +18,10 @@ plugins {
     alias(libs.plugins.nowinandroid.kmp.library)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.model"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.model"
+    }
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)

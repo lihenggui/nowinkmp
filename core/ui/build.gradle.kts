@@ -20,11 +20,11 @@ plugins {
     alias(libs.plugins.nowinandroid.android.library.jacoco)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.ui"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.ui"
+        withDeviceTest {}
+    }
     sourceSets {
         androidMain.dependencies {
             api(libs.androidx.metrics)
@@ -40,7 +40,7 @@ kotlin {
             implementation(libs.jetbrains.compose.components.resources)
             implementation(libs.jetbrains.compose.uiToolingPreview)
         }
-        androidInstrumentedTest.dependencies {
+        getByName("androidDeviceTest").dependencies {
             implementation(projects.core.testing)
             implementation(libs.bundles.androidx.compose.ui.test)
         }

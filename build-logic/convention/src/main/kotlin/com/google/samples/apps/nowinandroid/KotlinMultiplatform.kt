@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
@@ -42,7 +43,18 @@ internal fun Project.configureKotlinMultiplatform() {
                 jvmTarget.set(JvmTarget.JVM_11)
             }
         }
-        androidTarget()
+
+        // Android target is automatically created by com.android.kotlin.multiplatform.library.
+        // Configure it via the targets container (generated accessors are not available in
+        // precompiled convention plugins).
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+            compileSdk = 36
+            minSdk = 23
+            enableCoreLibraryDesugaring = true
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_11)
+            }
+        }
 
         @OptIn(ExperimentalWasmDsl::class)
         wasmJs {

@@ -20,12 +20,13 @@ plugins {
     id("kotlinx-serialization")
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.data"
-    testOptions.unitTests.isIncludeAndroidResources = true
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.data"
+        withHostTest {
+            isIncludeAndroidResources = true
+        }
+    }
     sourceSets {
         commonMain.dependencies {
             api(projects.core.common)

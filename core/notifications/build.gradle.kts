@@ -18,11 +18,11 @@ plugins {
     alias(libs.plugins.nowinandroid.di.koin)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.notifications"
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.notifications"
+        androidResources.enable = true
+    }
     sourceSets {
         commonMain.dependencies {
             api(projects.core.model)

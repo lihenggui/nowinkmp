@@ -20,12 +20,10 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.settings"
-    testOptions.unitTests.isIncludeAndroidResources = true
-}
-
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.feature.settings"
+    }
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.data)
@@ -39,7 +37,7 @@ kotlin {
         commonTest.dependencies {
             implementation(projects.core.testing)
         }
-        androidUnitTest.dependencies {
+        getByName("androidHostTest").dependencies {
             implementation(libs.androidx.compose.ui.test)
             implementation(libs.androidx.compose.ui.testManifest)
             implementation(libs.robolectric)
@@ -51,7 +49,7 @@ kotlin {
             implementation(libs.jetbrains.compose.ui.test.junit4)
             implementation(projects.core.screenshotTesting)
         }
-        androidInstrumentedTest.dependencies {
+        getByName("androidDeviceTest").dependencies {
             implementation(projects.core.testing)
             implementation(libs.bundles.androidx.compose.ui.test)
         }

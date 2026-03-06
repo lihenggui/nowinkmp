@@ -21,26 +21,25 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
-    testOptions {
-        unitTests {
+kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
+        androidResources.enable = true
+        withHostTest {
             isIncludeAndroidResources = true
         }
+        withDeviceTest {}
     }
-}
-
-kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
         }
-        androidInstrumentedTest.dependencies {
+        getByName("androidDeviceTest").dependencies {
             implementation(libs.androidx.compose.ui.test)
             implementation(projects.core.testing)
         }
-        androidUnitTest.dependencies {
+        getByName("androidHostTest").dependencies {
             implementation(libs.androidx.compose.ui.test)
             implementation(libs.androidx.compose.ui.testManifest)
             implementation(libs.robolectric)

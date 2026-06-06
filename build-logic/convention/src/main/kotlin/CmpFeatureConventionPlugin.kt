@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import com.android.build.gradle.LibraryExtension
-import com.google.samples.apps.nowinandroid.configureGradleManagedDevices
 import com.google.samples.apps.nowinandroid.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 // Convention plugin for the Compose Multiplatform feature module
@@ -32,16 +29,6 @@ class CmpFeatureConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.plugin.compose")
                 apply("org.jetbrains.compose")
             }
-            extensions.configure<LibraryExtension> {
-                defaultConfig {
-                    testInstrumentationRunner =
-                        "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
-                }
-                testOptions.animationsDisabled = true
-                testOptions.unitTests.isIncludeAndroidResources = true
-                configureGradleManagedDevices(this)
-            }
-
             dependencies {
                 "commonMainImplementation"(project(":core:ui"))
                 "commonMainImplementation"(project(":core:designsystem"))
@@ -56,11 +43,13 @@ class CmpFeatureConventionPlugin : Plugin<Project> {
                 "androidMainImplementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
                 "androidMainImplementation"(libs.findLibrary("androidx.tracing.ktx").get())
 
-                "androidInstrumentedTestImplementation"(libs.findLibrary("androidx.compose.ui.test").get())
-                "androidInstrumentedTestImplementation"(libs.findLibrary("androidx.test.core").get())
-                "androidInstrumentedTestImplementation"(libs.findLibrary("androidx.test.ext").get())
-                "androidInstrumentedTestImplementation"(libs.findLibrary("androidx.test.junit").get())
-                "androidInstrumentedTestImplementation"(libs.findLibrary("androidx.test.runner").get())
+                if (projectDir.resolve("src/androidDeviceTest").exists()) {
+                    "androidDeviceTestImplementation"(libs.findLibrary("androidx.compose.ui.test").get())
+                    "androidDeviceTestImplementation"(libs.findLibrary("androidx.test.core").get())
+                    "androidDeviceTestImplementation"(libs.findLibrary("androidx.test.ext").get())
+                    "androidDeviceTestImplementation"(libs.findLibrary("androidx.test.junit").get())
+                    "androidDeviceTestImplementation"(libs.findLibrary("androidx.test.runner").get())
+                }
             }
         }
     }

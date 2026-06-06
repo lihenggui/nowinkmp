@@ -119,8 +119,23 @@ internal enum class PluginType(val id: String, val ref: String, val style: Strin
         ref = "cmp-feature",
         style = "fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000",
     ),
+    AndroidApplication(
+        id = "nowinandroid.android.application",
+        ref = "android-application",
+        style = "fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000",
+    ),
+    AndroidApplicationPlugin(
+        id = "com.android.application",
+        ref = "android-application",
+        style = "fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000",
+    ),
     KmpLibrary(
         id = "nowinandroid.kmp.library",
+        ref = "kmp-library",
+        style = "fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000",
+    ),
+    AndroidKmpLibrary(
+        id = "com.android.kotlin.multiplatform.library",
         ref = "kmp-library",
         style = "fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000",
     ),
@@ -259,7 +274,7 @@ private abstract class GraphDumpTask : DefaultTask() {
             .forEach { appendLine(it.link(indent = 2)) }
         // Classes
         appendLine()
-        PluginType.entries.forEach { appendLine(it.classDef()) }
+        PluginType.entries.distinctBy(PluginType::ref).forEach { appendLine(it.classDef()) }
     }
 
     private fun legend() = buildString {
@@ -267,6 +282,7 @@ private abstract class GraphDumpTask : DefaultTask() {
         listOf(
             "application" to PluginType.CmpApplication,
             "feature" to PluginType.CmpFeature,
+            "androidApplication" to PluginType.AndroidApplication,
             "library" to PluginType.KmpLibrary,
             "jvm" to PluginType.JvmLibrary,
         ).forEach { (name, type) ->
@@ -280,7 +296,7 @@ private abstract class GraphDumpTask : DefaultTask() {
             appendLine(it.link(indent = 2))
         }
         appendLine()
-        PluginType.entries.forEach { appendLine(it.classDef()) }
+        PluginType.entries.distinctBy(PluginType::ref).forEach { appendLine(it.classDef()) }
     }
 
     private class Dependency(

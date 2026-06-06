@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+
 package com.google.samples.apps.nowinandroid.core.notifications
 
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource

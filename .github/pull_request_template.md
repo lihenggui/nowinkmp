@@ -9,7 +9,7 @@ Thanks for submitting a pull request. To accept your pull request we need you do
 
 **Ensure tests pass and code is formatted correctly**
 
-- Run local tests on the `DemoDebug` variant by running `./gradlew testDemoDebug`
+- Run local tests by running `./gradlew testDebugUnitTest :lint:test`
 - Fix code formatting: `./gradlew spotlessApply`
 
 **Add a description**

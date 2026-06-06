@@ -26,7 +26,6 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
@@ -38,6 +37,7 @@ import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
+import org.gradle.work.DisableCachingByDefault
 import javax.inject.Inject
 
 @CacheableTask
@@ -68,6 +68,22 @@ abstract class GenerateBadgingTask : DefaultTask() {
             )
             standardOutput = badging.asFile.get().outputStream()
         }
+    }
+}
+
+@DisableCachingByDefault(because = "Updates the checked-in golden badging file.")
+abstract class UpdateBadgingTask : DefaultTask() {
+
+    @get:PathSensitive(PathSensitivity.NONE)
+    @get:InputFile
+    abstract val generatedBadging: RegularFileProperty
+
+    @get:OutputFile
+    abstract val goldenBadging: RegularFileProperty
+
+    @TaskAction
+    fun taskAction() {
+        goldenBadging.get().asFile.writeText(generatedBadging.get().asFile.readText())
     }
 }
 
@@ -126,9 +142,9 @@ fun Project.configureBadgingTasks(
             }
 
         val updateBadgingTaskName = "update${capitalizedVariantName}Badging"
-        tasks.register<Copy>(updateBadgingTaskName) {
-            from(generateBadging.map(GenerateBadgingTask::badging))
-            into(project.layout.projectDirectory)
+        tasks.register<UpdateBadgingTask>(updateBadgingTaskName) {
+            generatedBadging.set(generateBadging.flatMap(GenerateBadgingTask::badging))
+            goldenBadging = project.layout.projectDirectory.file("${variant.name}-badging.txt")
         }
 
         val checkBadgingTaskName = "check${capitalizedVariantName}Badging"

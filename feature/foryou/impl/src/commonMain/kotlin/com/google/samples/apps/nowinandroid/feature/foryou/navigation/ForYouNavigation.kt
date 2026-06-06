@@ -40,7 +40,7 @@ fun NavGraphBuilder.forYouSection(
         composable<ForYouRoute>(
             deepLinks = listOf(
                 navDeepLink {
-                    /**
+                    /*
                      * This destination has a deep link that enables a specific news resource to be
                      * opened from a notification (@see SystemTrayNotifier for more). The news resource
                      * ID is sent in the URI rather than being modelled in the route type because it's

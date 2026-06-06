@@ -19,14 +19,16 @@ plugins {
     alias(libs.plugins.nowinandroid.di.koin)
 }
 
-android {
-    defaultConfig {
-        testInstrumentationRunner = "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
-    }
-    namespace = "com.google.samples.apps.nowinandroid.sync"
-}
+
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.sync"
+        androidResources {
+            enable = true
+        }
+    }
+
     sourceSets{
         commonMain.dependencies {
             implementation(projects.core.analytics)
@@ -41,7 +43,7 @@ kotlin {
             implementation(libs.androidx.tracing.ktx)
             implementation(libs.androidx.work.ktx)
         }
-        androidInstrumentedTest.dependencies {
+        getByName("androidDeviceTest").dependencies {
             implementation(projects.core.testing)
             implementation(libs.androidx.test.core)
             implementation(libs.androidx.test.ext)

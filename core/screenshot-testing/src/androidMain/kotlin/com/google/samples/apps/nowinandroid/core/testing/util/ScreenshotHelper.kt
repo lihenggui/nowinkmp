@@ -98,6 +98,10 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     // Set qualifiers from specs
     RuntimeEnvironment.setQualifiers("w${width}dp-h${height}dp-${dpi}dpi")
 
+    // Freeze animations before setContent so that setContent's internal waitForIdle() cannot
+    // advance infinite animations such as the loading wheel.
+    this.mainClock.autoAdvance = false
+
     this.activity.setContent {
         CompositionLocalProvider(
             LocalInspectionMode provides true,
@@ -109,9 +113,6 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
             }
         }
     }
-
-    // Freeze animations so infinite transitions don't block Espresso idle sync
-    this.mainClock.autoAdvance = false
 
     // Run Accessibility checks first so logging is included
     val accessibilityException = try {
@@ -179,6 +180,10 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     var dynamicTheming by mutableStateOf(false)
     var androidTheme by mutableStateOf(false)
 
+    // Freeze animations before setContent so that setContent's internal waitForIdle() cannot
+    // advance infinite animations.
+    this.mainClock.autoAdvance = false
+
     this.setContent {
         CompositionLocalProvider(
             LocalInspectionMode provides true,
@@ -203,9 +208,6 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
             }
         }
     }
-
-    // Freeze animations so infinite transitions don't block Espresso idle sync
-    this.mainClock.autoAdvance = false
 
     // Create permutations
     darkModeValues.forEach { isDarkMode ->

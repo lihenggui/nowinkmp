@@ -1,68 +1,68 @@
 [versions]
-accompanist = "0.37.0"
-androidDesugarJdkLibs = "2.1.4"
+accompanist = "0.37.3"
+androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
-androidGradlePlugin = "9.0.0"
-androidTools = "32.0.0"
-androidxActivity = "1.10.0"
-androidxBrowser = "1.8.0"
-androidxComposeBom = "2025.05.00"
-androidxComposeRuntimeTracing = "1.8.1"
-androidxCore = "1.16.0"
-androidxCoreSplashscreen = "1.2.0-alpha02"
-androidxDataStore = "1.1.4"
-androidxEspresso = "3.6.1"
-androidxLifecycle = "2.9.0"
-androidxLintGradle = "1.0.0-alpha03"
-androidxMacroBenchmark = "1.4.1"
-androidxMetrics = "1.0.0-beta01"
-androidxNavigation = "2.9.0"
+androidGradlePlugin = "9.2.1"
+androidTools = "32.2.1"
+androidxActivity = "1.13.0"
+androidxBrowser = "1.10.0"
+androidxComposeBom = "2026.05.01"
+androidxComposeRuntimeTracing = "1.11.2"
+androidxCore = "1.19.0"
+androidxCoreSplashscreen = "1.2.0"
+androidxDataStore = "1.2.1"
+androidxEspresso = "3.7.0"
+androidxLifecycle = "2.10.0"
+androidxLintGradle = "1.0.0-rc01"
+androidxMacroBenchmark = "1.5.0-alpha06"
+androidxMetrics = "1.0.0"
+androidxNavigation = "2.9.8"
 androidxProfileinstaller = "1.4.1"
-androidxTestCore = "1.7.0-rc01"
-androidxTestExt = "1.3.0-rc01"
-androidxTestRules = "1.7.0-rc01"
-androidxTestRunner = "1.7.0-rc01"
-androidxTracing = "1.3.0-alpha02"
-androidxUiAutomator = "2.3.0"
-androidxWindowManager = "1.3.0"
-androidxWork = "2.10.0"
-coil = "3.2.0"
+androidxTestCore = "1.7.0"
+androidxTestExt = "1.3.0"
+androidxTestRules = "1.7.0"
+androidxTestRunner = "1.7.0"
+androidxTracing = "1.3.0"
+androidxUiAutomator = "2.4.0-beta02"
+androidxWindowManager = "1.5.1"
+androidxWork = "2.11.2"
+coil = "3.5.0-beta01"
 dependencyGuard = "0.5.0"
-jacoco = "0.8.12"
-kotlin = "2.3.10"
-kotlinxCoroutines = "1.10.2"
-kotlinxDatetime = "0.7.1"
-kotlinxSerializationJson = "1.8.0"
-ksp = "2.3.4"
-logback = "1.5.15"
-material3adaptive = "1.1.0"
-moduleGraph = "2.7.1"
-ktlint = "1.5.0"
-robolectric = "4.16"
-roborazzi = "1.56.0"
+jacoco = "0.8.15"
+kotlin = "2.4.0"
+kotlinxCoroutines = "1.11.0"
+kotlinxDatetime = "0.8.0"
+kotlinxSerializationJson = "1.11.0"
+ksp = "2.3.9"
+logback = "1.5.34"
+material3adaptive = "1.2.0"
+moduleGraph = "2.9.1"
+ktlint = "1.8.0"
+robolectric = "4.16.1"
+roborazzi = "1.63.0"
 secrets = "2.0.1"
-spotless = "8.2.1"
-truth = "1.4.4"
-turbine = "1.2.0"
-androidx-constraintlayout = "2.2.0"
-androidx-espresso-core = "3.6.1"
-androidx-material = "1.12.0"
-androidx-test-junit = "1.2.1"
-compose-ui-tooling = "1.8.1"
-compose-plugin = "1.10.0"
-compose-jb = "1.10.0"
-compose-jb-material3 = "1.10.0-alpha05"
-sqldelight = "2.1.0"
-kotlinInject = "0.8.0"
+spotless = "8.6.0"
+truth = "1.4.5"
+turbine = "1.2.1"
+androidx-constraintlayout = "2.2.1"
+androidx-espresso-core = "3.7.0"
+androidx-material = "1.14.0"
+androidx-test-junit = "1.3.0"
+compose-ui-tooling = "1.11.2"
+compose-plugin = "1.11.1"
+compose-jb = "1.11.1"
+compose-jb-material3 = "1.9.0"
+sqldelight = "2.3.2"
+kotlinInject = "0.9.0"
 multiplatform-settings = "1.3.0"
-kermit = "2.0.5"
-koin = "4.1.0"
-koin-annotations = "2.0.0"
-ktor = "3.1.2"
-ktrofit = "2.7.2"
-buildKonfig = "0.15.2"
-lifecycle-viewmodel-compose = "2.9.0"
-navigation-compose = "2.9.0-beta02"
+kermit = "2.1.0"
+koin = "4.2.1"
+ktor = "3.5.0"
+ktrofit = "2.7.4"
+ktrofitConverters = "2.7.2"
+buildKonfig = "0.21.2"
+lifecycle-viewmodel-compose = "2.10.0"
+navigation-compose = "2.9.2"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -109,13 +109,9 @@ coil-core = { group = "io.coil-kt.coil3", name = "coil-core", version.ref = "coi
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose-core", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
-koin-annotations-bom = { group = "io.insert-koin", name = "koin-annotations-bom", version.ref = "koin-annotations" }
-koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }
-koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-annotations" }
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android"}
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose"}
-koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup"}
 koin-core = { group = "io.insert-koin", name = "koin-core"}
 koin-core-coroutines = { group = "io.insert-koin", name = "koin-android-coroutines"}
 koin-compose = { group = "io.insert-koin", name = "koin-compose"}
@@ -175,9 +171,8 @@ ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "kt
 ktor-client-winhttp = { group = "io.ktor", name = "ktor-client-winhttp", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktorfit-lib = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktrofit" }
-ktorfit-converters-flow = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-flow", version.ref = "ktrofit" }
-ktorfit-converters-call = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-call", version.ref = "ktrofit" }
-ktorfit-converters-response = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-response", version.ref = "ktrofit" }
+ktorfit-converters-flow = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-flow", version.ref = "ktrofitConverters" }
+ktorfit-converters-call = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-call", version.ref = "ktrofitConverters" }
 buildkonfig-gradlePlugin = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 jetbrains-compose-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 jetbrains-compose-lifecycle-runtime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-viewmodel-compose" }
@@ -190,14 +185,12 @@ jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foun
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-jb" }
 jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-jb-material3" }
 jetbrains-compose-material3-adaptiveNavigationSuite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose-jb-material3" }
-jetbrains-compose-material-iconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version = "1.7.3" }
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-jb" }
 jetbrains-compose-ui-util = { module = "org.jetbrains.compose.ui:ui-util", version.ref = "compose-jb" }
 jetbrains-compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-jb" }
 jetbrains-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-jb" }
 jetbrains-compose-ui-test-junit4 = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "compose-jb" }
 jetbrains-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-jb" }
-jetbrains-compose-components-uiToolingPreview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-jb" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -209,7 +202,7 @@ spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plug
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }
 android-lint = { id = "com.android.lint", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark"}
@@ -222,7 +215,6 @@ module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqldelight-gradle-plugin = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
@@ -231,6 +223,7 @@ buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig"
 
 # Plugins defined by this project
 nowinandroid-android-application-jacoco = { id = "nowinandroid.android.application.jacoco" }
+nowinandroid-android-application = { id = "nowinandroid.android.application" }
 nowinandroid-android-library-jacoco = { id = "nowinandroid.android.library.jacoco" }
 nowinandroid-android-lint = { id = "nowinandroid.android.lint" }
 nowinandroid-android-test = { id = "nowinandroid.android.test" }

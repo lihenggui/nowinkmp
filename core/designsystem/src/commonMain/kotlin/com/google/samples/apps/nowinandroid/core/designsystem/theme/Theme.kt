@@ -189,6 +189,7 @@ fun NiaTheme(
     // Color scheme
     val colorScheme = when {
         androidTheme -> if (darkTheme) DarkAndroidColorScheme else LightAndroidColorScheme
+
         // Workaround for dynamic theming support in Compose Multiplatform
 //        !disableDynamicTheming && supportsDynamicTheming() -> {
 //            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)

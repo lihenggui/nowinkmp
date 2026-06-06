@@ -234,7 +234,9 @@ private fun DarkThemeConfigProto.toDarkThemeConfig(): DarkThemeConfig {
         DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
         DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM,
         -> DarkThemeConfig.FOLLOW_SYSTEM
+
         DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
+
         DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT -> DarkThemeConfig.LIGHT
     }
 }

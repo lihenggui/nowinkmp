@@ -21,26 +21,22 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-}
+
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
+        androidResources {
+            enable = true
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.jetbrains.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
         }
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.compose.ui.test)
-            implementation(projects.core.testing)
-        }
-        androidUnitTest.dependencies {
+        getByName("androidHostTest").dependencies {
             implementation(libs.androidx.compose.ui.test)
             implementation(libs.androidx.compose.ui.testManifest)
             implementation(libs.robolectric)
@@ -54,7 +50,6 @@ kotlin {
             implementation(libs.jetbrains.compose.material)
             implementation(libs.jetbrains.compose.material3)
             implementation(libs.jetbrains.compose.material3.adaptiveNavigationSuite)
-            implementation(libs.jetbrains.compose.material.iconsExtended)
             implementation(libs.jetbrains.compose.ui)
             implementation(libs.jetbrains.compose.ui.util)
             implementation(libs.jetbrains.compose.components.resources)

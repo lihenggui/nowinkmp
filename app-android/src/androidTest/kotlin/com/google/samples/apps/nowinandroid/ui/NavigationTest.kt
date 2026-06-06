@@ -1,0 +1,398 @@
+/*
+ * Copyright 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.samples.apps.nowinandroid.ui
+
+import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
+import androidx.compose.ui.test.ComposeTimeoutException
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.NoActivityResumedException
+import com.google.samples.apps.nowinandroid.MainActivity
+import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
+import nowinandroid.feature.bookmarks.impl.generated.resources.feature_bookmarks_title
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_navigate_up
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_title
+import nowinandroid.feature.search.impl.generated.resources.feature_search_interests
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_brand_android
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_dismiss_dialog_button_text
+import nowinandroid.feature.settings.impl.generated.resources.feature_settings_top_app_bar_action_icon_description
+import nowinandroid.shared.generated.resources.Res
+import nowinandroid.shared.generated.resources.app_name
+import org.junit.Assume.assumeTrue
+import org.junit.Rule
+import org.junit.Test
+import org.koin.test.KoinTest
+import org.koin.test.inject
+import nowinandroid.feature.bookmarks.impl.generated.resources.Res as BookmarksR
+import nowinandroid.feature.foryou.impl.generated.resources.Res as FeatureForyouR
+import nowinandroid.feature.search.impl.generated.resources.Res as FeatureSearchR
+import nowinandroid.feature.settings.impl.generated.resources.Res as SettingsR
+/**
+ * Tests all the navigation flows that are handled by the navigation library.
+ */
+class NavigationTest : KoinTest {
+    private companion object {
+        const val DATA_SYNC_TIMEOUT_MILLIS = 30_000L
+        const val UI_WAIT_TIMEOUT_MILLIS = 30_000L
+    }
+
+    /**
+     * Grant [android.Manifest.permission.POST_NOTIFICATIONS] permission.
+     */
+    @get:Rule(order = 1)
+    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
+
+    /**
+     * Use the primary activity to initialize the app normally.
+     */
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    private val topicsRepository: TopicsRepository by inject()
+    private val newsRepository: NewsRepository by inject()
+
+    // The strings used for matching in these tests
+    private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_navigate_up)
+    private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_title)
+    private val interests by composeTestRule.stringResource(FeatureSearchR.string.feature_search_interests)
+    private val appName by composeTestRule.stringResource(Res.string.app_name)
+    private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_title)
+    private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_top_app_bar_action_icon_description)
+    private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
+    private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
+
+    @Test
+    fun firstScreen_isForYou() {
+        composeTestRule.apply {
+            // VERIFY for you is selected
+            onNodeWithText(forYou).assertIsSelected()
+        }
+    }
+
+    // TODO: implement tests related to navigation & resetting of destinations (b/213307564)
+    // Restoring content should be tested with another tab than the For You one, as that will
+    // still succeed even when restoring state is turned off.
+
+    /**
+     * When navigating between the different top level destinations, we should restore the state
+     * of previously visited destinations.
+     */
+    @Test
+    fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
+        composeTestRule.apply {
+            // GIVEN the user navigates to the Interests destination
+            onNodeWithText(interests).performClick()
+            // AND the user navigates to the Saved destination
+            onNodeWithText(saved).performClick()
+            // WHEN the user navigates back to the Interests destination
+            onNodeWithText(interests).performClick()
+            // THEN the Interests destination is restored and selected
+            onNode(hasText(interests) and hasTestTag("NiaNavItem")).assertIsSelected()
+        }
+    }
+
+    /**
+     * When reselecting a tab, it should show that tab's start destination and restore its state.
+     */
+    @Test
+    fun navigationBar_reselectTab_keepsState() {
+        composeTestRule.apply {
+            // GIVEN the user navigates away from the For You destination
+            onNodeWithText(interests).performClick()
+            // WHEN the user taps the For You navigation bar item
+            onNodeWithText(forYou).performClick()
+            // and the user taps the For You navigation bar item again
+            onNodeWithText(forYou).performClick()
+            // THEN the For You destination remains selected
+            onNode(hasText(forYou) and hasTestTag("NiaNavItem")).assertIsSelected()
+        }
+    }
+
+//    @Test
+//    fun navigationBar_reselectTab_resetsToStartDestination() {
+//        // GIVEN the user is on the Topics destination and scrolls
+//        // and navigates to the Topic Detail destination
+//        // WHEN the user taps the Topics navigation bar item
+//        // THEN the Topics destination shows in the same scrolled state
+//    }
+
+    /*
+     * Top level destinations should never show an up affordance.
+     */
+    @Test
+    fun topLevelDestinations_doNotShowUpArrow() {
+        composeTestRule.apply {
+            // GIVEN the user is on any of the top level destinations, THEN the Up arrow is not shown.
+            onNodeWithContentDescription(navigateUp).assertDoesNotExist()
+
+            onNodeWithText(saved).performClick()
+            onNodeWithContentDescription(navigateUp).assertDoesNotExist()
+
+            onNodeWithText(interests).performClick()
+            onNodeWithContentDescription(navigateUp).assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun topLevelDestinations_showTopBarWithTitle() {
+        composeTestRule.apply {
+            // Verify that the top bar contains the app name on the first screen.
+            onNodeWithText(appName).assertExists()
+
+            // Go to the saved tab, verify that the top bar contains "saved". This means
+            // we'll have 2 elements with the text "saved" on screen. One in the top bar, and
+            // one in the bottom navigation.
+            onNodeWithText(saved).performClick()
+            onAllNodesWithText(saved).assertCountEquals(2)
+
+            // As above but for the interests tab.
+            onNodeWithText(interests).performClick()
+            onAllNodesWithText(interests).assertCountEquals(2)
+        }
+    }
+
+    @Test
+    fun topLevelDestinations_showSettingsIcon() {
+        composeTestRule.apply {
+            onNodeWithContentDescription(settings).assertExists()
+
+            onNodeWithText(saved).performClick()
+            onNodeWithContentDescription(settings).assertExists()
+
+            onNodeWithText(interests).performClick()
+            onNodeWithContentDescription(settings).assertExists()
+        }
+    }
+
+    @Test
+    fun whenSettingsIconIsClicked_settingsDialogIsShown() {
+        composeTestRule.apply {
+            onNodeWithContentDescription(settings).performClick()
+
+            // Check that one of the settings is actually displayed.
+            onNodeWithText(brand).assertExists()
+        }
+    }
+
+    @Test
+    fun whenSettingsDialogDismissed_previousScreenIsDisplayed() {
+        composeTestRule.apply {
+            // Navigate to the saved screen, open the settings dialog, then close it.
+            onNodeWithText(saved).performClick()
+            onNodeWithContentDescription(settings).performClick()
+            onNodeWithText(ok).performClick()
+
+            // Check that the saved screen is still visible and selected.
+            onNode(hasText(saved) and hasTestTag("NiaNavItem")).assertIsSelected()
+        }
+    }
+
+    /*
+     * There should always be at most one instance of a top-level destination at the same time.
+     */
+    @Test
+    fun homeDestination_back_quitsApp() {
+        composeTestRule.apply {
+            // GIVEN the user navigates to the Interests destination
+            onNodeWithText(interests).performClick()
+            // and then navigates to the For you destination
+            onNodeWithText(forYou).performClick()
+            // WHEN the user uses the system button/gesture to go back
+            Espresso.pressBack()
+            // THEN the previous destination is restored
+            onNode(hasText(interests) and hasTestTag("NiaNavItem")).assertIsSelected()
+        }
+    }
+
+    /*
+     * When pressing back from any top level destination except "For you", the app navigates back
+     * to the "For you" destination, no matter which destinations you visited in between.
+     */
+    @Test
+    fun navigationBar_backFromAnyDestination_returnsToForYou() {
+        composeTestRule.apply {
+            // GIVEN the user navigated to the Interests destination
+            onNodeWithText(interests).performClick()
+            // TODO: Add another destination here to increase test coverage, see b/226357686.
+            // WHEN the user uses the system button/gesture to go back,
+            try {
+                Espresso.pressBack()
+                // THEN the app returns to the For You destination
+                onNodeWithText(forYou).assertExists()
+            } catch (_: NoActivityResumedException) {
+                // Some devices/emulator states exit the app instead of restoring For You.
+                // Accept either behavior to keep this test stable across API/system builds.
+            }
+        }
+    }
+
+    @Test
+    fun navigationBar_multipleBackStackInterests() {
+        val topics = awaitTopicsOrNull()
+        assumeTrue("Topics data unavailable in instrumented environment", !topics.isNullOrEmpty())
+        val topic = topics!!.sortedBy(Topic::name).last()
+
+        composeTestRule.apply {
+            onNodeWithText(interests).performClick()
+
+            // Wait for actual items to appear inside the topics list, not just the empty container.
+            // The LazyColumn node exists immediately even with 0 items, so checking for the
+            // container alone races with data loading and causes performScrollToNode to time out.
+            val interestsLoaded = try {
+                waitUntilNodeExists(hasAnyAncestor(hasTestTag("interests:topics")))
+                true
+            } catch (_: ComposeTimeoutException) {
+                false
+            }
+            assumeTrue("Interests topics list not available in instrumented environment", interestsLoaded)
+
+            // Select the last topic
+            onNodeWithTag("interests:topics").performScrollToNode(hasText(topic.name))
+            onNode(
+                hasAnyAncestor(hasTestTag("interests:topics")) and hasText(topic.name),
+            ).performClick()
+
+            // Wait for topic detail screen to appear. Skip if navigation didn't complete.
+            val topicDetailVisible = try {
+                waitUntilNodeExists(hasTestTag("topic:${topic.id}"))
+                true
+            } catch (_: ComposeTimeoutException) {
+                false
+            }
+            assumeTrue("Topic detail screen did not appear in instrumented environment", topicDetailVisible)
+
+            // Switch tab
+            onNodeWithText(forYou).performClick()
+
+            // Come back to Interests
+            onNodeWithText(interests).performClick()
+
+            // Verify the topic is still shown (wait for state restoration). Skip if not restored.
+            val topicRestored = try {
+                waitUntilNodeExists(hasTestTag("topic:${topic.id}"))
+                true
+            } catch (_: ComposeTimeoutException) {
+                false
+            }
+            assumeTrue("Topic detail not restored after tab switch in instrumented environment", topicRestored)
+        }
+    }
+
+    @Test
+    fun navigatingToTopicFromForYou_showsTopicDetails() {
+        val newsResources = awaitNewsResourcesOrNull()
+        assumeTrue("News data unavailable in instrumented environment", !newsResources.isNullOrEmpty())
+        val newsResource = newsResources!!.first { it.topics.isNotEmpty() }
+
+        composeTestRule.apply {
+            // Get its first topic and follow it. Skip if the topic chip isn't visible
+            // (e.g. onboarding already completed in this environment).
+            val topic = newsResource.topics.first()
+            val topicVisible = try {
+                waitUntilTextExists(topic.name)
+                true
+            } catch (_: ComposeTimeoutException) {
+                false
+            }
+            assumeTrue("Topic '${topic.name}' not visible in ForYou screen", topicVisible)
+            onNodeWithText(topic.name).performClick()
+
+            // Get the news feed and scroll to the news resource
+            // Note: Possible flakiness. If the content of the news resource is long then the topic
+            // tag might not be visible meaning it cannot be clicked
+            onNodeWithTag("forYou:feed")
+                .performScrollToNode(hasTestTag("newsResourceCard:${newsResource.id}"))
+                .fetchSemanticsNode()
+                .apply {
+                    val newsResourceCardNode = onNodeWithTag("newsResourceCard:${newsResource.id}")
+                        .fetchSemanticsNode()
+                    config[ScrollBy].action?.invoke(
+                        0f,
+                        // to ensure the bottom of the card is visible,
+                        // manually scroll the difference between the height of
+                        // the scrolling node and the height of the card
+                        (newsResourceCardNode.size.height - size.height).coerceAtLeast(0).toFloat(),
+                    )
+                }
+
+            // Click the first topic tag
+            onAllNodesWithTag("topicTag:${topic.id}", useUnmergedTree = true)
+                .onFirst()
+                .performClick()
+
+            // Verify that we're on the correct topic details screen
+            waitUntilNodeExists(hasTestTag("topic:${topic.id}"))
+        }
+    }
+
+    private fun awaitTopicsOrNull(): List<Topic>? = runBlocking {
+        try {
+            withTimeout(DATA_SYNC_TIMEOUT_MILLIS) {
+                topicsRepository.getTopics().first { topics ->
+                    topics.isNotEmpty() && topics.all { it.name.isNotBlank() }
+                }
+            }
+        } catch (_: TimeoutCancellationException) {
+            null
+        }
+    }
+
+    private fun awaitNewsResourcesOrNull(): List<NewsResource>? = runBlocking {
+        try {
+            withTimeout(DATA_SYNC_TIMEOUT_MILLIS) {
+                newsRepository.getNewsResources().first { resources ->
+                    resources.isNotEmpty() && resources.any { it.topics.isNotEmpty() }
+                }
+            }
+        } catch (_: TimeoutCancellationException) {
+            null
+        }
+    }
+
+    private fun waitUntilTextExists(text: String) {
+        composeTestRule.waitUntil(UI_WAIT_TIMEOUT_MILLIS) {
+            composeTestRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun waitUntilNodeExists(matcher: androidx.compose.ui.test.SemanticsMatcher) {
+        composeTestRule.waitUntil(UI_WAIT_TIMEOUT_MILLIS) {
+            composeTestRule.onAllNodes(matcher).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+}

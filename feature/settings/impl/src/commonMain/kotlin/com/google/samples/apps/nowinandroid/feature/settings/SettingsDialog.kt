@@ -109,10 +109,10 @@ fun SettingsDialog(
 ) {
     val configuration = LocalViewConfiguration.current
 
-    /**
-     * usePlatformDefaultWidth = false is use as a temporary fix to allow
+    /*
+     * usePlatformDefaultWidth = false is used as a temporary fix to allow
      * height recalculation during recomposition. This, however, causes
-     * Dialog's to occupy full width in Compact mode. Therefore max width
+     * Dialogs to occupy full width in Compact mode. Therefore max width
      * is configured below. This should be removed when there's fix to
      * https://issuetracker.google.com/issues/221643630
      */

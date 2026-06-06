@@ -122,6 +122,7 @@ private fun topicUiState(
                 }
 
                 is Result.Loading -> TopicUiState.Loading
+
                 is Result.Error -> TopicUiState.Error
             }
         }

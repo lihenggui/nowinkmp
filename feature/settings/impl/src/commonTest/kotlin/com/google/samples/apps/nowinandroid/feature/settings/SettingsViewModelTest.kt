@@ -34,6 +34,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
 
     private val userDataRepository = TestUserDataRepository()
@@ -56,7 +57,6 @@ class SettingsViewModelTest {
         assertEquals(Loading, viewModel.settingsUiState.value)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun stateIsSuccessAfterUserDataLoaded() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.settingsUiState.collect() }

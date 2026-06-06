@@ -39,11 +39,12 @@ import com.google.samples.apps.nowinandroid.ui.NiaApp
 import com.google.samples.apps.nowinandroid.ui.rememberNiaAppState
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
+import org.koin.dsl.koinConfiguration
 
 @Composable
 fun App() {
     KoinApplication(
-        application = {
+        configuration = koinConfiguration {
             modules(appModules)
         },
     ) {
@@ -91,6 +92,7 @@ fun shouldUseAndroidTheme(
     uiState: MainScreenUiState,
 ): Boolean = when (uiState) {
     Loading -> false
+
     is Success -> when (uiState.userData.themeBrand) {
         ThemeBrand.DEFAULT -> false
         ThemeBrand.ANDROID -> true
@@ -117,6 +119,7 @@ fun shouldUseDarkTheme(
     uiState: MainScreenUiState,
 ): Boolean = when (uiState) {
     Loading -> isSystemInDarkTheme()
+
     is Success -> when (uiState.userData.darkThemeConfig) {
         DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
         DarkThemeConfig.LIGHT -> false

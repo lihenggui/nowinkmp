@@ -21,16 +21,12 @@ import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
-import com.google.samples.apps.nowinandroid.benchmarks.BuildConfig
 import java.io.ByteArrayOutputStream
 
 /**
- * Convenience parameter to use proper package name with regards to build type and build flavor.
+ * Application id of the Android release app under test.
  */
-val PACKAGE_NAME = buildString {
-    append("com.google.samples.apps.nowinandroid")
-    append(BuildConfig.APP_FLAVOR_SUFFIX)
-}
+const val PACKAGE_NAME = "com.google.samples.apps.nowinandroid"
 
 fun UiDevice.flingElementDownUp(element: UiObject2) {
     // Set some margin from the sides to prevent triggering system navigation

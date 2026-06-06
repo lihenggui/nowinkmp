@@ -15,14 +15,12 @@
  */
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
 
 plugins {
-    alias(libs.plugins.dependencyGuard)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.kmp.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose)
     alias(libs.plugins.spotless)
@@ -39,8 +37,12 @@ kotlin {
         }
         binaries.executable()
     }
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+    android {
+        namespace = "com.google.samples.apps.niacatalog.shared"
+        compileSdk = 37
+        minSdk = 24
+        enableCoreLibraryDesugaring = true
         compilerOptions {
             jvmTarget.set(JVM_11)
         }
@@ -53,9 +55,8 @@ kotlin {
     }
 
     listOf(
-        iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "NiaCatalog"
@@ -66,10 +67,6 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
             implementation(libs.jetbrains.compose.runtime)
             implementation(libs.jetbrains.compose.foundation)
@@ -85,50 +82,6 @@ kotlin {
     }
 }
 
-android {
-    defaultConfig {
-        applicationId = "com.google.samples.apps.niacatalog"
-        versionCode = 1
-        versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
-        minSdk = 24
-        targetSdk = 36
-        compileSdk = 36
-        // The UI catalog does not depend on content from the app, however, it depends on modules
-        // which do, so we must specify a default value for the contentType dimension.
-        missingDimensionStrategy("contentType", "demo")
-    }
-
-    packaging {
-        resources {
-            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
-        }
-    }
-    namespace = "com.google.samples.apps.niacatalog"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    buildTypes {
-        release {
-            // To publish on the Play store a private signing key is required, but to allow anyone
-            // who clones the code to sign and run the release variant, use the debug signing key.
-            // TODO: Abstract the signing configuration to a separate file to avoid hardcoding this.
-            signingConfig = signingConfigs.named("debug").get()
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
-    }
-
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
-        coreLibraryDesugaring(libs.android.desugarJdkLibs)
-    }
-}
-
 compose.desktop {
     application {
         mainClass = "MainKt"
@@ -141,8 +94,8 @@ compose.desktop {
     }
 }
 
-dependencyGuard {
-    configuration("releaseRuntimeClasspath")
+dependencies {
+    coreLibraryDesugaring(libs.android.desugarJdkLibs)
 }
 
 spotless {

@@ -16,9 +16,12 @@
 
 package com.google.samples.apps.nowinandroid
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -42,7 +45,40 @@ internal fun Project.configureKotlinMultiplatform() {
                 jvmTarget.set(JvmTarget.JVM_11)
             }
         }
-        androidTarget()
+
+        // The Android target is created by com.android.kotlin.multiplatform.library.
+        // Generated android{} accessors are not available in precompiled convention plugins.
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+            compileSdk = 37
+            minSdk = 23
+            enableCoreLibraryDesugaring = true
+            if (
+                projectDir.resolve("src/commonTest").exists() ||
+                projectDir.resolve("src/androidHostTest").exists()
+            ) {
+                withHostTest {
+                    isIncludeAndroidResources = true
+                }
+            }
+            if (projectDir.resolve("src/androidDeviceTest").exists()) {
+                withDeviceTest {
+                    instrumentationRunner =
+                        "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
+                    animationsDisabled = true
+                }
+            }
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_11)
+            }
+        }
+        val jvmComposeResources =
+            layout.buildDirectory.dir("generated/compose/resourceGenerator/assembledResources/jvmMain")
+        sourceSets.matching { it.name == "androidMain" || it.name == "androidHostTest" }.configureEach {
+            resources.srcDir(jvmComposeResources)
+        }
+        sourceSets.matching { it.name == "androidHostTest" }.configureEach {
+            resources.srcDir(isolated.rootProject.projectDirectory.dir("config/robolectric"))
+        }
 
         @OptIn(ExperimentalWasmDsl::class)
         wasmJs {
@@ -59,10 +95,8 @@ internal fun Project.configureKotlinMultiplatform() {
 // :core:datastore:linuxMain: Could not resolve com.russhwolf:multiplatform-settings-no-arg:1.1.1.
 // https://github.com/russhwolf/multiplatform-settings/issues/113
 //        linuxX64()
-        macosX64()
         macosArm64()
         iosSimulatorArm64()
-        iosX64()
 
 // Fix :core:database:linuxArm64Main: Could not resolve me.tatarka.inject:kotlin-inject-runtime:0.6.3.
 //        // tier 2
@@ -116,6 +150,17 @@ internal fun Project.configureKotlinMultiplatform() {
         // Android tasks are named like "compileDebugJavaWithJavac"; KMP JVM tasks like "compileJvmMainJava"
         if (!name.endsWith("JavaWithJavac")) {
             options.release.set(11)
+        }
+    }
+    project.tasks.withType<Test>().configureEach {
+        failOnNoDiscoveredTests = false
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
+    project.pluginManager.withPlugin("org.jetbrains.compose") {
+        project.tasks.configureEach {
+            if (name == "processAndroidMainJavaRes" || name == "processAndroidHostTestJavaRes") {
+                dependsOn("assembleJvmMainResources")
+            }
         }
     }
 }

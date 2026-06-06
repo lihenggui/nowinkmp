@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.google.samples.apps.nowinandroid.configureBadgingTasks
-import com.google.samples.apps.nowinandroid.configureGradleManagedDevices
-import com.google.samples.apps.nowinandroid.configureKotlinAndroid
-import com.google.samples.apps.nowinandroid.configurePrintApksTask
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.google.samples.apps.nowinandroid.configureSpotlessForAndroid
 import com.google.samples.apps.nowinandroid.libs
 import org.gradle.api.JavaVersion
@@ -29,36 +24,23 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
-// Convention plugin for the Compose Multiplatform feature module
+// Convention plugin for the shared Compose Multiplatform application module.
 class CmpApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("com.android.application")
+                apply("com.android.kotlin.multiplatform.library")
                 apply("org.jetbrains.kotlin.multiplatform")
                 apply("org.jetbrains.kotlin.plugin.compose")
                 apply("org.jetbrains.compose")
-//                apply("com.dropbox.dependency-guard")
             }
             configureComposeMultiplatformApp()
             configureSpotlessForAndroid()
-            extensions.configure<ApplicationExtension> {
-                configureKotlinAndroid(this)
-                defaultConfig.targetSdk = 36
-                @Suppress("UnstableApiUsage")
-                testOptions.animationsDisabled = true
-                configureGradleManagedDevices(this)
-            }
-            extensions.configure<ApplicationAndroidComponentsExtension> {
-                configurePrintApksTask(this)
-                configureBadgingTasks(this)
-            }
 
             dependencies {
                 "commonMainImplementation"(project(":core:ui"))
@@ -72,6 +54,7 @@ class CmpApplicationConventionPlugin : Plugin<Project> {
 
                 "androidMainImplementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
                 "androidMainImplementation"(libs.findLibrary("androidx.tracing.ktx").get())
+                "coreLibraryDesugaring"(libs.findLibrary("android.desugarJdkLibs").get())
             }
         }
     }
@@ -85,9 +68,11 @@ private fun Project.configureComposeMultiplatformApp() {
         // https://kotlinlang.org/docs/whatsnew1820.html#new-approach-to-source-set-hierarchy
         applyDefaultHierarchyTemplate()
 
-        // Configure JVM target for Android
-        androidTarget {
-            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        // The Android target is created by com.android.kotlin.multiplatform.library.
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+            compileSdk = 37
+            minSdk = 23
+            enableCoreLibraryDesugaring = true
             compilerOptions {
                 jvmTarget.set(JvmTarget.JVM_11)
             }
@@ -102,7 +87,6 @@ private fun Project.configureComposeMultiplatformApp() {
 
         // Configure iOS targets
         listOf(
-            iosX64(),
             iosArm64(),
             iosSimulatorArm64(),
         ).forEach { iosTarget ->
@@ -113,7 +97,6 @@ private fun Project.configureComposeMultiplatformApp() {
         }
 
         // Other targets
-        macosX64()
         macosArm64()
 
         @OptIn(ExperimentalWasmDsl::class)

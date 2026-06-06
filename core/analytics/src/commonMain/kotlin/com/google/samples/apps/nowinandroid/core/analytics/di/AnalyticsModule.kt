@@ -18,11 +18,11 @@ package com.google.samples.apps.nowinandroid.core.analytics.di
 
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.StubAnalyticsHelper
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-@Module
-class AnalyticsModule {
-    @Single
-    fun providesAnalyticsHelper(): AnalyticsHelper = StubAnalyticsHelper()
+val analyticsModule: Module = module {
+    single<AnalyticsHelper> {
+        StubAnalyticsHelper()
+    }
 }

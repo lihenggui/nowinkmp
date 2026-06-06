@@ -47,8 +47,8 @@ export JAVA_HOME=
 ./gradlew "${GRADLE_FLAGS[@]}" build
 
 # For Firebase Test Lab
-./gradlew assembleAndroidTest
-./gradlew assembleDebug
+./gradlew :app-android:assembleDebugAndroidTest
+./gradlew :app-android:assembleDebug
 
 MAX_RETRY=3
 run_firebase_test_lab() {
@@ -65,7 +65,7 @@ run_firebase_test_lab() {
   while [ $result != 0 -a $counter -lt $MAX_RETRY ]; do
     gcloud firebase test android run \
       --type instrumentation \
-      --app  "app/build/outputs/apk/demo/debug/app-demo-debug.apk" \
+      --app  "app-android/build/outputs/apk/debug/app-android-debug.apk" \
       --test "$testApk" \
       --device-ids $deviceIds \
       --os-version-ids $osVersionIds \
@@ -79,7 +79,7 @@ run_firebase_test_lab() {
 
 
 # All modules with androidTest to run tests on.
-testApks=($(./gradlew -q demoDebugPrintTestApk))
+testApks=($(./gradlew -q :app-android:debugPrintTestApk))
 
 # Run all modules in parallel with Firebase Test Lab, and fail if any fail
 pids=""

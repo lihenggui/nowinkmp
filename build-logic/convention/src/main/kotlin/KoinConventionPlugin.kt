@@ -18,53 +18,14 @@ import com.google.samples.apps.nowinandroid.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 class KoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("com.google.devtools.ksp")
-            }
-
-            extensions.configure(com.google.devtools.ksp.gradle.KspExtension::class.java) {
-                arg("KOIN_DEFAULT_MODULE", "true")
-            }
-
-            extensions.configure(KotlinMultiplatformExtension::class.java) {
-                sourceSets.named("commonMain").configure {
-                    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-                }
-            }
-
             dependencies {
                 "commonMainImplementation"(platform(libs.findLibrary("koin.bom").get()))
                 "commonMainImplementation"(libs.findLibrary("koin.core").get())
-                "commonMainApi"(platform(libs.findLibrary("koin.annotations.bom").get()))
-                "commonMainApi"(libs.findLibrary("koin.annotations").get())
                 "commonTestImplementation"(libs.findLibrary("koin.test").get())
-                "kspCommonMainMetadata"(libs.findLibrary("koin.ksp.compiler").get())
-                "kspAndroid"(libs.findLibrary("koin.ksp.compiler").get())
-                "kspIosX64"(libs.findLibrary("koin.ksp.compiler").get())
-                "kspIosArm64"(libs.findLibrary("koin.ksp.compiler").get())
-                "kspIosSimulatorArm64"(libs.findLibrary("koin.ksp.compiler").get())
-                "kspJvm"(libs.findLibrary("koin.ksp.compiler").get())
-            }
-
-            project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-                if (name != "kspCommonMainKotlinMetadata") {
-                    dependsOn("kspCommonMainKotlinMetadata")
-                }
-            }
-            // KSP2 uses KspAATask which isn't a KotlinCompilationTask but still
-            // needs to depend on kspCommonMainKotlinMetadata for the shared source set.
-            project.tasks.configureEach {
-                if (name.startsWith("ksp") && name != "kspCommonMainKotlinMetadata" &&
-                    name.contains("Kotlin")
-                ) {
-                    dependsOn("kspCommonMainKotlinMetadata")
-                }
             }
         }
     }

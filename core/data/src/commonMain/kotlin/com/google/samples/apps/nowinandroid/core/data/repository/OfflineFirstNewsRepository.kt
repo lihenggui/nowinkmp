@@ -88,6 +88,7 @@ class OfflineFirstNewsRepository(
                     )
                         .first()
                         .toSet()
+
                     // No need to retrieve anything if notifications won't be sent
                     else -> emptySet()
                 }

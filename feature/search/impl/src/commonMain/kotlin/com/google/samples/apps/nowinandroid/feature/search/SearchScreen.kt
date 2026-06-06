@@ -166,6 +166,7 @@ internal fun SearchScreen(
             -> Unit
 
             SearchResultUiState.SearchNotReady -> SearchNotReadyBody()
+
             SearchResultUiState.EmptyQuery,
             -> {
                 if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {

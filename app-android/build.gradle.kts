@@ -90,11 +90,17 @@ dependencies {
 
     androidTestImplementation(projects.core.dataTest)
     androidTestImplementation(projects.core.testing)
+    androidTestImplementation(projects.feature.bookmarks.impl)
+    androidTestImplementation(projects.feature.foryou.impl)
+    androidTestImplementation(projects.feature.search.impl)
+    androidTestImplementation(projects.feature.settings.impl)
+    androidTestImplementation(projects.shared)
     androidTestImplementation(project.dependencies.platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.android)
     androidTestImplementation(libs.androidx.compose.ui.testManifest)
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.jetbrains.compose.components.resources)
     androidTestImplementation(libs.koin.test)
 }
 

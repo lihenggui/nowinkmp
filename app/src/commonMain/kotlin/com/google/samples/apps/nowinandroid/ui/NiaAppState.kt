@@ -141,6 +141,10 @@ class NiaAppState(
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         trace("Navigation: ${topLevelDestination.name}") {
+            if (navController.currentDestination?.hasRoute(topLevelDestination.route) == true) {
+                return@trace
+            }
+
             val topLevelNavOptions = navOptions {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations

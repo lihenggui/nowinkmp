@@ -39,7 +39,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 configureAndroidCompose(this)
-                defaultConfig.targetSdk = 36
+                defaultConfig.targetSdk = 37
                 @Suppress("UnstableApiUsage")
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)

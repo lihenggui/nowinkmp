@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,8 +41,10 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconT
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import nowinandroid.core.ui.generated.resources.Res
+import nowinandroid.core.ui.generated.resources.core_ui_ic_topic_placeholder
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_follow_button_content_desc
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_unfollow_button_content_desc
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -105,7 +108,7 @@ fun InterestsItem(
 
 @Composable
 private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) {
-    if (topicImageUrl.isEmpty()) {
+    if (topicImageUrl.isEmpty() || LocalInspectionMode.current) {
         Icon(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.surface)
@@ -120,6 +123,7 @@ private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) 
             contentDescription = null,
             modifier = modifier,
             imageLoader = ImageLoader(LocalPlatformContext.current),
+            placeholder = painterResource(Res.drawable.core_ui_ic_topic_placeholder),
         )
     }
 }

@@ -94,9 +94,11 @@ import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import nowinandroid.feature.foryou.impl.generated.resources.Res
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_done
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_ic_icon_placeholder
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_loading
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_subtitle
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -429,7 +431,6 @@ fun TopicIcon(
     modifier: Modifier = Modifier,
 ) {
     DynamicAsyncImage(
-//        placeholder = painterResource(R.drawable.feature_foryou_ic_icon_placeholder),
         imageUrl = imageUrl,
         // decorative
         contentDescription = null,
@@ -437,6 +438,7 @@ fun TopicIcon(
             .padding(10.dp)
             .size(32.dp),
         imageLoader = ImageLoader(LocalPlatformContext.current),
+        placeholder = painterResource(Res.drawable.feature_foryou_ic_icon_placeholder),
     )
 }
 

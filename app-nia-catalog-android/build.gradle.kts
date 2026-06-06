@@ -30,7 +30,7 @@ android {
         versionCode = 1
         versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
     }
 
     buildFeatures {

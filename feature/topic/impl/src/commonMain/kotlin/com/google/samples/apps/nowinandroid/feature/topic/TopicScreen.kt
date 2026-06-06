@@ -70,7 +70,9 @@ import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.userNewsResourceCardItems
 import nowinandroid.core.ui.generated.resources.core_ui_back
 import nowinandroid.feature.topic.impl.generated.resources.Res
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_ic_topic_placeholder
 import nowinandroid.feature.topic.impl.generated.resources.feature_topic_loading
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -228,6 +230,7 @@ private fun TopicHeader(name: String, description: String, imageUrl: String) {
                 .size(132.dp)
                 .padding(bottom = 12.dp),
             imageLoader = ImageLoader(LocalPlatformContext.current),
+            placeholder = painterResource(Res.drawable.feature_topic_ic_topic_placeholder),
         )
         Text(name, style = MaterialTheme.typography.displayMedium)
         if (description.isNotEmpty()) {

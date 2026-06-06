@@ -288,7 +288,7 @@ jobs:
 
   multiplatform:
     name: "Multiplatform checks (iOS, macOS, JVM Desktop)"
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 90
 
     permissions:

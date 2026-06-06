@@ -20,7 +20,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +37,7 @@ import coil3.ImageLoader
 import coil3.compose.LocalPlatformContext
 import com.google.samples.apps.nowinandroid.core.designsystem.component.DynamicAsyncImage
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import nowinandroid.core.ui.generated.resources.Res
@@ -74,16 +74,16 @@ fun InterestsItem(
                 checked = following,
                 onCheckedChange = onFollowButtonClick,
                 icon = {
-                    Icon(
-                        imageVector = NiaIcons.Add,
+                    NiaIcon(
+                        icon = NiaIcons.Add,
                         contentDescription = stringResource(
                             Res.string.core_ui_interests_card_follow_button_content_desc,
                         ),
                     )
                 },
                 checkedIcon = {
-                    Icon(
-                        imageVector = NiaIcons.Check,
+                    NiaIcon(
+                        icon = NiaIcons.Check,
                         contentDescription = stringResource(
                             Res.string.core_ui_interests_card_unfollow_button_content_desc,
                         ),
@@ -109,11 +109,11 @@ fun InterestsItem(
 @Composable
 private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) {
     if (topicImageUrl.isEmpty() || LocalInspectionMode.current) {
-        Icon(
+        NiaIcon(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(4.dp),
-            imageVector = NiaIcons.Person,
+            icon = NiaIcons.Person,
             // decorative image
             contentDescription = null,
         )

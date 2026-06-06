@@ -43,7 +43,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -80,6 +79,7 @@ import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
@@ -427,8 +427,8 @@ private fun RecentSearchesBody(
                     },
                     modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
-                    Icon(
-                        imageVector = NiaIcons.Close,
+                    NiaIcon(
+                        icon = NiaIcons.Close,
                         contentDescription = stringResource(
                             searchR.string.feature_search_clear_recent_searches_content_desc,
                         ),
@@ -465,8 +465,8 @@ private fun SearchToolbar(
         modifier = modifier.fillMaxWidth(),
     ) {
         IconButton(onClick = { onBackClick() }) {
-            Icon(
-                imageVector = NiaIcons.ArrowBack,
+            NiaIcon(
+                icon = NiaIcons.ArrowBack,
                 contentDescription = stringResource(
                     uiR.string.core_ui_back,
                 ),
@@ -501,8 +501,8 @@ private fun SearchTextField(
             disabledIndicatorColor = Color.Transparent,
         ),
         leadingIcon = {
-            Icon(
-                imageVector = NiaIcons.Search,
+            NiaIcon(
+                icon = NiaIcons.Search,
                 contentDescription = stringResource(
                     searchR.string.feature_search_title,
                 ),
@@ -516,8 +516,8 @@ private fun SearchTextField(
                         onSearchQueryChanged("")
                     },
                 ) {
-                    Icon(
-                        imageVector = NiaIcons.Close,
+                    NiaIcon(
+                        icon = NiaIcons.Close,
                         contentDescription = stringResource(
                             searchR.string.feature_search_clear_search_text_content_desc,
                         ),

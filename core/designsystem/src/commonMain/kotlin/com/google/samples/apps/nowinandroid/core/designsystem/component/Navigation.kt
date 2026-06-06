@@ -18,7 +18,6 @@ package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -39,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
@@ -283,14 +283,14 @@ fun NiaNavigationBarPreview() {
             items.forEachIndexed { index, item ->
                 NiaNavigationBarItem(
                     icon = {
-                        Icon(
-                            imageVector = icons[index],
+                        NiaIcon(
+                            icon = icons[index],
                             contentDescription = item,
                         )
                     },
                     selectedIcon = {
-                        Icon(
-                            imageVector = selectedIcons[index],
+                        NiaIcon(
+                            icon = selectedIcons[index],
                             contentDescription = item,
                         )
                     },
@@ -323,14 +323,14 @@ fun NiaNavigationRailPreview() {
             items.forEachIndexed { index, item ->
                 NiaNavigationRailItem(
                     icon = {
-                        Icon(
-                            imageVector = icons[index],
+                        NiaIcon(
+                            icon = icons[index],
                             contentDescription = item,
                         )
                     },
                     selectedIcon = {
-                        Icon(
-                            imageVector = selectedIcons[index],
+                        NiaIcon(
+                            icon = selectedIcons[index],
                             contentDescription = item,
                         )
                     },

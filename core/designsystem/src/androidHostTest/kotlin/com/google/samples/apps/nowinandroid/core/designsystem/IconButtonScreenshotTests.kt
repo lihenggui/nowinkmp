@@ -17,11 +17,11 @@
 package com.google.samples.apps.nowinandroid.core.designsystem
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
 import org.junit.Rule
@@ -63,14 +63,14 @@ class IconButtonScreenshotTests {
             checked = checked,
             onCheckedChange = { },
             icon = {
-                Icon(
-                    imageVector = NiaIcons.BookmarkBorder,
+                NiaIcon(
+                    icon = NiaIcons.BookmarkBorder,
                     contentDescription = null,
                 )
             },
             checkedIcon = {
-                Icon(
-                    imageVector = NiaIcons.Bookmark,
+                NiaIcon(
+                    icon = NiaIcons.Bookmark,
                     contentDescription = null,
                 )
             },

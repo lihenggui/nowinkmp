@@ -20,7 +20,6 @@ package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,19 +27,20 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import org.jetbrains.compose.resources.DrawableResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NiaTopAppBar(
     title: String,
-    navigationIcon: ImageVector,
+    navigationIcon: DrawableResource,
     navigationIconContentDescription: String,
-    actionIcon: ImageVector,
+    actionIcon: DrawableResource,
     actionIconContentDescription: String,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
@@ -51,8 +51,8 @@ fun NiaTopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = navigationIcon,
+                NiaIcon(
+                    icon = navigationIcon,
                     contentDescription = navigationIconContentDescription,
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
@@ -60,8 +60,8 @@ fun NiaTopAppBar(
         },
         actions = {
             IconButton(onClick = onActionClick) {
-                Icon(
-                    imageVector = actionIcon,
+                NiaIcon(
+                    icon = actionIcon,
                     contentDescription = actionIconContentDescription,
                     tint = MaterialTheme.colorScheme.onSurface,
                 )

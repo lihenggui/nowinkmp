@@ -16,7 +16,6 @@
 
 package com.google.samples.apps.nowinandroid.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.feature.bookmarks.api.navigation.BookmarksRoute
 import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouBaseRoute
@@ -27,6 +26,7 @@ import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_title
 import nowinandroid.feature.search.impl.generated.resources.feature_search_interests
 import nowinandroid.shared.generated.resources.Res
 import nowinandroid.shared.generated.resources.app_name
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.reflect.KClass
 import nowinandroid.feature.bookmarks.impl.generated.resources.Res as bookmarksR
@@ -48,8 +48,8 @@ import nowinandroid.feature.search.impl.generated.resources.Res as searchR
  * there is a single destination in that section of the app (no nested destinations).
  */
 enum class TopLevelDestination(
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
+    val selectedIcon: DrawableResource,
+    val unselectedIcon: DrawableResource,
     val iconTextId: StringResource,
     val titleTextId: StringResource,
     val route: KClass<*>,

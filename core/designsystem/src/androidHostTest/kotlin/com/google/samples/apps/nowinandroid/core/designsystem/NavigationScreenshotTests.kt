@@ -17,7 +17,6 @@
 package com.google.samples.apps.nowinandroid.core.designsystem
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaNavigationBar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaNavigationBarItem
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
@@ -89,14 +89,14 @@ class NavigationScreenshotTests {
             (0..2).forEach { index ->
                 NiaNavigationBarItem(
                     icon = {
-                        Icon(
-                            imageVector = NiaIcons.UpcomingBorder,
+                        NiaIcon(
+                            icon = NiaIcons.UpcomingBorder,
                             contentDescription = "",
                         )
                     },
                     selectedIcon = {
-                        Icon(
-                            imageVector = NiaIcons.Upcoming,
+                        NiaIcon(
+                            icon = NiaIcons.Upcoming,
                             contentDescription = "",
                         )
                     },

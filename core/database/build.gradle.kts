@@ -20,11 +20,13 @@ plugins {
     alias(libs.plugins.sqldelight.gradle.plugin)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.database"
-}
+
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.database"
+    }
+
     sourceSets {
         commonMain.dependencies {
             api(projects.core.model)
@@ -38,7 +40,7 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.sqldelight.android.driver)
         }
-        androidUnitTest.dependencies {
+        getByName("androidHostTest").dependencies {
             implementation(libs.sqldelight.sqlite.driver)
         }
         nativeMain.dependencies {

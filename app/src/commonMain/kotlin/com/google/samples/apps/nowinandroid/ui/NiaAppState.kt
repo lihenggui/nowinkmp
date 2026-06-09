@@ -18,14 +18,13 @@ package com.google.samples.apps.nowinandroid.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.util.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
@@ -82,20 +81,10 @@ class NiaAppState(
     userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
-    private val previousDestination = mutableStateOf<NavDestination?>(null)
-
     val currentDestination: NavDestination?
         @Composable get() {
-            // Collect the currentBackStackEntryFlow as a state
-            val currentEntry = navController.currentBackStackEntryFlow
-                .collectAsState(initial = null)
-
-            // Fallback to previousDestination if currentEntry is null
-            return currentEntry.value?.destination.also { destination ->
-                if (destination != null) {
-                    previousDestination.value = destination
-                }
-            } ?: previousDestination.value
+            val currentEntry = navController.currentBackStackEntryAsState()
+            return currentEntry.value?.destination ?: navController.currentDestination
         }
 
     val currentTopLevelDestination: TopLevelDestination?
@@ -152,6 +141,10 @@ class NiaAppState(
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         trace("Navigation: ${topLevelDestination.name}") {
+            if (navController.currentDestination?.hasRoute(topLevelDestination.route) == true) {
+                return@trace
+            }
+
             val topLevelNavOptions = navOptions {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations

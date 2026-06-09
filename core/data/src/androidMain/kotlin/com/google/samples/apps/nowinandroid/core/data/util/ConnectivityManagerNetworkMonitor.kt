@@ -43,7 +43,7 @@ internal class ConnectivityManagerNetworkMonitor(
             return@callbackFlow
         }
 
-        /**
+        /*
          * The callback's methods are invoked on changes to *any* network matching the [NetworkRequest],
          * not just the active network. So we can simply track the presence (or absence) of such [Network].
          */
@@ -65,7 +65,7 @@ internal class ConnectivityManagerNetworkMonitor(
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
         connectivityManager.registerNetworkCallback(request, callback)
-        /**
+        /*
          * Sends the latest connectivity status to the underlying channel.
          */
         channel.trySend(connectivityManager.isCurrentlyConnected())

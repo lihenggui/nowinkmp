@@ -150,6 +150,7 @@ internal fun BookmarksScreen(
 
     when (feedState) {
         Loading -> LoadingState(modifier)
+
         is Success -> if (feedState.feed.isNotEmpty()) {
             BookmarksGrid(
                 feedState,

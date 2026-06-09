@@ -64,12 +64,19 @@ graph TB
   end
   :shared[shared]:::cmp-feature
   :benchmarks[benchmarks]:::android-test
+  :app-android[app-android]:::android-application
   :app[app]:::cmp-application
 
   :app -.-> :core:designsystem
   :app -.-> :core:ui
   :app -.-> :shared
-  :benchmarks -.->|testedApks| :app
+  :app-android -.-> :app
+  :app-android -.-> :core:analytics
+  :app-android -.-> :core:data
+  :app-android -.-> :core:designsystem
+  :app-android -.-> :core:ui
+  :app-android -.-> :sync:work
+  :benchmarks -.->|testedApks| :app-android
   :core:data -.-> :core:analytics
   :core:data --> :core:common
   :core:data --> :core:database
@@ -145,6 +152,7 @@ graph TB
 
 classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
@@ -157,6 +165,7 @@ classDef unknown fill:#FFADAD,stroke:#000,stroke-width:2px,color:#000;
 graph TB
   application[application]:::cmp-application
   feature[feature]:::cmp-feature
+  androidApplication[androidApplication]:::android-application
   library[library]:::kmp-library
   jvm[jvm]:::jvm-library
 
@@ -165,6 +174,7 @@ graph TB
 
 classDef cmp-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef cmp-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
+classDef android-application fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;
 classDef kmp-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 classDef jvm-library fill:#BDB2FF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#A0C4FF,stroke:#000,stroke-width:2px,color:#000;

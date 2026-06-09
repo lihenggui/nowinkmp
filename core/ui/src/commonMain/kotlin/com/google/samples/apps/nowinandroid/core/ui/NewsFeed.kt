@@ -45,6 +45,7 @@ fun LazyStaggeredGridScope.newsFeed(
 ) {
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
+
         is NewsFeedUiState.Success -> {
             items(
                 items = feedState.feed,

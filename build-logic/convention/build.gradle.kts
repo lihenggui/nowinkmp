@@ -68,6 +68,10 @@ gradlePlugin {
             id = "nowinandroid.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
+        register("androidApplication") {
+            id = "nowinandroid.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
         register("androidLint") {
             id = "nowinandroid.android.lint"
             implementationClass = "AndroidLintConventionPlugin"

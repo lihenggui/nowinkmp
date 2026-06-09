@@ -351,6 +351,7 @@ fun Scrollbar(
                         maxWidth = thumbSizePx.roundToInt(),
                     )
                 }
+
                 Vertical -> {
                     constraints.copy(
                         minHeight = thumbSizePx.roundToInt(),

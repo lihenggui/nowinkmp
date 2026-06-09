@@ -82,6 +82,7 @@ class DelegatingWorker(
                 analyticsHelper = koin.get<AnalyticsHelper>(),
                 syncSubscriber = koin.get<SyncSubscriber>(),
             )
+
             else -> throw IllegalArgumentException("Unable to find appropriate worker: $workerClassName")
         }
     }

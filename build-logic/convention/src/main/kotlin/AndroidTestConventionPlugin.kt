@@ -27,12 +27,11 @@ class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.test")
-            apply(plugin = "org.jetbrains.kotlin.android")
             configureSpotlessForAndroid()
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = 36
+                defaultConfig.targetSdk = 37
                 configureGradleManagedDevices(this)
             }
         }

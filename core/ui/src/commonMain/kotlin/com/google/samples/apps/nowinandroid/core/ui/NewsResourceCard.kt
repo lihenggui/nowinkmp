@@ -35,7 +35,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -64,6 +63,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTopicTag
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
@@ -256,14 +256,14 @@ fun BookmarkButton(
         onCheckedChange = { onClick() },
         modifier = modifier,
         icon = {
-            Icon(
-                imageVector = NiaIcons.BookmarkBorder,
+            NiaIcon(
+                icon = NiaIcons.BookmarkBorder,
                 contentDescription = stringResource(Res.string.core_ui_bookmark),
             )
         },
         checkedIcon = {
-            Icon(
-                imageVector = NiaIcons.Bookmark,
+            NiaIcon(
+                icon = NiaIcons.Bookmark,
                 contentDescription = stringResource(Res.string.core_ui_unbookmark),
             )
         },

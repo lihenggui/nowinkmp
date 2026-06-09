@@ -20,14 +20,13 @@ plugins {
     alias(libs.plugins.nowinandroid.android.library.jacoco)
 }
 
-android {
-    defaultConfig {
-        consumerProguardFiles("consumer-proguard-rules.pro")
-    }
-    namespace = "com.google.samples.apps.nowinandroid.core.datastore"
-}
+
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.datastore"
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.multiplatform.settings)

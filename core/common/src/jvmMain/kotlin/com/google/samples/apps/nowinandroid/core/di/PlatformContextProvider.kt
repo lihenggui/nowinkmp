@@ -17,9 +17,7 @@
 package com.google.samples.apps.nowinandroid.core.di
 
 import coil3.PlatformContext
-import org.koin.core.annotation.Single
 
-@Single
 actual class PlatformContextProvider {
     actual fun getPlatformContext(): PlatformContext = PlatformContext.INSTANCE
 }

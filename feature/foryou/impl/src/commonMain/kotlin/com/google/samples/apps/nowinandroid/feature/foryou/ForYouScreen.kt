@@ -54,7 +54,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -82,6 +81,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollba
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
@@ -94,9 +94,11 @@ import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import nowinandroid.feature.foryou.impl.generated.resources.Res
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_done
+import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_ic_icon_placeholder
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_loading
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_subtitle
 import nowinandroid.feature.foryou.impl.generated.resources.feature_foryou_onboarding_guidance_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -407,14 +409,14 @@ private fun SingleTopicButton(
                 checked = isSelected,
                 onCheckedChange = { checked -> onClick(topicId, checked) },
                 icon = {
-                    Icon(
-                        imageVector = NiaIcons.Add,
+                    NiaIcon(
+                        icon = NiaIcons.Add,
                         contentDescription = name,
                     )
                 },
                 checkedIcon = {
-                    Icon(
-                        imageVector = NiaIcons.Check,
+                    NiaIcon(
+                        icon = NiaIcons.Check,
                         contentDescription = name,
                     )
                 },
@@ -429,7 +431,6 @@ fun TopicIcon(
     modifier: Modifier = Modifier,
 ) {
     DynamicAsyncImage(
-//        placeholder = painterResource(R.drawable.feature_foryou_ic_icon_placeholder),
         imageUrl = imageUrl,
         // decorative
         contentDescription = null,
@@ -437,6 +438,7 @@ fun TopicIcon(
             .padding(10.dp)
             .size(32.dp),
         imageLoader = ImageLoader(LocalPlatformContext.current),
+        placeholder = painterResource(Res.drawable.feature_foryou_ic_icon_placeholder),
     )
 }
 

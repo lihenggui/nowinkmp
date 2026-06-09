@@ -59,8 +59,8 @@ jobs:
           -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
           -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
 
-      - name: Build all build type and flavor permutations including baseline profiles
-        run: ./gradlew :app:assemble
+      - name: Build all build type permutations including baseline profiles
+        run: ./gradlew :app-android:assemble
              -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=baselineprofile
              -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
              -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true

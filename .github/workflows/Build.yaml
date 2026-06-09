@@ -103,7 +103,7 @@ jobs:
       - name: Run Android screenshot tests (Roborazzi)
         id: screenshotsverify
         continue-on-error: true
-        run: ./gradlew verifyRoborazziDebug
+        run: ./gradlew verifyRoborazziAndroidHostTest
 
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
@@ -119,7 +119,7 @@ jobs:
         id: screenshotsrecord
         if: steps.screenshotsverify.outcome == 'failure' && github.event_name == 'pull_request'
         run: |
-          ./gradlew recordRoborazziDebug
+          ./gradlew recordRoborazziAndroidHostTest
 
       - name: Push new Android screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -131,10 +131,10 @@ jobs:
 
       # Run local tests after screenshot tests to avoid wrong UP-TO-DATE. TODO: Ignore screenshots.
       - name: Run local tests
-        run: ./gradlew testDebugUnitTest :lint:test
+        run: ./gradlew testDebugUnitTest testAndroidHostTest :lint:test
 
-      - name: Build all build type and flavor permutations
-        run: ./gradlew :app:assemble -PminifyWithR8=false
+      - name: Build all build type permutations
+        run: ./gradlew :app-android:assemble -PminifyWithR8=false
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v4
@@ -147,7 +147,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: local-test-results
-          path: '**/build/test-results/test*UnitTest/**.xml'
+          path: |
+            **/build/test-results/test*UnitTest/**.xml
+            **/build/test-results/testAndroidHostTest/**.xml
 
       - name: Upload screenshot results (PNG)
         if: ${{ !cancelled() }}
@@ -157,7 +159,7 @@ jobs:
           path: '**/build/outputs/roborazzi/*_compare.png'
 
       - name: Check lint
-        run: ./gradlew :app:lintRelease :app-nia-catalog:lintRelease :lint:lint
+        run: ./gradlew :app-android:lintRelease :app-nia-catalog-android:lintRelease :lint:lint
 
       - name: Upload lint reports (HTML)
         if: ${{ !cancelled() }}
@@ -167,18 +169,18 @@ jobs:
           path: '**/build/reports/lint-results-*.html'
 
       - name: Upload lint reports (SARIF) for app module
-        if: ${{ !cancelled() && hashFiles('app/**/*.sarif') != '' }}
+        if: ${{ !cancelled() && hashFiles('app-android/**/*.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: './app/'
-          category: app
+          sarif_file: './app-android/'
+          category: app-android
 
       - name: Upload lint reports (SARIF) for app-nia-catalog module
-        if: ${{ !cancelled() && hashFiles('app-nia-catalog/**/*.sarif') != '' }}
+        if: ${{ !cancelled() && hashFiles('app-nia-catalog-android/**/*.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: './app-nia-catalog/'
-          category: app-nia-catalog
+          sarif_file: './app-nia-catalog-android/'
+          category: app-nia-catalog-android
 
       - name: Upload lint reports (SARIF) for lint module
         if: ${{ !cancelled() && hashFiles('lint/**/*.sarif') != '' }}
@@ -188,7 +190,7 @@ jobs:
           category: lint
 
       - name: Check badging
-        run: ./gradlew :app:checkReleaseBadging
+        run: ./gradlew :app-android:checkReleaseBadging
 
   androidTest:
     runs-on: ubuntu-latest
@@ -246,13 +248,13 @@ jobs:
           heap-size: 600M
           script: ./gradlew connectedDebugAndroidTest --daemon --stacktrace
 
-      - name: Run local tests (including Roborazzi) for the combined coverage report (only API 30)
-        if: matrix.api-level == 30
+      - name: Run local tests (including Roborazzi) for the combined coverage report (only API 34)
+        if: matrix.api-level == 34
         # There is no need to verify Roborazzi tests to generate coverage.
-        run: ./gradlew testDebugUnitTest -Proborazzi.test.verify=false
+        run: ./gradlew testDebugUnitTest testAndroidHostTest -Proborazzi.test.verify=false
 
-      - name: Generate coverage reports for Debug variants (only API 30)
-        if: matrix.api-level == 30
+      - name: Generate coverage reports for Debug variants (only API 34)
+        if: matrix.api-level == 34
         run: ./gradlew createDebugCombinedCoverageReport
         
       - name: Upload test reports
@@ -262,8 +264,8 @@ jobs:
           name: test-reports-${{ matrix.api-level }}
           path: '**/build/reports/androidTests'
 
-      - name: Display local test coverage (only API 30)
-        if: matrix.api-level == 30
+      - name: Display local test coverage (only API 34)
+        if: matrix.api-level == 34
         id: jacoco
         uses: madrapps/jacoco-report@v1.7.1
         with:
@@ -274,8 +276,8 @@ jobs:
             ${{ github.workspace }}/**/build/reports/jacoco/**/*Report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
         
-      - name: Upload local coverage reports (XML + HTML) (only API 30)
-        if: matrix.api-level == 30
+      - name: Upload local coverage reports (XML + HTML) (only API 34)
+        if: matrix.api-level == 34
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
@@ -286,7 +288,7 @@ jobs:
 
   multiplatform:
     name: "Multiplatform checks (iOS, macOS, JVM Desktop)"
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 90
 
     permissions:

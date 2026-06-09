@@ -18,11 +18,13 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.interests.api"
-}
+
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.feature.interests.api"
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.serialization.core)

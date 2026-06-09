@@ -17,13 +17,13 @@
 package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.material3.FilledIconToggleButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
@@ -79,14 +79,14 @@ fun IconButtonPreview() {
             checked = true,
             onCheckedChange = { },
             icon = {
-                Icon(
-                    imageVector = NiaIcons.BookmarkBorder,
+                NiaIcon(
+                    icon = NiaIcons.BookmarkBorder,
                     contentDescription = null,
                 )
             },
             checkedIcon = {
-                Icon(
-                    imageVector = NiaIcons.Bookmark,
+                NiaIcon(
+                    icon = NiaIcons.Bookmark,
                     contentDescription = null,
                 )
             },
@@ -102,14 +102,14 @@ fun IconButtonPreviewUnchecked() {
             checked = false,
             onCheckedChange = { },
             icon = {
-                Icon(
-                    imageVector = NiaIcons.BookmarkBorder,
+                NiaIcon(
+                    icon = NiaIcons.BookmarkBorder,
                     contentDescription = null,
                 )
             },
             checkedIcon = {
-                Icon(
-                    imageVector = NiaIcons.Bookmark,
+                NiaIcon(
+                    icon = NiaIcons.Bookmark,
                     contentDescription = null,
                 )
             },

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+
 package com.google.samples.apps.nowinandroid.core.data.util
 
 import kotlinx.coroutines.channels.awaitClose

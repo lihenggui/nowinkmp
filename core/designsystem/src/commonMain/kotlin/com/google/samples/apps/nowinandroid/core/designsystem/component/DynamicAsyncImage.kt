@@ -30,46 +30,55 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter.State.Error
 import coil3.compose.AsyncImagePainter.State.Loading
 import coil3.compose.rememberAsyncImagePainter
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalTintTheme
 
 /**
- * A wrapper around [AsyncImage] which determines the colorFilter based on the theme
+ * A wrapper around [rememberAsyncImagePainter] which determines the colorFilter based on the theme
  */
 @Composable
 fun DynamicAsyncImage(
     imageUrl: String,
     imageLoader: ImageLoader,
     contentDescription: String?,
+    placeholder: Painter,
     modifier: Modifier = Modifier,
-    // TODO Use Compose resources to present a placeholder
-//    placeholder: Painter = painterResource(R.drawable.core_designsystem_ic_placeholder_default),
 ) {
     val iconTint = LocalTintTheme.current.iconTint
-    var isLoading by remember { mutableStateOf(true) }
+    val isLocalInspection = LocalInspectionMode.current
+    var isLoading by remember { mutableStateOf(!isLocalInspection) }
     var isError by remember { mutableStateOf(false) }
     val asyncImagePainter = rememberAsyncImagePainter(
-        model = imageUrl,
+        model = if (isLocalInspection) null else imageUrl,
         onState = { state ->
             isLoading = state is Loading
             isError = state is Error
         },
         imageLoader = imageLoader,
     )
-    val isLocalInspection = LocalInspectionMode.current
+    val imagePainter = if (isLocalInspection || isLoading || isError) {
+        placeholder
+    } else {
+        asyncImagePainter
+    }
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
+        Image(
+            contentScale = ContentScale.Crop,
+            painter = imagePainter,
+            contentDescription = contentDescription,
+            colorFilter = if (iconTint != Unspecified) ColorFilter.tint(iconTint) else null,
+        )
         if (isLoading && !isLocalInspection) {
-            // Display a progress bar while loading
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -77,12 +86,5 @@ fun DynamicAsyncImage(
                 color = MaterialTheme.colorScheme.tertiary,
             )
         }
-        Image(
-            contentScale = ContentScale.Crop,
-            painter = asyncImagePainter,
-//            painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
-            contentDescription = contentDescription,
-            colorFilter = if (iconTint != Unspecified) ColorFilter.tint(iconTint) else null,
-        )
     }
 }

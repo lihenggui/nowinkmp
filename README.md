@@ -11,12 +11,14 @@ Welcome to the Kotlin Multiplatform edition of Now in Android, a community-drive
 This is the repository for the [Now in Android](https://developer.android.com/series/now-in-android)
 app.
 
-**Now in Android** is a fully functional Android app built entirely with Kotlin and Jetpack Compose. It
-follows Android design and development best practices and is intended to be a useful reference
-for developers. As a running app, it's intended to help developers keep up-to-date with the world
-of Android development by providing regular news updates.
+**Now in Android** is a multiplatform app built with Kotlin and Compose Multiplatform. It
+follows Android and Kotlin Multiplatform development best practices and is intended to be a useful
+reference for developers. As a running app, it's intended to help developers keep up-to-date with
+the world of Android development by providing regular news updates.
 
-The app is currently in development. The `prodRelease` variant is [available on the Play Store](https://play.google.com/store/apps/details?id=com.google.samples.apps.nowinandroid).
+The app is currently in development. The Android release application uses the
+`com.google.samples.apps.nowinandroid` package that is
+[available on the Play Store](https://play.google.com/store/apps/details?id=com.google.samples.apps.nowinandroid).
 
 # Project Status
 
@@ -85,8 +87,10 @@ This project supports running on Android, iOS, Desktop (JVM), macOS, and Web (WA
 ## Running on Android
 
 1. Create an Android Virtual Device (AVD).
-2. Select `app-nia-catalog` from the list of run configurations.
+2. Select `app-android` from the list of run configurations.
 3. Choose your AVD and click "Run".
+
+To run the design system catalog on Android, select `app-nia-catalog-android`.
 
 ## Running on Desktop
 
@@ -98,7 +102,7 @@ To run the desktop application, follow these steps:
    ```
    desktopRun -DmainClass=MainKt --quiet
    ```
-4. Choose the Gradle project: `nowinandroid:app-nia-catalog`.
+4. Choose the Gradle project: `nowinandroid:app`.
 5. Click "OK" to save the configuration.
 
 ## Running on Web (WASM)
@@ -135,11 +139,11 @@ in, and be notified when new content is published which matches interests they a
 
 **Now in Android** uses the Gradle build system and can be imported directly into Android Studio (make sure you are using the latest stable version available [here](https://developer.android.com/studio)). 
 
-Change the run configuration to `app`.
+Change the run configuration to `app-android`.
 
 ![image](https://user-images.githubusercontent.com/873212/210559920-ef4a40c5-c8e0-478b-bb00-4879a8cf184a.png)
 
-The `demoDebug` and `demoRelease` build variants can be built and run (the `prod` variants use a backend server which is not currently publicly available).
+The Android app host can be built and run with the `debug` and `release` build variants.
 
 ![image](https://user-images.githubusercontent.com/873212/210560507-44045dc5-b6d5-41ca-9746-f0f7acf22f8e.png)
 
@@ -163,37 +167,29 @@ description of the modularization strategy used in
 
 # Build
 
-The app contains the usual `debug` and `release` build variants. 
+The Android app host contains the usual `debug` and `release` build variants. There are no product
+flavors. The shared `app` module owns the Compose Multiplatform app code, while `app-android`
+packages that shared app as an Android application.
 
-In addition, the `benchmark` variant of `app` is used to test startup performance and generate a
-baseline profile (see below for more information).
+The `benchmarks` module is used to test startup performance and generate a baseline profile (see
+below for more information).
 
-`app-nia-catalog` is a standalone app that displays the list of components that are stylized for
-**Now in Android**.
+`app-nia-catalog` is a shared standalone app that displays the list of components that are stylized
+for **Now in Android**. `app-nia-catalog-android` packages that catalog for Android.
 
-The app also uses
-[product flavors](https://developer.android.com/studio/build/build-variants#product-flavors) to
-control where content for the app should be loaded from.
-
-The `demo` flavor uses static local data to allow immediate building and exploring of the UI.
-
-The `prod` flavor makes real network calls to a backend server, providing up-to-date content. At 
-this time, there is not a public backend available.
-
-For normal development use the `demoDebug` variant. For UI performance testing use the
-`demoRelease` variant. 
+For normal Android development use the `debug` variant of `app-android`. For UI performance testing
+use the `release` app package through the `benchmarks` module.
 
 # Testing
 
-To facilitate testing of components, **Now in Android** uses dependency injection with
-[Hilt](https://developer.android.com/training/dependency-injection/hilt-android).
+To facilitate testing of components, **Now in Android** uses dependency injection with Koin.
 
 Most data layer components are defined as interfaces.
 Then, concrete implementations (with various dependencies) are bound to provide those interfaces to
 other components in the app.
 In tests, **Now in Android** notably does _not_ use any mocking libraries.
-Instead, the production implementations can be replaced with test doubles using Hilt's testing APIs
-(or via manual constructor injection for `ViewModel` tests).
+Instead, production implementations can be replaced with test doubles through the app's dependency
+injection graph or via manual constructor injection for `ViewModel` tests.
 
 These test doubles implement the same interface as the production implementations and generally
 provide a simplified (but still realistic) implementation with additional testing hooks.
@@ -214,41 +210,39 @@ Examples:
 
 To run the tests execute the following gradle tasks: 
 
-- `testDemoDebug` run all local tests against the `demoDebug` variant. Screenshot tests will fail
-(see below for explanation). To avoid this, run `recordRoborazziDemoDebug` prior to running unit tests.
-- `connectedDemoDebugAndroidTest` run all instrumented tests against the `demoDebug` variant. 
+- `testDebugUnitTest` runs Android unit tests for the debug variant.
+- `testAndroidHostTest` runs Android host-side KMP tests, including Android Roborazzi tests, on CI.
+- `connectedDebugAndroidTest` runs instrumented tests against the debug variant.
 
 > [!NOTE]
-> You should not run `./gradlew test` or `./gradlew connectedAndroidTest` as this will execute 
-tests against _all_ build variants which is both unnecessary and will result in failures as only the
-`demoDebug` variant is supported. No other variants have any tests (although this might change in future). 
+> Screenshot baselines are generated on CI. Prefer `spotlessCheck`, `testDebugUnitTest`,
+> `:lint:test`, and the targeted platform compile tasks locally before opening a PR.
 
 ## Screenshot tests
 A screenshot test takes a screenshot of a screen or a UI component within the app, and compares it 
 with a previously recorded screenshot which is known to be rendered correctly. 
 
-For example, Now in Android has [screenshot tests](https://github.com/android/nowinandroid/blob/main/app/src/testDemo/kotlin/com/google/samples/apps/nowinandroid/ui/NiaAppScreenSizesScreenshotTests.kt)
-to verify that the navigation is displayed correctly on different screen sizes 
-([known correct screenshots](https://github.com/android/nowinandroid/tree/main/app/src/testDemo/screenshots)). 
+For example, Now in Android has screenshot tests to verify that navigation and feature screens are
+displayed correctly on different screen sizes.
 
 Now In Android uses [Roborazzi](https://github.com/takahirom/roborazzi) to run screenshot tests
 of certain screens and UI components. When working with screenshot tests the following gradle tasks are useful:
 
-- `verifyRoborazziDemoDebug` run all screenshot tests, verifying the screenshots against the known
-correct screenshots.
-- `recordRoborazziDemoDebug` record new "known correct" screenshots. Use this command when you have
-made changes to the UI and manually verified that they are rendered correctly. Screenshots will be
-stored in `modulename/src/test/screenshots`.
-- `compareRoborazziDemoDebug` create comparison images between failed tests and the known correct
-images. These can also be found in `modulename/src/test/screenshots`. 
+- `verifyRoborazziAndroidHostTest` runs Android host screenshot tests, verifying screenshots
+against the known correct screenshots.
+- `recordRoborazziAndroidHostTest` records new Android host "known correct" screenshots. Use this
+command when you have made changes to the UI and manually verified that they are rendered
+correctly.
+- `compareRoborazziAndroidHostTest` creates comparison images between failed tests and known correct
+images.
 
 > [!NOTE]
 > **Note on failing screenshot tests**   
 > The known correct screenshots stored in this repository are recorded on CI using Linux. Other
 platforms may (and probably will) generate slightly different images, making the screenshot tests fail. 
-When working on a non-Linux platform, a workaround to this is to run `recordRoborazziDemoDebug` on the
-`main` branch before starting work. After making changes, `verifyRoborazziDemoDebug` will identify only
-legitimate changes. 
+When working on a non-Linux platform, a workaround to this is to run
+`recordRoborazziAndroidHostTest` on the `main` branch before starting work. After making changes,
+`verifyRoborazziAndroidHostTest` will identify only legitimate changes.
 
 For more information about screenshot testing 
 [check out this talk](https://www.droidcon.com/2023/11/15/easy-screenshot-testing-with-compose/).
@@ -287,8 +281,8 @@ For more information on baseline profiles, read [this document](https://develope
 > [!NOTE]
 > The baseline profile needs to be re-generated for release builds that touch code which changes app startup.
 
-To generate the baseline profile, select the `benchmark` build variant and run the
-`BaselineProfileGenerator` benchmark test on an AOSP Android Emulator.
+To generate the baseline profile, run the baseline profile task from the `benchmarks` module on an
+AOSP Android Emulator.
 Then copy the resulting baseline profile from the emulator to [`app/src/main/baseline-prof.txt`](app/src/main/baseline-prof.txt).
 
 ## Compose compiler metrics
@@ -296,7 +290,7 @@ Then copy the resulting baseline profile from the emulator to [`app/src/main/bas
 Run the following command to get and analyze compose compiler metrics:
 
 ```bash
-./gradlew assembleRelease -PenableComposeCompilerMetrics=true -PenableComposeCompilerReports=true
+./gradlew :app-android:assembleRelease -PenableComposeCompilerMetrics=true -PenableComposeCompilerReports=true
 ```
 
 The reports files will be added to [build/compose-reports](build/compose-reports). The metrics files will also be 

@@ -17,7 +17,7 @@
 package com.google.samples.apps.nowinandroid.di
 
 import com.google.samples.apps.nowinandroid.MainScreenViewModel
-import com.google.samples.apps.nowinandroid.core.analytics.di.AnalyticsModule
+import com.google.samples.apps.nowinandroid.core.analytics.di.analyticsModule
 import com.google.samples.apps.nowinandroid.core.data.di.dataModule
 import com.google.samples.apps.nowinandroid.core.database.di.databaseModule
 import com.google.samples.apps.nowinandroid.core.datastore.di.dataStoreModule
@@ -35,7 +35,6 @@ import com.google.samples.apps.nowinandroid.sync.di.syncModule
 import com.google.samples.apps.nowinandroid.ui.interests2pane.Interests2PaneViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import org.koin.ksp.generated.module
 
 internal val appViewModelModule = module {
     viewModelOf(::MainScreenViewModel)
@@ -53,10 +52,10 @@ internal val featureModules = module {
     )
 }
 
-internal val appModules = module {
+val appModules = module {
     includes(
         commonModule,
-        AnalyticsModule().module,
+        analyticsModule,
         databaseModule,
         dataModule,
         dataStoreModule,

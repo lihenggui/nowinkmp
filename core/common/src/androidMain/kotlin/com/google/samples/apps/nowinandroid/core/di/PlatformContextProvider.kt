@@ -18,9 +18,7 @@ package com.google.samples.apps.nowinandroid.core.di
 
 import android.content.Context
 import coil3.PlatformContext
-import org.koin.core.annotation.Single
 
-@Single
 actual class PlatformContextProvider(
     val context: Context,
 ) {

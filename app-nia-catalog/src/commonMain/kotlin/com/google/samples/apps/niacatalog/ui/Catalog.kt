@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,6 +48,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTabRo
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTextButton
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTopicTag
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaViewToggleButton
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
@@ -119,21 +119,21 @@ fun NiaCatalog() {
                             onClick = {},
                             text = { Text(text = "Enabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                         NiaOutlinedButton(
                             onClick = {},
                             text = { Text(text = "Enabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                         NiaTextButton(
                             onClick = {},
                             text = { Text(text = "Enabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                     }
@@ -146,7 +146,7 @@ fun NiaCatalog() {
                             enabled = false,
                             text = { Text(text = "Disabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                         NiaOutlinedButton(
@@ -154,7 +154,7 @@ fun NiaCatalog() {
                             enabled = false,
                             text = { Text(text = "Disabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                         NiaTextButton(
@@ -162,7 +162,7 @@ fun NiaCatalog() {
                             enabled = false,
                             text = { Text(text = "Disabled") },
                             leadingIcon = {
-                                Icon(imageVector = NiaIcons.Add, contentDescription = null)
+                                NiaIcon(icon = NiaIcons.Add, contentDescription = null)
                             },
                         )
                     }
@@ -205,14 +205,14 @@ fun NiaCatalog() {
                             checked = firstChecked,
                             onCheckedChange = { checked -> firstChecked = checked },
                             icon = {
-                                Icon(
-                                    imageVector = NiaIcons.BookmarkBorder,
+                                NiaIcon(
+                                    icon = NiaIcons.BookmarkBorder,
                                     contentDescription = null,
                                 )
                             },
                             checkedIcon = {
-                                Icon(
-                                    imageVector = NiaIcons.Bookmark,
+                                NiaIcon(
+                                    icon = NiaIcons.Bookmark,
                                     contentDescription = null,
                                 )
                             },
@@ -222,14 +222,14 @@ fun NiaCatalog() {
                             checked = secondChecked,
                             onCheckedChange = { checked -> secondChecked = checked },
                             icon = {
-                                Icon(
-                                    imageVector = NiaIcons.BookmarkBorder,
+                                NiaIcon(
+                                    icon = NiaIcons.BookmarkBorder,
                                     contentDescription = null,
                                 )
                             },
                             checkedIcon = {
-                                Icon(
-                                    imageVector = NiaIcons.Bookmark,
+                                NiaIcon(
+                                    icon = NiaIcons.Bookmark,
                                     contentDescription = null,
                                 )
                             },
@@ -238,14 +238,14 @@ fun NiaCatalog() {
                             checked = false,
                             onCheckedChange = {},
                             icon = {
-                                Icon(
-                                    imageVector = NiaIcons.BookmarkBorder,
+                                NiaIcon(
+                                    icon = NiaIcons.BookmarkBorder,
                                     contentDescription = null,
                                 )
                             },
                             checkedIcon = {
-                                Icon(
-                                    imageVector = NiaIcons.Bookmark,
+                                NiaIcon(
+                                    icon = NiaIcons.Bookmark,
                                     contentDescription = null,
                                 )
                             },
@@ -255,14 +255,14 @@ fun NiaCatalog() {
                             checked = true,
                             onCheckedChange = {},
                             icon = {
-                                Icon(
-                                    imageVector = NiaIcons.BookmarkBorder,
+                                NiaIcon(
+                                    icon = NiaIcons.BookmarkBorder,
                                     contentDescription = null,
                                 )
                             },
                             checkedIcon = {
-                                Icon(
-                                    imageVector = NiaIcons.Bookmark,
+                                NiaIcon(
+                                    icon = NiaIcons.Bookmark,
                                     contentDescription = null,
                                 )
                             },
@@ -349,14 +349,14 @@ fun NiaCatalog() {
                         items.forEachIndexed { index, item ->
                             NiaNavigationBarItem(
                                 icon = {
-                                    Icon(
-                                        imageVector = icons[index],
+                                    NiaIcon(
+                                        icon = icons[index],
                                         contentDescription = item,
                                     )
                                 },
                                 selectedIcon = {
-                                    Icon(
-                                        imageVector = selectedIcons[index],
+                                    NiaIcon(
+                                        icon = selectedIcons[index],
                                         contentDescription = item,
                                     )
                                 },

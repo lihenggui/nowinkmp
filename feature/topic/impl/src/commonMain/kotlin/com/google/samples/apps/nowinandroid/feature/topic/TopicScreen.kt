@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,6 +57,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaLoadi
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
@@ -70,7 +70,9 @@ import com.google.samples.apps.nowinandroid.core.ui.collectAsStateWithLifecycle
 import com.google.samples.apps.nowinandroid.core.ui.userNewsResourceCardItems
 import nowinandroid.core.ui.generated.resources.core_ui_back
 import nowinandroid.feature.topic.impl.generated.resources.Res
+import nowinandroid.feature.topic.impl.generated.resources.feature_topic_ic_topic_placeholder
 import nowinandroid.feature.topic.impl.generated.resources.feature_topic_loading
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -133,6 +135,7 @@ internal fun TopicScreen(
                 }
 
                 TopicUiState.Error -> TODO()
+
                 is TopicUiState.Success -> {
                     item {
                         TopicToolbar(
@@ -180,11 +183,19 @@ private fun topicItemsSize(
     topicUiState: TopicUiState,
     newsUiState: NewsUiState,
 ) = when (topicUiState) {
-    TopicUiState.Error -> 0 // Nothing
-    TopicUiState.Loading -> 1 // Loading bar
+    TopicUiState.Error -> 0
+
+    // Nothing
+    TopicUiState.Loading -> 1
+
+    // Loading bar
     is TopicUiState.Success -> when (newsUiState) {
-        NewsUiState.Error -> 0 // Nothing
-        NewsUiState.Loading -> 1 // Loading bar
+        NewsUiState.Error -> 0
+
+        // Nothing
+        NewsUiState.Loading -> 1
+
+        // Loading bar
         is NewsUiState.Success -> 2 + newsUiState.news.size // Toolbar, header
     }
 }
@@ -219,6 +230,7 @@ private fun TopicHeader(name: String, description: String, imageUrl: String) {
                 .size(132.dp)
                 .padding(bottom = 12.dp),
             imageLoader = ImageLoader(LocalPlatformContext.current),
+            placeholder = painterResource(Res.drawable.feature_topic_ic_topic_placeholder),
         )
         Text(name, style = MaterialTheme.typography.displayMedium)
         if (description.isNotEmpty()) {
@@ -294,8 +306,8 @@ private fun TopicToolbar(
     ) {
         if (showBackButton) {
             IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    imageVector = NiaIcons.ArrowBack,
+                NiaIcon(
+                    icon = NiaIcons.ArrowBack,
                     contentDescription = stringResource(
                         nowinandroid.core.ui.generated.resources.Res.string.core_ui_back,
                     ),

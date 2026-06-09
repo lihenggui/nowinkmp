@@ -28,16 +28,7 @@ plugins {
 }
 
 ktorfit {
-    compilerPluginVersion.set("2.3.3")
-}
-
-android {
-    namespace = "com.google.samples.apps.nowinandroid.core.network"
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
+    compilerPluginVersion.set("-")
 }
 
 secrets {
@@ -52,6 +43,10 @@ buildkonfig {
 }
 
 kotlin {
+    android {
+        namespace = "com.google.samples.apps.nowinandroid.core.network"
+    }
+
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)
@@ -67,7 +62,6 @@ kotlin {
             implementation(libs.ktorfit.lib)
             implementation(libs.ktorfit.converters.call)
             implementation(libs.ktorfit.converters.flow)
-            implementation(libs.ktorfit.converters.response)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
@@ -80,9 +74,6 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.java)
-        }
-        mingwMain.dependencies {
-            implementation(libs.ktor.client.winhttp)
         }
     }
 }

@@ -20,7 +20,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,11 +37,14 @@ import coil3.ImageLoader
 import coil3.compose.LocalPlatformContext
 import com.google.samples.apps.nowinandroid.core.designsystem.component.DynamicAsyncImage
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcon
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import nowinandroid.core.ui.generated.resources.Res
+import nowinandroid.core.ui.generated.resources.core_ui_ic_topic_placeholder
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_follow_button_content_desc
 import nowinandroid.core.ui.generated.resources.core_ui_interests_card_unfollow_button_content_desc
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -71,16 +74,16 @@ fun InterestsItem(
                 checked = following,
                 onCheckedChange = onFollowButtonClick,
                 icon = {
-                    Icon(
-                        imageVector = NiaIcons.Add,
+                    NiaIcon(
+                        icon = NiaIcons.Add,
                         contentDescription = stringResource(
                             Res.string.core_ui_interests_card_follow_button_content_desc,
                         ),
                     )
                 },
                 checkedIcon = {
-                    Icon(
-                        imageVector = NiaIcons.Check,
+                    NiaIcon(
+                        icon = NiaIcons.Check,
                         contentDescription = stringResource(
                             Res.string.core_ui_interests_card_unfollow_button_content_desc,
                         ),
@@ -105,12 +108,12 @@ fun InterestsItem(
 
 @Composable
 private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) {
-    if (topicImageUrl.isEmpty()) {
-        Icon(
+    if (topicImageUrl.isEmpty() || LocalInspectionMode.current) {
+        NiaIcon(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(4.dp),
-            imageVector = NiaIcons.Person,
+            icon = NiaIcons.Person,
             // decorative image
             contentDescription = null,
         )
@@ -120,6 +123,7 @@ private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) 
             contentDescription = null,
             modifier = modifier,
             imageLoader = ImageLoader(LocalPlatformContext.current),
+            placeholder = painterResource(Res.drawable.core_ui_ic_topic_placeholder),
         )
     }
 }

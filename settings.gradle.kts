@@ -49,7 +49,9 @@ rootProject.name = "nowinandroid"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
+include(":app-android")
 include(":app-nia-catalog")
+include(":app-nia-catalog-android")
 include(":benchmarks")
 include(":core:analytics")
 include(":core:common")
